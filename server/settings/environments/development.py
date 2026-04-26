@@ -1,3 +1,4 @@
+import logging
 import socket
 
 from debug_toolbar.settings import PANELS_DEFAULTS
@@ -22,12 +23,20 @@ ALLOWED_HOSTS: list[str] = [
 INSTALLED_APPS += (
     # Better debug:
     'debug_toolbar',
+    'zeal',
+    # django-query-counter:
+    'query_counter',
 )
 
 # Django debug toolbar:
 # https://django-debug-toolbar.readthedocs.io
 
-MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+MIDDLEWARE += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # https://github.com/conformist-mw/django-query-counter
+    # Prints how many queries were executed, useful for the APIs.
+    'query_counter.middleware.DjangoQueryCounterMiddleware',
+)
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -44,3 +53,17 @@ INTERNAL_IPS += ['127.0.0.1', '10.0.2.2']
 # This can be removed after `RedirectsPanel` will be gone:
 DEBUG_TOOLBAR_PANELS = PANELS_DEFAULTS.copy()
 DEBUG_TOOLBAR_PANELS.remove('debug_toolbar.panels.redirects.RedirectsPanel')
+
+# django-zeal
+# https://github.com/taobojlen/django-zeal
+
+# Should be the first in line:
+MIDDLEWARE = ('zeal.middleware.zeal_middleware', *MIDDLEWARE)
+
+# Logging N+1 requests:
+ZEAL_RAISE = False
+ZEAL_SHOW_ALL_CALLERS = True
+ZEAL_LOGGER = logging.getLogger('django')
+ZEAL_ALLOWLIST = [
+    {'model': 'admin.*'},
+]

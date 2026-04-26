@@ -199,21 +199,10 @@ wheels = [
 [[package]]
 name = "django-modern-rest"
 version = "0.7.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/wemake-services/django-modern-rest?branch=master#01bb8c24307d8e177383623cecc3118bd996c63b" }
 dependencies = [
     { name = "django" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8c/70/9747d7f66792dfe2d9f628d6e0ba4f0da9ece3795dc786af564f3fb1f18d/django_modern_rest-0.7.0.tar.gz", hash = "sha256:c4fd9c4cdbdb701227f9652f00335b702c22436bcdf2a0814b594f9d476c45e8", size = 2785571, upload-time = "2026-04-14T16:32:14.711Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/56/c2b7d8ef050af71542b6560e1feb1e0ab0820a5bd126f1934e7f2051b81d/django_modern_rest-0.7.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:0d548a5d7cdd5ac13db2bba5c14514b6b8f62ab5559ca0036d1895ec3668fed2", size = 2932984, upload-time = "2026-04-14T16:32:47.456Z" },
-    { url = "https://files.pythonhosted.org/packages/63/57/fad9bcbd753b3eabedaf26dc8859cef2ad241306ffc3396e6fc01d80db32/django_modern_rest-0.7.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:90e371eb8b10f7069e9a983ba67f8b19d6994ab03e6f20fde4eeb1baf4111e93", size = 2932027, upload-time = "2026-04-14T16:32:48.987Z" },
-    { url = "https://files.pythonhosted.org/packages/e4/32/c033d3bfd5c964c1ece168c34553e6d095d0244eeff6fb08b8a7301d327e/django_modern_rest-0.7.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:fa1f4d7620953f00684e22802e35db9b4953642b4b3044746498727ecdc604ef", size = 2944544, upload-time = "2026-04-14T16:32:51.261Z" },
-    { url = "https://files.pythonhosted.org/packages/a6/04/ab6a4c570644df28adb7cc6a9f1799de3e9b6880764c4e5f655928cc306d/django_modern_rest-0.7.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:5cc1827a3437ef9311fd97383034bf393b092ef0af665f6848195672a652124a", size = 2944477, upload-time = "2026-04-14T16:32:52.753Z" },
-    { url = "https://files.pythonhosted.org/packages/db/58/d2f8460b585431175ac58919d705244b3e19354a5a579fa2f29f4d649a78/django_modern_rest-0.7.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:e3833269eca3083e4041d5e7b726612c0f8d76547c2d8dfe782edd3bafea9255", size = 2945478, upload-time = "2026-04-14T16:32:54.721Z" },
-    { url = "https://files.pythonhosted.org/packages/96/65/4e482c1e271637e721a4b1efca13485dbf00c8405af4cae1f36058df6878/django_modern_rest-0.7.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a12772b9cbdd39103ae7f9f2eaf148c1cd1b3b478c789c21e96dcd672d03b799", size = 2946506, upload-time = "2026-04-14T16:32:56.369Z" },
-    { url = "https://files.pythonhosted.org/packages/c0/07/50ad585367ddecaf15570ccc0f0343171af1f8067226060a70a911a31aba/django_modern_rest-0.7.0-cp313-cp313-win_amd64.whl", hash = "sha256:4ee3b157d648fed1d634fc44ecc9603206ba63a8b9082b4ea0c0df220102eb25", size = 2911706, upload-time = "2026-04-14T16:32:57.858Z" },
-    { url = "https://files.pythonhosted.org/packages/f5/c6/d817d75e60ea88b69545073ceaec77265982f4959b806a28482197bf48c3/django_modern_rest-0.7.0-py3-none-any.whl", hash = "sha256:15aedb116780541a699337379c5455515eabc09b0446f00541e225b9f76aedd3", size = 2872235, upload-time = "2026-04-14T16:32:11.815Z" },
 ]
 
 [package.optional-dependencies]
@@ -235,6 +224,18 @@ openapi = [
 pydantic = [
     { name = "pydantic", extra = ["email", "timezone"] },
     { name = "pydantic-extra-types" },
+]
+
+[[package]]
+name = "django-query-counter"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "tabulate" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/15/1f/8a0c08828e9f5d68799080c743380400df39e0c0b96d9de4c99918287b1a/django_query_counter-0.5.0.tar.gz", hash = "sha256:25d0615d5dca4973173bdfd6325f84d787bb0ffa3959993fc69860540325d890", size = 6410, upload-time = "2026-03-17T22:04:07.898Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/80/0a/b93b261de045d7965bbf9906caface583ad1d556b9f479313a6622b34c4f/django_query_counter-0.5.0-py3-none-any.whl", hash = "sha256:9869cb24522342241a2742f5faf36a3f5677fb81be466e23dd29c885c0abe2cc", size = 7648, upload-time = "2026-03-17T22:04:07.027Z" },
 ]
 
 [[package]]
@@ -277,6 +278,44 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/fb/e6/5dcdaa785ec3eed5fc196c7e68fb7ad9d9fe6d5acccea4690e65f2546417/django_stubs_ext-6.0.3.tar.gz", hash = "sha256:3307d42132bc295d5744de6276bc5fdf6896efc70f891e21c0ae8bdf529d2762", size = 6663, upload-time = "2026-04-18T15:10:53.667Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/10/fa/0a3a05c29d6295dbd52fa3cb4047a95de11ba4f2696072d6f3f2c1e6f370/django_stubs_ext-6.0.3-py3-none-any.whl", hash = "sha256:9e4105955419ae310d7da9cfd808e039d4dae3092c628f021057bb4f2c237f8f", size = 10354, upload-time = "2026-04-18T15:10:52.395Z" },
+]
+
+[[package]]
+name = "django-tasks"
+version = "0.12.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-stubs-ext" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1d/6e/34d4e77bb7951e5a5acbd846f43240f062c68bb04d9c246cb446a55d4cbc/django_tasks-0.12.0.tar.gz", hash = "sha256:58be66c1e487da32a3ce7320bd1949d0d1dc381b9004819f92591eb37fb2c1b8", size = 15445, upload-time = "2026-02-06T16:15:33.593Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/e7/40c45768e84efd77e3ae6ffdcd2b5540011036cbb00c6df6ef2a2ad69551/django_tasks-0.12.0-py3-none-any.whl", hash = "sha256:ffcc1d7bdfad3bc5ef9c2d498596c6546484c9ec6b182fb9709c691eb66a8709", size = 15758, upload-time = "2026-02-06T16:15:32.168Z" },
+]
+
+[[package]]
+name = "django-tasks-db"
+version = "0.12.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-stubs-ext" },
+    { name = "django-tasks" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/25/bc21ad4a610634f0a66f4faea4522eed26b55dbd50c4ac853128d24091d3/django_tasks_db-0.12.0.tar.gz", hash = "sha256:314d486b8c1786705b4afaf03dadaf0b1b104163acce9c5d9c9bb2aef205c501", size = 26724, upload-time = "2026-02-06T16:54:33.021Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/09/1c/e14198615e22df28b333540f2e506d6ddef7aff16d510818e94ebc01440c/django_tasks_db-0.12.0-py3-none-any.whl", hash = "sha256:69e3a1edcbf1efeeb1268da465e8ea5296ddd80834719769acc719b82da2d62e", size = 28832, upload-time = "2026-02-06T16:54:31.564Z" },
+]
+
+[[package]]
+name = "django-zeal"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/ef/f15e7576914df0f2a3e6181243bd1d9a733fc091409d3b62ddd194c73a7b/django_zeal-2.1.0.tar.gz", hash = "sha256:56fe4b2360f3baef4f6feec4d49fd074d8828d53a898d169a938c3cb912294fb", size = 17043, upload-time = "2026-03-18T18:53:03.819Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3f/d3/2e750ea3636e63ff210a9f38eb2f72e40a879928efe49186c68ca66a503a/django_zeal-2.1.0-py3-none-any.whl", hash = "sha256:622728184832d4f13503ce9c01ae0c77a98be716011b9036e3baf9ab16cb2c81", size = 13310, upload-time = "2026-03-18T18:53:02.556Z" },
 ]
 
 [[package]]
@@ -386,6 +425,7 @@ dependencies = [
     { name = "django-modern-rest", extra = ["attrs", "jwt", "msgspec", "openapi", "pydantic"] },
     { name = "django-split-settings" },
     { name = "django-stubs-ext" },
+    { name = "django-tasks-db" },
     { name = "punq" },
     { name = "python-decouple" },
     { name = "structlog" },
@@ -394,19 +434,23 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "django-debug-toolbar" },
+    { name = "django-query-counter" },
     { name = "django-stubs", extra = ["compatible-mypy"] },
+    { name = "django-zeal" },
     { name = "ipython" },
     { name = "pyrefly" },
     { name = "ruff" },
+    { name = "types-punq" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "django", extras = ["argon2"], specifier = ">=6.0.4,<6.1" },
     { name = "django-cors-headers", specifier = ">=4.0,<5.0" },
-    { name = "django-modern-rest", extras = ["msgspec", "pydantic", "attrs", "jwt", "openapi"], specifier = ">=0.6,<1.0" },
+    { name = "django-modern-rest", extras = ["msgspec", "pydantic", "attrs", "jwt", "openapi"], git = "https://github.com/wemake-services/django-modern-rest?branch=master" },
     { name = "django-split-settings", specifier = ">=1.3,<2.0" },
     { name = "django-stubs-ext", specifier = ">=6.0,<7.0" },
+    { name = "django-tasks-db", specifier = ">=0.12.0" },
     { name = "punq", specifier = ">=0.7,<1.0" },
     { name = "python-decouple", specifier = ">=3.8,<4.0" },
     { name = "structlog", specifier = ">=25.4,<26.0" },
@@ -415,10 +459,13 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "django-debug-toolbar", specifier = ">=6.0,<7.0" },
+    { name = "django-query-counter", specifier = ">=0.5.0" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = ">=6.0.2,<6.1" },
+    { name = "django-zeal", specifier = ">=2.1.0" },
     { name = "ipython", specifier = ">=9.5,<10.0" },
     { name = "pyrefly", specifier = ">=0.62.0,<1.0" },
     { name = "ruff", specifier = ">=0.15.11,<1.0" },
+    { name = "types-punq", specifier = ">=0.7.0.20260408" },
 ]
 
 [[package]]
@@ -977,12 +1024,30 @@ wheels = [
 ]
 
 [[package]]
+name = "tabulate"
+version = "0.10.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/58/8c37dea7bbf769b20d58e7ace7e5edfe65b849442b00ffcdd56be88697c6/tabulate-0.10.0.tar.gz", hash = "sha256:e2cfde8f79420f6deeffdeda9aaec3b6bc5abce947655d17ac662b126e48a60d", size = 91754, upload-time = "2026-03-04T18:55:34.402Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/99/55/db07de81b5c630da5cbf5c7df646580ca26dfaefa593667fc6f2fe016d2e/tabulate-0.10.0-py3-none-any.whl", hash = "sha256:f0b0622e567335c8fabaaa659f1b33bcb6ddfe2e496071b743aa113f8774f2d3", size = 39814, upload-time = "2026-03-04T18:55:31.284Z" },
+]
+
+[[package]]
 name = "traitlets"
 version = "5.14.3"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/eb/79/72064e6a701c2183016abbbfedaba506d81e30e232a68c9f0d6f6fcd1574/traitlets-5.14.3.tar.gz", hash = "sha256:9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7", size = 161621, upload-time = "2024-04-19T11:11:49.746Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl", hash = "sha256:b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f", size = 85359, upload-time = "2024-04-19T11:11:46.763Z" },
+]
+
+[[package]]
+name = "types-punq"
+version = "0.7.0.20260408"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/7a/f861e6ad4bf8e3c3563976a948855658d2644a82080c53c0f18d90595ac9/types_punq-0.7.0.20260408.tar.gz", hash = "sha256:88494bee3329d24af178b02b0f31dadd848d10b2cde756ef70ebc1fa4b99a140", size = 7716, upload-time = "2026-04-08T04:32:37.1Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/5e/92fb487d7abdfb28c56f96fe289f06241e32e68553ca6a14017b61629bb1/types_punq-0.7.0.20260408-py3-none-any.whl", hash = "sha256:00dd7aa32c8f71da9aac1901545972177628d6fbe863613b414af0d3018805ec", size = 8084, upload-time = "2026-04-08T04:32:35.973Z" },
 ]
 
 [[package]]

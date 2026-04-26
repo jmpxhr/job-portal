@@ -29,8 +29,7 @@ SECRET_KEY: str = config('DJANGO_SECRET_KEY')
 
 # Application definition
 
-INSTALLED_APPS: tuple[str, ...] = (
-    # Apps:
+DJANGO_APPS: tuple[str, ...] = (
     # Default django apps:
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,9 +39,18 @@ INSTALLED_APPS: tuple[str, ...] = (
     # django-admin:
     'django.contrib.admin',
     'django.contrib.admindocs',
-    # Third party
+)
+
+THIRD_PARTY_APPS: tuple[str, ...] = (
     'dmr',
     'corsheaders',
+    'django_tasks_db',
+)
+
+INSTALLED_APPS: tuple[str, ...] = (
+    # Apps:
+    *DJANGO_APPS,
+    *THIRD_PARTY_APPS,
 )
 
 MIDDLEWARE: tuple[str, ...] = (

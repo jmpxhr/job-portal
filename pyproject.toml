@@ -9,7 +9,8 @@ dependencies = [
   "django-split-settings>=1.3,<2.0",
   "django-cors-headers>=4.0,<5.0",
   "django-stubs-ext>=6.0,<7.0",
-  "django-modern-rest[msgspec,pydantic,attrs,jwt,openapi]>=0.6,<1.0",
+  "django-modern-rest[msgspec,pydantic,attrs,jwt,openapi]",
+  "django-tasks-db>=0.12.0",
 
   "python-decouple>=3.8,<4.0",
   "structlog>=25.4,<26.0",
@@ -20,15 +21,21 @@ dependencies = [
 dev = [
   # Django stuff
   "django-debug-toolbar>=6.0,<7.0",
-  "ruff>=0.15.11,<1.0",
+  "django-zeal>=2.1.0",
+  "django-query-counter>=0.5.0",
   "django-stubs[compatible-mypy]>=6.0.2,<6.1",
+  "types-punq>=0.7.0.20260408",
   "ipython>=9.5,<10.0",
+  "ruff>=0.15.11,<1.0",
   "pyrefly>=0.62.0,<1.0",
 ]
 
 [tool.uv]
 # Docs: https://docs.astral.sh/uv/reference/settings
 package = false
+
+[tool.uv.sources]
+django-modern-rest = { git = "https://github.com/wemake-services/django-modern-rest", branch = "master" }
 
 [tool.ruff]
 # Ruff config: https://docs.astral.sh/ruff/settings
