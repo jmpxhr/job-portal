@@ -18,7 +18,7 @@ def _create_injector[Thing](
     # We need to provide the same string names as we do in the definition.
     localns.pop('container')
     localns.update(_global_namespace())
-    container.registrations._localns.update(localns)  # noqa: SLF001 # type: ignore
+    container.registrations._localns.update(localns)  # type: ignore[attr-defined]  # noqa: SLF001
     return lambda service: service
 
 
@@ -66,4 +66,4 @@ class HasContainer:
     @final
     def resolve[Thing](self, thing: type[Thing]) -> Thing:
         """Resolve a dependency."""
-        return self._container.resolve(thing)  # type: ignore[no-any-return]
+        return self._container.resolve(thing)
