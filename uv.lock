@@ -198,11 +198,22 @@ wheels = [
 
 [[package]]
 name = "django-modern-rest"
-version = "0.7.0"
-source = { git = "https://github.com/wemake-services/django-modern-rest?branch=master#01bb8c24307d8e177383623cecc3118bd996c63b" }
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c3/6b/c30b75b8826a02b75f917bc8f9cf5d31a7922dff6f42f6697f8a65434d0d/django_modern_rest-0.8.0.tar.gz", hash = "sha256:532f8d374d466052bb0d34d2a20f06e3bc5a24f5665f173b4431ce329c6d594a", size = 2794480, upload-time = "2026-04-26T21:02:54.886Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/b9/1bb68515ced549fce3516f76ce83a76865d86ec64629362494f2d4811425/django_modern_rest-0.8.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:d2facd2210e596cf1e365970d04372b2f9be2ca380632247b52f9f3b7d7ec575", size = 2963927, upload-time = "2026-04-26T21:03:28.334Z" },
+    { url = "https://files.pythonhosted.org/packages/78/43/52b8dd5d8fa6ec3610b898b837eb1d60572f7fea02e980d937411dbef4cc/django_modern_rest-0.8.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:ccba575f5cbf6554fc8f48b6d3e35932fc880fe380ae165c355b14f113fdd3f5", size = 2962034, upload-time = "2026-04-26T21:03:30.229Z" },
+    { url = "https://files.pythonhosted.org/packages/16/d8/a53635296abd43146f50f2096cb6862cd1f36695ca1ae61e96aa56464547/django_modern_rest-0.8.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:e1d012d6b640f5b6081b936ba39353cefca5eb393185b54290db73c4ca418928", size = 2975072, upload-time = "2026-04-26T21:03:32.309Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/37/80566099930090b9d90e9d3eef99ce266d41e4f201791c1b2f9bc6831721/django_modern_rest-0.8.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f285bfec382a2ea4efe74e64b1b24b0ea0236a7cb33ac5dc85c62fa7c4dc659a", size = 2976558, upload-time = "2026-04-26T21:03:33.977Z" },
+    { url = "https://files.pythonhosted.org/packages/42/1d/4d9c47cf6ae4531d69b5bfb0b3c281ce946a613db4289d6b9ffd103a2bbc/django_modern_rest-0.8.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:74d3ca8d219e6d936fb4c269185c03e5a1c7b8a3ad6f31c16088ae5fcaee4b54", size = 2976345, upload-time = "2026-04-26T21:03:35.766Z" },
+    { url = "https://files.pythonhosted.org/packages/58/d7/729c2ccef3af5566bc1a1fc3d951de338ab942636fff8c97d98f5de03b31/django_modern_rest-0.8.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:d013520ef1be0e81e7873eaf35a3f6b0e4864bccff1cf9b50ea0c131323fa9ce", size = 2978837, upload-time = "2026-04-26T21:03:37.265Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/7b/931529f2c15259939e912f29a483283c271b406042bd5702c36a39d5f5b3/django_modern_rest-0.8.0-cp313-cp313-win_amd64.whl", hash = "sha256:20a2a7285c6c200ac0d8a9faa9ae50aeab9671b60dbe26b23240d6966372d346", size = 2936713, upload-time = "2026-04-26T21:03:38.809Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/ce/11db4df9c8dcb8cf04b016b27a35504895689f6d7b217f94666def8448cf/django_modern_rest-0.8.0-py3-none-any.whl", hash = "sha256:b6f6aa81aa6f74e19412bd95d3a31d64b1eebb49cfdda6931c56d67a06226e1e", size = 2892304, upload-time = "2026-04-26T21:02:53.236Z" },
 ]
 
 [package.optional-dependencies]
@@ -448,7 +459,7 @@ dev = [
 requires-dist = [
     { name = "django", extras = ["argon2"], specifier = ">=6.0.4,<6.1" },
     { name = "django-cors-headers", specifier = ">=4.0,<5.0" },
-    { name = "django-modern-rest", extras = ["msgspec", "pydantic", "attrs", "jwt", "openapi"], git = "https://github.com/wemake-services/django-modern-rest?branch=master" },
+    { name = "django-modern-rest", extras = ["msgspec", "pydantic", "attrs", "jwt", "openapi"], specifier = "==0.8.0" },
     { name = "django-split-settings", specifier = ">=1.3,<2.0" },
     { name = "django-stubs-ext", specifier = ">=6.0,<7.0" },
     { name = "django-tasks-db", specifier = ">=0.12.0" },
