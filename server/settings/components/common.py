@@ -49,6 +49,7 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
 
 INSTALLED_APPS: tuple[str, ...] = (
     # Apps:
+    'server.apps.main',
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
 )
