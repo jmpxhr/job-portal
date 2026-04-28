@@ -1,3 +1,4 @@
+import secrets
 from typing import Any, ClassVar, override
 
 from django.contrib.auth.models import (
@@ -53,7 +54,7 @@ class UserManager(BaseUserManager['User']):
 class User(AbstractBaseUser, PermissionsMixin):
     class AccountTypeEnum(models.IntegerChoices):
         EMPTY = 0, 'Empty'
-        EMPLOYER = 1, 'Employer'
+        JOBSEEKER = 1, 'Job Seeker'
         COMPANY = 2, 'Company'
 
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
@@ -68,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(
         _('active'),
-        default=True,
+        default=False,
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.',
@@ -79,6 +80,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         AccountTypeEnum,
         default=AccountTypeEnum.EMPTY,
     )
+    email_verification_code = models.CharField(
+        max_length=6,
+        blank=True,
+        default='',
+    )
+    email_verification_sent_at = models.DateTimeField(blank=True, null=True)
 
     objects = UserManager()
 
@@ -89,6 +96,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return f'User[id={self.pk}]'
 
+    def generate_verification_code(self) -> str:
+        code = f'{secrets.randbelow(1000000):06d}'
+        self.email_verification_code = code
+        self.email_verification_sent_at = timezone.now()
+        self.save(
+            update_fields=[
+                'email_verification_code',
+                'email_verification_sent_at',
+            ],
+        )
+        return code
+
     class Meta(TypedModelMeta):
         db_table = 'users'
         verbose_name = _('user')
@@ -96,7 +115,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class JobSeeker(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='jobseeker',
+    )
+
+    @override
+    def __str__(self) -> str:
+        return f'JobSeeker[{self.user.email}]'
 
     class Meta(TypedModelMeta):
         db_table = 'jobseekers'
@@ -124,16 +151,25 @@ class Company(models.Model):
         LARGE = 2, '201-500 employees'
         XLARGE = 3, '500+ employees'
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='company',
+    )
+    name = models.CharField(_('company name'), max_length=150, blank=True)
     industry = models.ForeignKey(
         Industry,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
-    email = models.EmailField(unique=False, blank=True)
+    email = models.EmailField(_('company email'), unique=False, blank=True)
     size = EnumField(CompanySizeEnum, default=CompanySizeEnum.SMALL)
     website = models.CharField(max_length=150, blank=True)
+
+    @override
+    def __str__(self) -> str:
+        return f'Company[{self.name}]'
 
     class Meta(TypedModelMeta):
         db_table = 'companies'

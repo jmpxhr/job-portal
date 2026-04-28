@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from server.apps.accounts.models import User
+from server.apps.accounts.models import (
+    Company,
+    Industry,
+    JobSeeker,
+    User,
+)
 
 
 @admin.register(User)
@@ -10,5 +15,27 @@ class UserAdmin(admin.ModelAdmin[User]):
         'email',
         'first_name',
         'last_name',
+        'account_type',
+        'is_active',
         'date_joined',
     )
+    list_filter = ('is_active', 'account_type')
+    search_fields = ('email', 'first_name', 'last_name')
+
+
+@admin.register(JobSeeker)
+class JobSeekerAdmin(admin.ModelAdmin[JobSeeker]):
+    list_display = ('id', 'user')
+    search_fields = ('user__email',)
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin[Company]):
+    list_display = ('id', 'name', 'user')
+    search_fields = ('name', 'user__email')
+
+
+@admin.register(Industry)
+class IndustryAdmin(admin.ModelAdmin[Industry]):
+    list_display = ('id', 'name')
+    search_fields = ('name',)

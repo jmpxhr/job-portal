@@ -1,0 +1,59 @@
+<!-- Step 2: Verification Code (HTMX partial) -->
+<div id="recovery-container">
+  {% if message %}
+    <div class="alert alert-info py-2 mb-3">{{ message }}</div>
+  {% endif %}
+
+  {% if error %}
+    <div class="alert alert-danger py-2 mb-3">{{ error }}</div>
+  {% endif %}
+
+  <h4 class="fw-bold text-center mb-2">Check Your Email</h4>
+  <p class="text-muted text-center mb-4">We've sent a 6-digit verification code to your email.</p>
+
+  <form hx-post="{% url 'accounts:password_recovery_verify' %}" hx-target="#recovery-container" hx-swap="innerHTML" id="verify-form">
+    {% csrf_token %}
+    <div class="code-input mb-3" id="otp-container">
+      <input type="text" class="form-control otp-input text-center" name="otp1" maxlength="1" autofocus />
+      <input type="text" class="form-control otp-input text-center" name="otp2" maxlength="1" />
+      <input type="text" class="form-control otp-input text-center" name="otp3" maxlength="1" />
+      <input type="text" class="form-control otp-input text-center" name="otp4" maxlength="1" />
+      <input type="text" class="form-control otp-input text-center" name="otp5" maxlength="1" />
+      <input type="text" class="form-control otp-input text-center" name="otp6" maxlength="1" />
+    </div>
+
+    <input type="hidden" name="otp" id="otp-hidden" />
+    <button type="submit" class="btn-recovery mb-3">Verify Code <i class="bi bi-check-lg ms-2"></i></button>
+  </form>
+
+  <div class="text-center mb-3">
+    <span class="timer" id="timer">02:00</span>
+  </div>
+
+  <div class="text-center mb-3">
+    <small class="text-muted">
+      Didn't receive code?
+      <a href="#" hx-post="{% url 'accounts:password_recovery_resend' %}" hx-target="#recovery-container" hx-swap="innerHTML" class="text-decoration-none">Resend</a>
+    </small>
+  </div>
+
+  <div class="text-center">
+    <a href="{% url 'accounts:password_recovery' %}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+</div>
+
+<!-- Step Indicators (outside recovery-container, will not be swapped) -->
+<script>
+  updateStepIndicators(2)
+  startTimer()
+</script>
+
+<script>
+  document.getElementById('verify-form').addEventListener('submit', function (e) {
+    const otpInputs = document.querySelectorAll('#otp-container .otp-input')
+    const otpValue = Array.from(otpInputs)
+      .map((input) => input.value)
+      .join('')
+    document.getElementById('otp-hidden').value = otpValue
+  })
+</script>
