@@ -45,6 +45,7 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
     'dmr',
     'corsheaders',
     'django_tasks_db',
+    'django_htmx',
 )
 
 INSTALLED_APPS: tuple[str, ...] = (
@@ -68,6 +69,8 @@ MIDDLEWARE: tuple[str, ...] = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # HTMX
+    'django_htmx.middleware.HtmxMiddleware',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -121,6 +124,7 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
+AUTH_USER_MODEL = 'main.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
