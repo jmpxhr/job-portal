@@ -100,6 +100,8 @@ ignore = [
   "PLR6301", # do not require classmethod / staticmethod when self not used
   "RUF067",  # wps handles `__init__.py` logic better
   "TRY003",  # long exception messages from `tryceratops`
+  "ERA001",  # Found commented-out code,
+  "RUF012",  # Mutable default value for class attribute
 ]
 
 # Plugin configs:

@@ -26,6 +26,8 @@ from dmr.openapi.views import SwaggerView
 from dmr.plugins.msgspec import MsgspecSerializer
 from dmr.routing import Router, build_404_handler, build_500_handler, path
 
+from server.apps.accounts import urls as accounts_urls
+
 if TYPE_CHECKING:
     from django.urls import URLPattern, URLResolver
 
@@ -40,6 +42,11 @@ handler500 = build_500_handler(router.prefix, serializer=MsgspecSerializer)
 urlpatterns: list['URLPattern | URLResolver'] = [
     # API:
     path(router.prefix, include((router.urls, 'server'), namespace='api')),
+    # Accounts
+    path(
+        'accounts/',
+        include((accounts_urls, 'accounts'), namespace='accounts'),
+    ),
     # OpenAPI:
     path('docs/', SwaggerView.as_view(schema), name='swagger'),
     # django-admin:

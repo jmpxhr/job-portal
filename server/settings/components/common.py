@@ -50,7 +50,7 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
 
 INSTALLED_APPS: tuple[str, ...] = (
     # Apps:
-    'server.apps.main',
+    'server.apps.accounts',
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
 )
@@ -81,7 +81,7 @@ ASGI_APPLICATION = 'server.asgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'common' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,14 +124,16 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
 ]
 
-AUTH_USER_MODEL = 'main.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
+USE_TZ = True
 
 USE_I18N = True
 
@@ -139,13 +141,15 @@ LANGUAGES = (('en', _('English')),)
 
 LOCALE_PATHS = ('locale/',)
 
-USE_TZ = True
-TIME_ZONE = 'UTC'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'common' / 'static',
+]
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',

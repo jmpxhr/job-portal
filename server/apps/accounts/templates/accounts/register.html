@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Sign Up - StartJob
+{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}" />
+{% endblock %}
+
+{% block body %}
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="row g-0">
+        <!-- Left Side - Benefits -->
+        <div class="col-lg-5">
+          <div class="auth-left h-100">
+            <h2 class="fw-bold mb-4">Join StartJob Today!</h2>
+            <p class="mb-4">Create your account and start your journey towards your dream career.</p>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-rocket-takeoff"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-1">For Students</h5>
+                <p class="mb-0 small opacity-75">Access thousands of entry-level jobs and internships</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-building"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-1">For Employers</h5>
+                <p class="mb-0 small opacity-75">Find the best young talent for your company</p>
+              </div>
+            </div>
+
+            <div class="benefit-item">
+              <div class="benefit-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-1">Career Growth</h5>
+                <p class="mb-0 small opacity-75">Get personalized job recommendations and career advice</p>
+              </div>
+            </div>
+
+            <div class="mt-auto">
+              <div class="d-flex gap-2">
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+                <i class="bi bi-star-fill text-warning"></i>
+              </div>
+              <p class="mt-2 mb-0 small opacity-75">
+                "Found my first job through StartJob. The process was smooth and fast!"
+                <br />- Anna, Junior Developer
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="col-lg-7">
+          <div class="auth-right">
+            <h3 class="fw-bold mb-1">Create Account</h3>
+            <p class="text-muted mb-4">Join our community of students and employers</p>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+              <div class="step active">
+                <div class="step-number">1</div>
+                <small>Account Type</small>
+              </div>
+              <div class="step">
+                <div class="step-number">2</div>
+                <small>Personal Info</small>
+              </div>
+              <div class="step">
+                <div class="step-number">3</div>
+                <small>Verification</small>
+              </div>
+            </div>
+
+            <!-- User Type Selection (Step 1) -->
+            <div id="step1">
+              <h5 class="fw-bold mb-3">I want to join as:</h5>
+              <div class="user-type-selector mb-4">
+                <div class="user-type-card active" onclick="selectUserType('student')" id="studentCard">
+                  <i class="bi bi-mortarboard"></i>
+                  <h6 class="fw-bold mb-1">Student</h6>
+                  <small class="text-muted">Looking for job/internship</small>
+                </div>
+                <div class="user-type-card" onclick="selectUserType('employer')" id="employerCard">
+                  <i class="bi bi-building"></i>
+                  <h6 class="fw-bold mb-1">Employer</h6>
+                  <small class="text-muted">Hiring young talent</small>
+                </div>
+              </div>
+
+              <button class="btn-register" onclick="nextStep()">Continue <i class="bi bi-arrow-right ms-2"></i></button>
+            </div>
+
+            <!-- Personal Info Form (Step 2 - hidden by default) -->
+            <div id="step2" style="display: none;"></div>
+
+            <!-- Verification Step (Step 3 - hidden by default) -->
+            <div id="step3" style="display: none;">
+              <div class="text-center">
+                <i class="bi bi-envelope-check text-primary" style="font-size: 4rem;"></i>
+                <h5 class="fw-bold mt-3">Verify Your Email</h5>
+                <p class="text-muted mb-4">
+                  We've sent a verification code to<br />
+                  <strong>anna.petrova@email.com</strong>
+                </p>
+
+                <div class="d-flex gap-2 justify-content-center mb-4">
+                  <input type="text" class="form-control text-center" style="width: 60px;" maxlength="1" />
+                  <input type="text" class="form-control text-center" style="width: 60px;" maxlength="1" />
+                  <input type="text" class="form-control text-center" style="width: 60px;" maxlength="1" />
+                  <input type="text" class="form-control text-center" style="width: 60px;" maxlength="1" />
+                </div>
+
+                <p class="small text-muted">
+                  Didn't receive the code?
+                  <a href="#" class="text-decoration-none">Resend</a>
+                </p>
+
+                <button class="btn-register mt-3" onclick="completeRegistration()">Verify & Create Account</button>
+
+                <button class="btn btn-link mt-2" onclick="prevStep()"><i class="bi bi-arrow-left"></i> Back to edit</button>
+              </div>
+            </div>
+
+            <p class="text-center mt-4 mb-0">
+              Already have an account?
+              <a href="login.html" class="text-primary fw-bold text-decoration-none">Sign in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1
+    let userType = 'student'
+
+    function selectUserType(type) {
+      userType = type
+      const studentCard = document.getElementById('studentCard')
+      const employerCard = document.getElementById('employerCard')
+      const studentFields = document.getElementById('studentFields')
+      const employerFields = document.getElementById('employerFields')
+
+      if (type === 'student') {
+        studentCard.classList.add('active')
+        employerCard.classList.remove('active')
+        studentFields.style.display = 'block'
+        employerFields.style.display = 'none'
+      } else {
+        employerCard.classList.add('active')
+        studentCard.classList.remove('active')
+        employerFields.style.display = 'block'
+        studentFields.style.display = 'none'
+      }
+    }
+
+    function nextStep() {
+      if (currentStep < 3) {
+        document.getElementById(`step${currentStep}`).style.display = 'none'
+        currentStep++
+        document.getElementById(`step${currentStep}`).style.display = 'block'
+
+        // Update progress steps
+        document.querySelectorAll('.step').forEach((step, index) => {
+          if (index + 1 < currentStep) {
+            step.classList.add('completed')
+            step.classList.remove('active')
+          } else if (index + 1 === currentStep) {
+            step.classList.add('active')
+            step.classList.remove('completed')
+          } else {
+            step.classList.remove('active', 'completed')
+          }
+        })
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        document.getElementById(`step${currentStep}`).style.display = 'none'
+        currentStep--
+        document.getElementById(`step${currentStep}`).style.display = 'block'
+
+        // Update progress steps
+        document.querySelectorAll('.step').forEach((step, index) => {
+          if (index + 1 < currentStep) {
+            step.classList.add('completed')
+            step.classList.remove('active')
+          } else if (index + 1 === currentStep) {
+            step.classList.add('active')
+            step.classList.remove('completed')
+          } else {
+            step.classList.remove('active', 'completed')
+          }
+        })
+      }
+    }
+
+    function completeRegistration() {
+      // Redirect based on user type
+      if (userType === 'student') {
+        window.location.href = 'candidate-profile.html'
+      } else {
+        window.location.href = 'employer-dashboard.html'
+      }
+    }
+  </script>
+{% endblock %}
