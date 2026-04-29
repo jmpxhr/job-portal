@@ -131,6 +131,23 @@ class JobSeeker(models.Model):
         verbose_name_plural = _('job seekers')
 
 
+class Recruiter(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='recruiter',
+    )
+
+    @override
+    def __str__(self) -> str:
+        return f'Recruiter[{self.user.email}]'
+
+    class Meta(TypedModelMeta):
+        db_table = 'recruiters'
+        verbose_name = _('recruiter')
+        verbose_name_plural = _('recruiters')
+
+
 class Industry(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -151,8 +168,8 @@ class Company(models.Model):
         LARGE = 2, '201-500 employees'
         XLARGE = 3, '500+ employees'
 
-    user = models.OneToOneField(
-        User,
+    recruiter = models.OneToOneField(
+        Recruiter,
         on_delete=models.CASCADE,
         related_name='company',
     )

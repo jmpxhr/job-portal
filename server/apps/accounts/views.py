@@ -42,7 +42,6 @@ class RegisterFormView(View):
 
     def post(self, request: HttpRequest) -> HttpResponse:
         user_type = request.POST.get('user_type', 'jobseeker')
-
         form_class = self.get_form_class(user_type)
         form = form_class()
         template_name = self.get_template_name(user_type)
@@ -72,19 +71,19 @@ class RegisterSubmitView(View):
             template = self.get_template_name(user_type)
             return render(request, template, {'form': form})
 
-        user = form.save()
-        code = user.generate_verification_code()
+        account = form.save()
+        code = account.user.generate_verification_code()
 
-        request.session['registration_user_pk'] = user.pk
+        request.session['registration_user_pk'] = account.user.pk
         request.session['registration_user_type'] = user_type
 
-        send_verification_email.enqueue(user.pk, code)
+        send_verification_email.enqueue(account.user.pk, code)
 
         return render(
             request,
             const.VERIFY_FORM,
             {
-                'email': user.email,
+                'email': account.user.email,
                 'resend_message': None,
             },
         )

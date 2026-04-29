@@ -7,6 +7,7 @@ from server.apps.accounts.models import (
     Company,
     Industry,
     JobSeeker,
+    Recruiter,
     User,
 )
 
@@ -78,7 +79,7 @@ class JobSeekerRegistrationForm(forms.Form):
                 self.add_error('password', e)
         return cleaned_data
 
-    def save(self) -> User:
+    def save(self) -> JobSeeker:
         user = User(
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
@@ -88,8 +89,7 @@ class JobSeekerRegistrationForm(forms.Form):
         )
         user.set_password(self.cleaned_data['password'])
         user.save()
-        JobSeeker.objects.create(user=user)
-        return user
+        return JobSeeker.objects.create(user=user)
 
 
 class CompanyRegistrationForm(forms.Form):
@@ -196,7 +196,7 @@ class CompanyRegistrationForm(forms.Form):
                 self.add_error('password', e)
         return cleaned_data
 
-    def save(self) -> User:
+    def save(self) -> Recruiter:
         user = User(
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
@@ -206,15 +206,17 @@ class CompanyRegistrationForm(forms.Form):
         )
         user.set_password(self.cleaned_data['password'])
         user.save()
+        recruiter = Recruiter(user=user)
+        recruiter.save()
         Company.objects.create(
-            user=user,
+            recruiter=recruiter,
             name=self.cleaned_data['company_name'],
             email=self.cleaned_data['company_email'],
             industry=self.cleaned_data.get('industry'),
             size=self.cleaned_data['company_size'],
             website=self.cleaned_data.get('website', ''),
         )
-        return user
+        return recruiter
 
 
 class VerificationForm(forms.Form):
@@ -235,6 +237,7 @@ class LoginForm(forms.Form):
             attrs={
                 'class': 'form-control border-start-0',
                 'placeholder': '••••••••',
+                'data-type': 'password',
             },
         ),
     )

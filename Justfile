@@ -40,7 +40,7 @@ migrate:
     uv run python manage.py migrate
 
 makemigrations:
-    uv run python manage.py migrate
+    uv run python manage.py makemigrations
 
 # Create a new superuser
 createsuperuser:

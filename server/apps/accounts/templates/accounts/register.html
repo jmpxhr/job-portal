@@ -71,14 +71,16 @@
 
             <div id="form-container">
               <!-- Step 1: Account Type Selection -->
-              <div id="step1">
+              <form id="userTypeForm" hx-post="/accounts/register/form/" hx-target="#form-container" hx-swap="innerHTML">
                 <h5 class="fw-bold mb-3">I want to join as:</h5>
+
                 <div class="user-type-selector mb-4">
-                  <div class="user-type-card active" onclick="selectUserType('jobseeker')" id="jobseekerCard">
+                  <div class="user-type-card" onclick="selectUserType('jobseeker')" id="jobseekerCard">
                     <i class="bi bi-mortarboard"></i>
                     <h6 class="fw-bold mb-1">Job Seeker</h6>
                     <small class="text-muted">Looking for job/internship</small>
                   </div>
+
                   <div class="user-type-card" onclick="selectUserType('company')" id="companyCard">
                     <i class="bi bi-building"></i>
                     <h6 class="fw-bold mb-1">Company</h6>
@@ -86,8 +88,11 @@
                   </div>
                 </div>
 
-                <button class="btn-register" onclick="getRegForm()">Continue <i class="bi bi-arrow-right ms-2"></i></button>
-              </div>
+                <!-- Hidden input to store selected user type -->
+                <input type="hidden" name="user_type" id="user_type_input" value="" />
+
+                <button type="submit" class="btn-register">Continue <i class="bi bi-arrow-right ms-2"></i></button>
+              </form>
             </div>
 
             <p class="text-center mt-4 mb-0">
@@ -99,6 +104,8 @@
       </div>
     </div>
   </div>
-
+{% endblock %}
+{% block javascript %}
+  {{ block.super }}
   <script src="{% static 'accounts/js/register.js' %}" defer></script>
 {% endblock %}

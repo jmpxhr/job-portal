@@ -1,9 +1,12 @@
-let selectedUserType = 'jobseeker'
+// let selectedUserType = 'jobseeker'
 
 function selectUserType(type) {
-  selectedUserType = type
+  // selectedUserType = type
   const jobseekerCard = document.getElementById('jobseekerCard')
   const companyCard = document.getElementById('companyCard')
+
+  // Update hidden input value
+  document.getElementById('user_type_input').value = type;
 
   if (type === 'jobseeker') {
     jobseekerCard.classList.add('active')
@@ -13,15 +16,6 @@ function selectUserType(type) {
     jobseekerCard.classList.remove('active')
   }
 }
-
-function getRegForm() {
-  htmx.ajax('POST', '/accounts/register/form/', {
-    target: '#form-container',
-    swap: 'innerHTML',
-    values: { user_type: selectedUserType }
-  })
-}
-
 
 // OTP input auto-focus and paste handling
 document.addEventListener('DOMContentLoaded', () => {

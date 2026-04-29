@@ -23,9 +23,11 @@
     {% block head %}
     {% endblock %}
   </head>
-  <body hx-headers="{'x-csrftoken': '{{ csrf_token }}'}">
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% block body %}
     {% endblock %}
+    {% block javascript %}
+    {% endblock javascript %}
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
   </body>
 </html>
