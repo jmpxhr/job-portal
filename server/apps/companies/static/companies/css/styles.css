@@ -1,0 +1,269 @@
+.company-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.company-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: transparent;
+}
+
+.company-card.featured::before {
+  content: 'Featured';
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  background: #ffc107;
+  color: #000;
+  padding: 5px 30px;
+  transform: rotate(45deg);
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.company-logo-medium {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.company-logo-medium.small-bg {
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+}
+
+.industry-badge {
+  background: #f0f0f0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.student-friendly-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.verified-badge {
+  color: #28a745;
+  font-size: 1.1rem;
+  margin-left: 5px;
+}
+
+.alphabet-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.alphabet-filter .btn-letter {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.alphabet-filter .btn-letter:hover,
+.alphabet-filter .btn-letter.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.company-stat {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.company-stat i {
+  color: #667eea;
+  margin-right: 5px;
+}
+
+
+/* Profile */
+
+.company-cover {
+  height: 250px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.company-profile-header {
+  background: white;
+  border-radius: 20px;
+  margin-top: -50px;
+  padding: 30px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.company-logo-large {
+  width: 120px;
+  height: 120px;
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  color: #667eea;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 4px solid white;
+  margin-top: -80px;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.form-control,
+.form-select {
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: none;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  padding: 14px 30px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s;
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.photo-upload-area {
+  border: 2px dashed #667eea;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.photo-upload-area:hover {
+  background: #e3f2fd;
+}
+
+.social-input {
+  position: relative;
+}
+
+.social-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+}
+
+.social-input input {
+  padding-left: 45px;
+}
+
+.verification-badge {
+  background: #e8f5e8;
+  color: #388e3c;
+  padding: 5px 15px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+}
+
+/* Jobs Tab Styling */
+.nav-tabs .nav-link {
+  color: #495057;
+  font-weight: 500;
+  padding: 12px 25px;
+}
+
+.nav-tabs .nav-link.active {
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+}
+
+.job-mini-card {
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+  background: white;
+}
+
+.job-mini-card:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+}
+
+.student-friendly-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.job-action-buttons .btn-sm {
+  padding: 4px 12px;
+  font-size: 0.8rem;
+}

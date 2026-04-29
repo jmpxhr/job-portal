@@ -36,6 +36,9 @@ type-check:
     uv run mypy .
     uv run pyrefly check --remove-unused-ignores
 
+pcheck:
+    uv run pyrefly check --remove-unused-ignores
+
 migrate:
     uv run python manage.py migrate
 

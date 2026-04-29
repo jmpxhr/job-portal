@@ -1,0 +1,357 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Companies | StartJob
+{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="fw-bold mb-2">Top Companies Hiring Students & Young Specialists</h1>
+          <p class="text-muted mb-0">Discover 500+ companies that welcome students and entry-level talent</p>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" class="form-control border-start-0" placeholder="Search companies..." />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Filters Row -->
+      <div class="row mb-4">
+        <div class="col-lg-8">
+          <!-- Alphabet Filter -->
+          <div class="alphabet-filter">
+            <button class="btn btn-letter active">All</button>
+            <button class="btn btn-letter">A</button>
+            <button class="btn btn-letter">B</button>
+            <button class="btn btn-letter">C</button>
+            <button class="btn btn-letter">D</button>
+            <button class="btn btn-letter">E</button>
+            <button class="btn btn-letter">F</button>
+            <button class="btn btn-letter">G</button>
+            <button class="btn btn-letter">H</button>
+            <button class="btn btn-letter">I</button>
+            <button class="btn btn-letter">J</button>
+            <button class="btn btn-letter">K</button>
+            <button class="btn btn-letter">L</button>
+            <button class="btn btn-letter">M</button>
+            <button class="btn btn-letter">N</button>
+            <button class="btn btn-letter">O</button>
+            <button class="btn btn-letter">P</button>
+            <button class="btn btn-letter">Q</button>
+            <button class="btn btn-letter">R</button>
+            <button class="btn btn-letter">S</button>
+            <button class="btn btn-letter">T</button>
+            <button class="btn btn-letter">U</button>
+            <button class="btn btn-letter">V</button>
+            <button class="btn btn-letter">W</button>
+            <button class="btn btn-letter">X</button>
+            <button class="btn btn-letter">Y</button>
+            <button class="btn btn-letter">Z</button>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="d-flex gap-2">
+            <select class="form-select">
+              <option>All Industries</option>
+              <option>Technology</option>
+              <option>Marketing</option>
+              <option>Finance</option>
+              <option>Healthcare</option>
+              <option>Education</option>
+              <option>Retail</option>
+            </select>
+            <select class="form-select">
+              <option>Company Size</option>
+              <option>1-50 employees</option>
+              <option>51-200 employees</option>
+              <option>201-500 employees</option>
+              <option>500+ employees</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Stats -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="mb-0">
+          Showing <strong>1-12</strong> of <strong>523</strong> companies
+        </p>
+        <div class="d-flex align-items-center">
+          <label class="me-2">Sort by:</label>
+          <select class="form-select" style="width: auto;">
+            <option>Most Popular</option>
+            <option>Most Jobs</option>
+            <option>Newest</option>
+            <option>Name A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Companies Grid -->
+      <div class="row g-4">
+        <!-- Company Card 1 - Featured -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card featured">
+            <div class="company-logo-medium">
+              <i class="bi bi-google"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">Google</h4>
+              <i class="bi bi-patch-check-fill verified-badge" title="Verified Company"></i>
+            </div>
+            <p class="text-muted mb-2">Technology • Internet</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">IT</span>
+              <span class="industry-badge">Software</span>
+              <span class="student-friendly-badge">Student-friendly</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  12 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  10k+ employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Multiple locations
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+
+        <!-- Company Card 2 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card">
+            <div class="company-logo-medium" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+              <i class="bi bi-microsoft"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">Microsoft</h4>
+              <i class="bi bi-patch-check-fill verified-badge"></i>
+            </div>
+            <p class="text-muted mb-2">Technology • Software</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">IT</span>
+              <span class="industry-badge">Cloud</span>
+              <span class="student-friendly-badge">Internships</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  8 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  10k+ employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Warsaw, Krakow
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+
+        <!-- Company Card 3 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card">
+            <div class="company-logo-medium" style="background: linear-gradient(135deg, #f2994a, #f2c94c);">
+              <i class="bi bi-amazon"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">Amazon</h4>
+              <i class="bi bi-patch-check-fill verified-badge"></i>
+            </div>
+            <p class="text-muted mb-2">E-commerce • Technology</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">Retail</span>
+              <span class="industry-badge">Logistics</span>
+              <span class="student-friendly-badge">Entry Level</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  15 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  10k+ employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Berlin, Munich
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+
+        <!-- Company Card 4 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card">
+            <div class="company-logo-medium" style="background: linear-gradient(135deg, #3b5998, #8b9dc3);">
+              <i class="bi bi-facebook"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">Meta</h4>
+              <i class="bi bi-patch-check-fill verified-badge"></i>
+            </div>
+            <p class="text-muted mb-2">Social Media • Technology</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">IT</span>
+              <span class="industry-badge">Marketing</span>
+              <span class="student-friendly-badge">Student Programs</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  6 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  10k+ employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Dublin, Remote
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+
+        <!-- Company Card 5 - Local Company -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card">
+            <div class="company-logo-medium" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+              <i class="bi bi-building"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">EPAM Systems</h4>
+              <i class="bi bi-patch-check-fill verified-badge"></i>
+            </div>
+            <p class="text-muted mb-2">IT Services • Software</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">IT</span>
+              <span class="industry-badge">Outsourcing</span>
+              <span class="student-friendly-badge">Student Labs</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  23 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  5k+ employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Minsk, Brest, Gomel
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+
+        <!-- Company Card 6 - Startup -->
+        <div class="col-lg-4 col-md-6">
+          <div class="company-card">
+            <div class="company-logo-medium" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e);">
+              <i class="bi bi-rocket-takeoff"></i>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <h4 class="fw-bold mb-0">Fluent.tech</h4>
+              <span class="badge bg-warning ms-2" style="font-size: 0.7rem;">STARTUP</span>
+            </div>
+            <p class="text-muted mb-2">EdTech • AI</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="industry-badge">Education</span>
+              <span class="industry-badge">AI</span>
+              <span class="student-friendly-badge">Flexible Hours</span>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-briefcase"></i>
+                  4 open jobs
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="company-stat">
+                  <i class="bi bi-people"></i>
+                  25 employees
+                </div>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              <i class="bi bi-geo-alt me-1"></i> Remote, Minsk
+            </p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          <li class="page-item active">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">3</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">4</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">5</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+{% endblock %}

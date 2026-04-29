@@ -1,0 +1,259 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Job Detail | StartJob
+{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="index.html">Home</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="jobs.html">Jobs</a>
+          </li>
+          <li class="breadcrumb-item active">Junior Frontend Developer</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Main Job Info -->
+        <div class="col-lg-8">
+          <!-- Company Header -->
+          <div class="company-header mb-4">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <div class="company-logo-large">
+                  <i class="bi bi-google"></i>
+                </div>
+              </div>
+              <div class="col">
+                <h1 class="fw-bold mb-2">Junior Frontend Developer</h1>
+                <p class="text-primary h5 mb-2">Google</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-primary">Student-friendly</span>
+                  <span class="badge bg-success">Entry Level</span>
+                  <span class="badge bg-info">Remote</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 mb-4">
+            <button class="btn btn-primary btn-lg flex-grow-1"><i class="bi bi-send me-2"></i>Apply Now</button>
+            <button class="btn btn-outline-secondary btn-lg"><i class="bi bi-bookmark"></i></button>
+            <button class="btn btn-outline-secondary btn-lg"><i class="bi bi-share"></i></button>
+          </div>
+
+          <!-- Job Description -->
+          <div class="info-card mb-4">
+            <h4 class="fw-bold mb-3">Job Description</h4>
+            <p>We are looking for a passionate Junior Frontend Developer to join our team in Minsk. This is an excellent opportunity for students and recent graduates who want to start their career in a global company.</p>
+
+            <h5 class="fw-bold mt-4 mb-3">Responsibilities:</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Develop and maintain user interfaces for web applications
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Collaborate with design team to implement responsive designs
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Write clean, maintainable, and efficient code
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Participate in code reviews and team meetings
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Learn and implement new technologies as needed
+              </li>
+            </ul>
+
+            <h5 class="fw-bold mt-4 mb-3">Requirements:</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-primary me-2"></i>Basic knowledge of HTML, CSS, and JavaScript
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-primary me-2"></i>Understanding of responsive design principles
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-primary me-2"></i>Eagerness to learn and grow professionally
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-primary me-2"></i>Good communication skills
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-check-circle-fill text-primary me-2"></i>Student or recent graduate in Computer Science or related field
+              </li>
+            </ul>
+
+            <h5 class="fw-bold mt-4 mb-3">We Offer:</h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="bi bi-gift-fill text-warning me-2"></i>Competitive salary: $800 - $1200/month
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-gift-fill text-warning me-2"></i>Flexible working hours for students
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-gift-fill text-warning me-2"></i>Mentorship program
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-gift-fill text-warning me-2"></i>Opportunity to work with experienced developers
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-gift-fill text-warning me-2"></i>Modern office with free snacks and drinks
+              </li>
+            </ul>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="info-card">
+            <h4 class="fw-bold mb-3">Additional Information</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <p>
+                  <strong>Experience Level:</strong> Entry Level
+                </p>
+                <p>
+                  <strong>Employment Type:</strong> Full-time
+                </p>
+                <p>
+                  <strong>Schedule:</strong> Flexible hours
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p>
+                  <strong>Language:</strong> English (Intermediate)
+                </p>
+                <p>
+                  <strong>Work Format:</strong> Remote/Hybrid
+                </p>
+                <p>
+                  <strong>Start Date:</strong> Immediate
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+          <!-- Job Overview -->
+          <div class="info-card mb-4">
+            <h5 class="fw-bold mb-3">Job Overview</h5>
+            <div class="job-meta-item">
+              <i class="bi bi-calendar3 me-2 text-primary"></i>
+              <strong>Date Posted:</strong>
+              <p class="mb-0 text-muted">2 days ago</p>
+            </div>
+            <div class="job-meta-item">
+              <i class="bi bi-clock me-2 text-primary"></i>
+              <strong>Expiration Date:</strong>
+              <p class="mb-0 text-muted">March 30, 2024</p>
+            </div>
+            <div class="job-meta-item">
+              <i class="bi bi-briefcase me-2 text-primary"></i>
+              <strong>Job Type:</strong>
+              <p class="mb-0 text-muted">Full-time, Internship</p>
+            </div>
+            <div class="job-meta-item">
+              <i class="bi bi-cash me-2 text-primary"></i>
+              <strong>Salary:</strong>
+              <p class="mb-0 text-muted">$800 - $1200/month</p>
+            </div>
+            <div class="job-meta-item">
+              <i class="bi bi-geo-alt me-2 text-primary"></i>
+              <strong>Location:</strong>
+              <p class="mb-0 text-muted">Minsk, Belarus (Remote)</p>
+            </div>
+          </div>
+
+          <!-- Company Info -->
+          <div class="info-card mb-4">
+            <h5 class="fw-bold mb-3">About Company</h5>
+            <div class="text-center mb-3">
+              <div class="company-logo-large mx-auto mb-3">
+                <i class="bi bi-google"></i>
+              </div>
+              <h6 class="fw-bold">Google</h6>
+              <p class="text-muted small">Technology • 10,000+ employees</p>
+            </div>
+            <p class="small">Google is a global technology leader focused on improving the ways people connect with information. We innovate in AI, software, and hardware to create solutions for everyone.</p>
+            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Company Profile</a>
+          </div>
+
+          <!-- Similar Jobs -->
+          <div class="info-card">
+            <h5 class="fw-bold mb-3">Similar Jobs</h5>
+
+            <div class="similar-job-card">
+              <div class="d-flex align-items-center mb-2">
+                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                  <i class="bi bi-microsoft"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Junior UI Developer</h6>
+                  <small class="text-muted">Microsoft</small>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <small><i class="bi bi-geo-alt me-1"></i>Remote</small>
+                <small><i class="bi bi-cash me-1"></i>$900/month</small>
+                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+              </div>
+            </div>
+
+            <div class="similar-job-card">
+              <div class="d-flex align-items-center mb-2">
+                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                  <i class="bi bi-amazon"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Frontend Trainee</h6>
+                  <small class="text-muted">Amazon</small>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <small><i class="bi bi-geo-alt me-1"></i>Berlin</small>
+                <small><i class="bi bi-cash me-1"></i>$750/month</small>
+                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+              </div>
+            </div>
+
+            <div class="similar-job-card">
+              <div class="d-flex align-items-center mb-2">
+                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                  <i class="bi bi-facebook"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Web Developer Intern</h6>
+                  <small class="text-muted">Meta</small>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <small><i class="bi bi-geo-alt me-1"></i>Warsaw</small>
+                <small><i class="bi bi-cash me-1"></i>$800/month</small>
+                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

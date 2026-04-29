@@ -27,6 +27,7 @@ from dmr.plugins.msgspec import MsgspecSerializer
 from dmr.routing import Router, build_404_handler, build_500_handler, path
 
 from server.apps.accounts import urls as accounts_urls
+from server.apps.dashboard import urls as dashboard_url
 
 if TYPE_CHECKING:
     from django.urls import URLPattern, URLResolver
@@ -46,6 +47,11 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     path(
         'accounts/',
         include((accounts_urls, 'accounts'), namespace='accounts'),
+    ),
+    # Dashboard
+    path(
+        '',
+        include((dashboard_url, 'dashboard'), namespace='dashboard'),
     ),
     # OpenAPI:
     path('docs/', SwaggerView.as_view(schema), name='swagger'),

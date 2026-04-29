@@ -1,0 +1,270 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Jobs | StartJob
+{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
+{% endblock %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">Browse Jobs</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="index.html">Home</a>
+          </li>
+          <li class="breadcrumb-item active">Jobs</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+          <div class="filter-card">
+            <h5 class="fw-bold mb-3">Filters</h5>
+
+            <!-- Search -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Search</label>
+              <input type="text" class="form-control" placeholder="Job title or keyword" />
+            </div>
+
+            <!-- Location -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Location</label>
+              <input type="text" class="form-control" placeholder="City or remote" />
+            </div>
+
+            <!-- Job Type -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Job Type</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="fulltime" />
+                <label class="form-check-label" for="fulltime">Full-time</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="parttime" />
+                <label class="form-check-label" for="parttime">Part-time</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="internship" />
+                <label class="form-check-label" for="internship">Internship</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remote" />
+                <label class="form-check-label" for="remote">Remote</label>
+              </div>
+            </div>
+
+            <!-- Experience Level -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Experience</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="noexp" />
+                <label class="form-check-label" for="noexp">No experience</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="entry" />
+                <label class="form-check-label" for="entry">Entry level</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="student" />
+                <label class="form-check-label" for="student">Student friendly</label>
+              </div>
+            </div>
+
+            <!-- Salary Range -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Salary Range</label>
+              <select class="form-select">
+                <option>Any salary</option>
+                <option>Up to $500</option>
+                <option>$500 - $1000</option>
+                <option>$1000 - $1500</option>
+                <option>$1500+</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary w-100">Apply Filters</button>
+            <button class="btn btn-link w-100 mt-2">Clear All</button>
+          </div>
+        </div>
+
+        <!-- Jobs List -->
+        <div class="col-lg-9">
+          <!-- Sort and Results Count -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="mb-0">
+              Showing <strong>1-10</strong> of <strong>156</strong> jobs
+            </p>
+            <div class="d-flex align-items-center">
+              <label class="me-2">Sort by:</label>
+              <select class="form-select" style="width: auto;">
+                <option>Most recent</option>
+                <option>Salary: High to Low</option>
+                <option>Salary: Low to High</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Job Card 1 -->
+          <div class="job-card">
+            <div class="row">
+              <div class="col-md-2 col-3">
+                <div class="company-logo-small mx-auto">
+                  <i class="bi bi-google"></i>
+                </div>
+              </div>
+              <div class="col-md-10 col-9">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Junior Frontend Developer</h4>
+                    <p class="text-primary mb-2">Google</p>
+                  </div>
+                  <span class="job-type-badge badge-fulltime">Full-time</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-geo-alt me-1"></i>Minsk, Remote</small>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-cash me-1"></i>$800 - $1200/month</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-clock me-1"></i>Posted 2 days ago</small>
+                  </div>
+                </div>
+                <p class="mt-2 text-muted">We are looking for a passionate Junior Frontend Developer to join our team. Perfect opportunity for students and recent graduates...</p>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <div>
+                    <span class="badge bg-light text-dark me-1">HTML</span>
+                    <span class="badge bg-light text-dark me-1">CSS</span>
+                    <span class="badge bg-light text-dark me-1">JavaScript</span>
+                    <span class="badge bg-light text-dark">React</span>
+                  </div>
+                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Card 2 -->
+          <div class="job-card">
+            <div class="row">
+              <div class="col-md-2 col-3">
+                <div class="company-logo-small mx-auto">
+                  <i class="bi bi-microsoft"></i>
+                </div>
+              </div>
+              <div class="col-md-10 col-9">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Marketing Intern</h4>
+                    <p class="text-primary mb-2">Microsoft</p>
+                  </div>
+                  <span class="job-type-badge badge-internship">Internship</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-geo-alt me-1"></i>Warsaw, Hybrid</small>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-cash me-1"></i>$500 - $700/month</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-clock me-1"></i>Posted 3 days ago</small>
+                  </div>
+                </div>
+                <p class="mt-2 text-muted">Great opportunity for marketing students to gain practical experience in a global company. Flexible hours available...</p>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <div>
+                    <span class="badge bg-light text-dark me-1">Digital Marketing</span>
+                    <span class="badge bg-light text-dark me-1">Social Media</span>
+                    <span class="badge bg-light text-dark">Analytics</span>
+                  </div>
+                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Card 3 -->
+          <div class="job-card">
+            <div class="row">
+              <div class="col-md-2 col-3">
+                <div class="company-logo-small mx-auto">
+                  <i class="bi bi-amazon"></i>
+                </div>
+              </div>
+              <div class="col-md-10 col-9">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Data Analyst (Entry Level)</h4>
+                    <p class="text-primary mb-2">Amazon</p>
+                  </div>
+                  <span class="job-type-badge badge-fulltime">Full-time</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-geo-alt me-1"></i>Berlin, On-site</small>
+                  </div>
+                  <div class="col-md-4 col-6">
+                    <small><i class="bi bi-cash me-1"></i>$900 - $1300/month</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-clock me-1"></i>Posted 5 days ago</small>
+                  </div>
+                </div>
+                <p class="mt-2 text-muted">Start your career in data analysis! No experience required - we provide training. Perfect for math/statistics students...</p>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <div>
+                    <span class="badge bg-light text-dark me-1">SQL</span>
+                    <span class="badge bg-light text-dark me-1">Excel</span>
+                    <span class="badge bg-light text-dark me-1">Python</span>
+                    <span class="badge bg-light text-dark">Statistics</span>
+                  </div>
+                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">1</span>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">4</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">5</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

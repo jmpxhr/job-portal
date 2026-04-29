@@ -217,7 +217,7 @@ class LoginView(View):
             if not remember:
                 request.session.set_expiry(0)
             if user.account_type == User.AccountTypeEnum.JOBSEEKER:
-                return redirect('/candidate/profile/')
+                return redirect(reverse('dashboard:home'))
             if user.account_type == User.AccountTypeEnum.COMPANY:
                 return redirect('/employer/dashboard/')
             return redirect('/')
