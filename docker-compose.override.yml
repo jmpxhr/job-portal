@@ -1,0 +1,64 @@
+services:
+  web:
+    ports:
+      # We only bind ports directly in development:
+      - "8000:8000"
+    networks:
+      - mailpit-net
+    environment:
+      DJANGO_EMAIL_HOST: mailpit
+    build:
+      # Needed for fixing permissions of files created by Docker
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    volumes:
+      - .:/code
+    develop:
+      watch:
+        - action: sync
+          path: ./server
+          target: /code
+          ignore:
+            - __pycache__/
+        # Rebuild and restart if dependencies change
+        - action: rebuild
+          path: uv.lock
+
+  mailpit:
+    image: axllent/mailpit:v1.29
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - mail-data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+    networks:
+      - mailpit-net
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    networks:
+      - postgres-net
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  mailpit-net:
+
+volumes:
+  mail-data:
