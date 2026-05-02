@@ -32,6 +32,7 @@ dev = [
   "ipython>=9.5,<10.0",
   "ruff>=0.15.11,<1.0",
   "pyrefly>=0.62.0,<1.0",
+  "djlint>=1.36.4",
 ]
 
 [tool.uv]
@@ -156,3 +157,8 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
+
+[tool.djlint]
+profile="django"
+ignore="T002,H030,H021,H031,H006,H005"
+

@@ -2,11 +2,10 @@
 {% load static %}
 {% block title %}
   StartJob
-{% endblock %}
+{% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}" />
-{% endblock %}
-
+{% endblock head %}
 {% block content %}
   <!-- Hero Section -->
   <section class="hero-section">
@@ -15,20 +14,23 @@
         <div class="col-lg-6">
           <h1 class="display-4 fw-bold mb-4">Find Your Dream Job as a Student or Young Specialist</h1>
           <p class="lead mb-4">Thousands of entry-level positions, internships, and graduate programs waiting for you!</p>
-
           <!-- Search Form -->
           <div class="bg-white p-3 rounded-4 shadow">
             <div class="row g-2">
               <div class="col-md-5">
                 <div class="input-group">
                   <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search text-muted"></i></span>
-                  <input type="text" class="form-control border-start-0" placeholder="Job title or keyword" />
+                  <input type="text"
+                         class="form-control border-start-0"
+                         placeholder="Job title or keyword" />
                 </div>
               </div>
               <div class="col-md-5">
                 <div class="input-group">
                   <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-geo-alt text-muted"></i></span>
-                  <input type="text" class="form-control border-start-0" placeholder="City or region" />
+                  <input type="text"
+                         class="form-control border-start-0"
+                         placeholder="City or region" />
                 </div>
               </div>
               <div class="col-md-2">
@@ -36,7 +38,6 @@
               </div>
             </div>
           </div>
-
           <!-- Popular Searches -->
           <div class="mt-3">
             <small class="text-white-50">Popular:</small>
@@ -47,12 +48,13 @@
           </div>
         </div>
         <div class="col-lg-6 d-none d-lg-block">
-          <img src="https://placehold.co/600x400" alt="Hero Image" class="img-fluid rounded-4 shadow" />
+          <img src="https://placehold.co/600x400"
+               alt="Hero Image"
+               class="img-fluid rounded-4 shadow" />
         </div>
       </div>
     </div>
   </section>
-
   <!-- Statistics -->
   <section class="py-5">
     <div class="container">
@@ -84,15 +86,14 @@
       </div>
     </div>
   </section>
-
   <!-- Featured Jobs -->
   <section class="py-5 bg-light">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Featured Jobs</h2>
-        <a href="jobs.html" class="btn btn-link">View All Jobs <i class="bi bi-arrow-right"></i></a>
+        {#  TODO: link to jobs list page  #}
+        <a href="" class="btn btn-link">View All Jobs <i class="bi bi-arrow-right"></i></a>
       </div>
-
       <div class="row">
         <!-- Job Card 1 -->
         <div class="col-lg-4 col-md-6">
@@ -120,11 +121,11 @@
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-muted">Posted 2 days ago</small>
-              <a href="job-details.html" class="btn btn-outline-primary btn-sm">View Details</a>
+              {#  TODO: link to job detail page  #}
+              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
-
         <!-- Job Card 2 -->
         <div class="col-lg-4 col-md-6">
           <div class="job-card bg-white">
@@ -151,11 +152,11 @@
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-muted">Posted 3 days ago</small>
-              <a href="job-details.html" class="btn btn-outline-primary btn-sm">View Details</a>
+              {#  TODO: link to job detail page   #}
+              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
-
         <!-- Job Card 3 -->
         <div class="col-lg-4 col-md-6">
           <div class="job-card bg-white">
@@ -182,14 +183,14 @@
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <small class="text-muted">Posted 5 days ago</small>
-              <a href="job-details.html" class="btn btn-outline-primary btn-sm">View Details</a>
+              {#  TODO: link to job detail page  #}
+              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
   <!-- Features Section -->
   <section class="py-5">
     <div class="container">
@@ -219,13 +220,13 @@
       </div>
     </div>
   </section>
-
   <!-- CTA Section -->
   <section class="py-5 bg-primary text-white">
     <div class="container text-center">
       <h2 class="fw-bold mb-3">Ready to Start Your Career?</h2>
       <p class="lead mb-4">Join thousands of students who found their dream jobs through StartJob</p>
-      <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-5">Get Started Now</a>
+      <a href="{% url 'accounts:register' %}"
+         class="btn btn-light btn-lg px-5">Get Started Now</a>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

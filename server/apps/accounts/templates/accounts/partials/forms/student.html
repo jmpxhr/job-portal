@@ -13,35 +13,14 @@
     <small>Verification</small>
   </div>
 </div>
-
-<form hx-post="{% url 'accounts:register_submit' %}" hx-target="#form-container" hx-swap="innerHTML">
+<form hx-post="{% url 'accounts:register_submit' %}"
+      hx-target="#form-container"
+      hx-swap="innerHTML">
   {% csrf_token %}
   <input type="hidden" name="user_type" value="jobseeker" />
-
   <div class="row g-3">
     {% for field in form %}
-      <div class="
-        {% if field.name in 'first_name,last_name' %}
-
-
-
-
-      col-md-6
-
-
-
-
-        {% else %}
-
-
-
-
-      col-12
-
-
-
-
-        {% endif %}">
+      <div class="{% if field.name in 'first_name,last_name' %} col-md-6 {% else %} col-12 {% endif %}">
         <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}
         {% if field.name == 'password' %}
@@ -49,16 +28,15 @@
           <small class="text-muted">Password strength: Weak</small>
         {% endif %}
         {% if field.errors %}
-          {% for error in field.errors %}
-            <div class="invalid-feedback d-block">{{ error }}</div>
-          {% endfor %}
+          {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
         {% endif %}
       </div>
     {% endfor %}
   </div>
-
   <div class="d-flex justify-content-around gap-2 mt-4">
     <a class="btn btn-link mt-2" href="{% url 'accounts:register' %}"><i class="bi bi-arrow-left"></i> Back to start</a>
-    <button type="submit" class="btn-register w-50">Create Account <i class="bi bi-arrow-right ms-2"></i></button>
+    <button type="submit" class="btn-register w-50">
+      Create Account <i class="bi bi-arrow-right ms-2"></i>
+    </button>
   </div>
 </form>

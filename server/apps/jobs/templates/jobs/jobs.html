@@ -2,10 +2,10 @@
 {% load static %}
 {% block title %}
   Jobs | StartJob
-{% endblock %}
+{% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
-{% endblock %}
+{% endblock head %}
 {% block content %}
   <!-- Page Header -->
   <section class="bg-light py-4">
@@ -14,14 +14,14 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            <a href="index.html">Home</a>
+            {#  TODO: link to home page  #}
+            <a href="">Home</a>
           </li>
           <li class="breadcrumb-item active">Jobs</li>
         </ol>
       </nav>
     </div>
   </section>
-
   <!-- Main Content -->
   <section class="py-5">
     <div class="container">
@@ -30,19 +30,16 @@
         <div class="col-lg-3 mb-4">
           <div class="filter-card">
             <h5 class="fw-bold mb-3">Filters</h5>
-
             <!-- Search -->
             <div class="mb-4">
               <label class="form-label fw-semibold">Search</label>
               <input type="text" class="form-control" placeholder="Job title or keyword" />
             </div>
-
             <!-- Location -->
             <div class="mb-4">
               <label class="form-label fw-semibold">Location</label>
               <input type="text" class="form-control" placeholder="City or remote" />
             </div>
-
             <!-- Job Type -->
             <div class="mb-4">
               <label class="form-label fw-semibold">Job Type</label>
@@ -63,7 +60,6 @@
                 <label class="form-check-label" for="remote">Remote</label>
               </div>
             </div>
-
             <!-- Experience Level -->
             <div class="mb-4">
               <label class="form-label fw-semibold">Experience</label>
@@ -80,7 +76,6 @@
                 <label class="form-check-label" for="student">Student friendly</label>
               </div>
             </div>
-
             <!-- Salary Range -->
             <div class="mb-4">
               <label class="form-label fw-semibold">Salary Range</label>
@@ -92,12 +87,10 @@
                 <option>$1500+</option>
               </select>
             </div>
-
             <button class="btn btn-primary w-100">Apply Filters</button>
             <button class="btn btn-link w-100 mt-2">Clear All</button>
           </div>
         </div>
-
         <!-- Jobs List -->
         <div class="col-lg-9">
           <!-- Sort and Results Count -->
@@ -114,7 +107,6 @@
               </select>
             </div>
           </div>
-
           <!-- Job Card 1 -->
           <div class="job-card">
             <div class="row">
@@ -142,7 +134,9 @@
                     <small><i class="bi bi-clock me-1"></i>Posted 2 days ago</small>
                   </div>
                 </div>
-                <p class="mt-2 text-muted">We are looking for a passionate Junior Frontend Developer to join our team. Perfect opportunity for students and recent graduates...</p>
+                <p class="mt-2 text-muted">
+                  We are looking for a passionate Junior Frontend Developer to join our team. Perfect opportunity for students and recent graduates...
+                </p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                   <div>
                     <span class="badge bg-light text-dark me-1">HTML</span>
@@ -150,12 +144,12 @@
                     <span class="badge bg-light text-dark me-1">JavaScript</span>
                     <span class="badge bg-light text-dark">React</span>
                   </div>
-                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                  {#  TODO: link to job detail page  #}
+                  <a href="" class="btn btn-primary btn-sm">View Details</a>
                 </div>
               </div>
             </div>
           </div>
-
           <!-- Job Card 2 -->
           <div class="job-card">
             <div class="row">
@@ -183,19 +177,21 @@
                     <small><i class="bi bi-clock me-1"></i>Posted 3 days ago</small>
                   </div>
                 </div>
-                <p class="mt-2 text-muted">Great opportunity for marketing students to gain practical experience in a global company. Flexible hours available...</p>
+                <p class="mt-2 text-muted">
+                  Great opportunity for marketing students to gain practical experience in a global company. Flexible hours available...
+                </p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                   <div>
                     <span class="badge bg-light text-dark me-1">Digital Marketing</span>
                     <span class="badge bg-light text-dark me-1">Social Media</span>
                     <span class="badge bg-light text-dark">Analytics</span>
                   </div>
-                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                  {#  TODO: link to job detail page  #}
+                  <a href="" class="btn btn-primary btn-sm">View Details</a>
                 </div>
               </div>
             </div>
           </div>
-
           <!-- Job Card 3 -->
           <div class="job-card">
             <div class="row">
@@ -223,7 +219,9 @@
                     <small><i class="bi bi-clock me-1"></i>Posted 5 days ago</small>
                   </div>
                 </div>
-                <p class="mt-2 text-muted">Start your career in data analysis! No experience required - we provide training. Perfect for math/statistics students...</p>
+                <p class="mt-2 text-muted">
+                  Start your career in data analysis! No experience required - we provide training. Perfect for math/statistics students...
+                </p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                   <div>
                     <span class="badge bg-light text-dark me-1">SQL</span>
@@ -231,12 +229,12 @@
                     <span class="badge bg-light text-dark me-1">Python</span>
                     <span class="badge bg-light text-dark">Statistics</span>
                   </div>
-                  <a href="job-details.html" class="btn btn-primary btn-sm">View Details</a>
+                  {#  TODO: link to job detail page  #}
+                  <a href="" class="btn btn-primary btn-sm">View Details</a>
                 </div>
               </div>
             </div>
           </div>
-
           <!-- Pagination -->
           <nav class="mt-4">
             <ul class="pagination justify-content-center">
@@ -267,4 +265,4 @@
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

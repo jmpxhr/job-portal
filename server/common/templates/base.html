@@ -8,24 +8,24 @@
     <title>
       {% block title %}
         {{ title|default:'Start Job' }}
-      {% endblock %}
+      {% endblock title %}
     </title>
-
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="{% static 'vendor/css/bootstrap.min.css' %}" />
     {% if debug %}
-      <link rel="stylesheet" href="{% static 'vendor/css/bootstrap.min.css.map' %}" />
+      <link rel="stylesheet"
+            href="{% static 'vendor/css/bootstrap.min.css.map' %}" />
     {% endif %}
     <!-- Bootstrap icons -->
-    <link rel="stylesheet" href="{% static 'vendor/css/bootstrap-icons.min.css' %}" />
-
+    <link rel="stylesheet"
+          href="{% static 'vendor/css/bootstrap-icons.min.css' %}" />
     {% htmx_script %}
     {% block head %}
-    {% endblock %}
+    {% endblock head %}
   </head>
   <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% block body %}
-    {% endblock %}
+    {% endblock body %}
     {% block javascript %}
     {% endblock javascript %}
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>

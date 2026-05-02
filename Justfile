@@ -31,6 +31,9 @@ lint:
     uv run ruff check --exit-non-zero-on-fix
     uv run ruff format --check --diff
 
+djlint:
+    uv run djlint server
+
 # Run all type checkers
 type-check:
     uv run mypy .

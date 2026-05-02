@@ -1,12 +1,11 @@
-{% extends 'container.html' %}
+{% extends "container.html" %}
 {% load static %}
 {% block title %}
   Job Detail | StartJob
-{% endblock %}
+{% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
-{% endblock %}
-
+{% endblock head %}
 {% block content %}
   <!-- Page Header -->
   <section class="bg-light py-4">
@@ -14,17 +13,18 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            <a href="index.html">Home</a>
+            {#  TODO: link to home page  #}
+            <a href="">Home</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="jobs.html">Jobs</a>
+            {#  TODO: link to jobs list page  #}
+            <a href="">Jobs</a>
           </li>
           <li class="breadcrumb-item active">Junior Frontend Developer</li>
         </ol>
       </nav>
     </div>
   </section>
-
   <!-- Main Content -->
   <section class="py-5">
     <div class="container">
@@ -50,19 +50,24 @@
               </div>
             </div>
           </div>
-
           <!-- Action Buttons -->
           <div class="d-flex gap-2 mb-4">
-            <button class="btn btn-primary btn-lg flex-grow-1"><i class="bi bi-send me-2"></i>Apply Now</button>
-            <button class="btn btn-outline-secondary btn-lg"><i class="bi bi-bookmark"></i></button>
-            <button class="btn btn-outline-secondary btn-lg"><i class="bi bi-share"></i></button>
+            <button class="btn btn-primary btn-lg flex-grow-1">
+              <i class="bi bi-send me-2"></i>Apply Now
+            </button>
+            <button class="btn btn-outline-secondary btn-lg">
+              <i class="bi bi-bookmark"></i>
+            </button>
+            <button class="btn btn-outline-secondary btn-lg">
+              <i class="bi bi-share"></i>
+            </button>
           </div>
-
           <!-- Job Description -->
           <div class="info-card mb-4">
             <h4 class="fw-bold mb-3">Job Description</h4>
-            <p>We are looking for a passionate Junior Frontend Developer to join our team in Minsk. This is an excellent opportunity for students and recent graduates who want to start their career in a global company.</p>
-
+            <p>
+              We are looking for a passionate Junior Frontend Developer to join our team in Minsk. This is an excellent opportunity for students and recent graduates who want to start their career in a global company.
+            </p>
             <h5 class="fw-bold mt-4 mb-3">Responsibilities:</h5>
             <ul class="list-unstyled">
               <li class="mb-2">
@@ -81,7 +86,6 @@
                 <i class="bi bi-check-circle-fill text-success me-2"></i>Learn and implement new technologies as needed
               </li>
             </ul>
-
             <h5 class="fw-bold mt-4 mb-3">Requirements:</h5>
             <ul class="list-unstyled">
               <li class="mb-2">
@@ -100,7 +104,6 @@
                 <i class="bi bi-check-circle-fill text-primary me-2"></i>Student or recent graduate in Computer Science or related field
               </li>
             </ul>
-
             <h5 class="fw-bold mt-4 mb-3">We Offer:</h5>
             <ul class="list-unstyled">
               <li class="mb-2">
@@ -120,7 +123,6 @@
               </li>
             </ul>
           </div>
-
           <!-- Additional Information -->
           <div class="info-card">
             <h4 class="fw-bold mb-3">Additional Information</h4>
@@ -150,7 +152,6 @@
             </div>
           </div>
         </div>
-
         <!-- Sidebar -->
         <div class="col-lg-4">
           <!-- Job Overview -->
@@ -182,7 +183,6 @@
               <p class="mb-0 text-muted">Minsk, Belarus (Remote)</p>
             </div>
           </div>
-
           <!-- Company Info -->
           <div class="info-card mb-4">
             <h5 class="fw-bold mb-3">About Company</h5>
@@ -193,17 +193,21 @@
               <h6 class="fw-bold">Google</h6>
               <p class="text-muted small">Technology • 10,000+ employees</p>
             </div>
-            <p class="small">Google is a global technology leader focused on improving the ways people connect with information. We innovate in AI, software, and hardware to create solutions for everyone.</p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Company Profile</a>
+            <p class="small">
+              Google is a global technology leader focused on improving the ways people connect with information. We innovate in AI, software, and hardware to create solutions for everyone.
+            </p>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Company Profile</a>
           </div>
-
           <!-- Similar Jobs -->
           <div class="info-card">
             <h5 class="fw-bold mb-3">Similar Jobs</h5>
-
             <div class="similar-job-card">
               <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                <div class="company-logo-small me-2"
+                     style="width: 40px;
+                            height: 40px;
+                            font-size: 16px">
                   <i class="bi bi-microsoft"></i>
                 </div>
                 <div>
@@ -217,10 +221,12 @@
                 <a href="#" class="btn btn-sm btn-outline-primary">View</a>
               </div>
             </div>
-
             <div class="similar-job-card">
               <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                <div class="company-logo-small me-2"
+                     style="width: 40px;
+                            height: 40px;
+                            font-size: 16px">
                   <i class="bi bi-amazon"></i>
                 </div>
                 <div>
@@ -234,10 +240,12 @@
                 <a href="#" class="btn btn-sm btn-outline-primary">View</a>
               </div>
             </div>
-
             <div class="similar-job-card">
               <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2" style="width: 40px; height: 40px; font-size: 16px;">
+                <div class="company-logo-small me-2"
+                     style="width: 40px;
+                            height: 40px;
+                            font-size: 16px">
                   <i class="bi bi-facebook"></i>
                 </div>
                 <div>
@@ -256,4 +264,4 @@
       </div>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}

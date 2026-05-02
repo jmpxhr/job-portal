@@ -2,19 +2,21 @@
 {% load static %}
 {% block title %}
   Companies | StartJob
-{% endblock %}
+{% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
-{% endblock %}
-
+{% endblock head %}
 {% comment %} <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">
+          <div class="container">
+            <a class="navbar-brand" href="index.html">
       <i class="bi bi-briefcase-fill text-primary"></i>
       <span class="fw-bold">StartJob</span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
@@ -27,7 +29,11 @@
           <a class="nav-link" href="companies.html">Companies</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"><i class="bi bi-building"></i> Company</a>
+          <a class="nav-link dropdown-toggle active"
+             href="#"
+             id="navbarDropdown"
+             role="button"
+             data-bs-toggle="dropdown"><i class="bi bi-building"></i> Company</a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
               <a class="dropdown-item" href="employer-dashboard.html">Dashboard</a>
@@ -59,11 +65,9 @@
     </div>
   </div>
 </nav> {% endcomment %}
-
 {% block content %}
   <!-- Company Cover Image -->
   <div class="company-cover"></div>
-
   <!-- Main Content -->
   <section class="container" style="margin-top: -50px;">
     <div class="company-profile-header">
@@ -82,25 +86,47 @@
           </div>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0">
-          <button class="btn btn-outline-primary me-2" onclick="toggleEdit()" id="editBtn"><i class="bi bi-pencil"></i> Edit Profile</button>
-          <button class="btn btn-primary" id="saveBtn" style="display: none;" onclick="saveProfile()"><i class="bi bi-check-lg"></i> Save Changes</button>
+          <button class="btn btn-outline-primary me-2"
+                  onclick="toggleEdit()"
+                  id="editBtn">
+            <i class="bi bi-pencil"></i> Edit Profile
+          </button>
+          <button class="btn btn-primary"
+                  id="saveBtn"
+                  style="display: none"
+                  onclick="saveProfile()">
+            <i class="bi bi-check-lg"></i> Save Changes
+          </button>
         </div>
       </div>
     </div>
-
     <!-- Tabs Navigation -->
     <ul class="nav nav-tabs mb-4 mt-4" id="companyEmployerTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+        <button class="nav-link active"
+                id="overview-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#overview"
+                type="button"
+                role="tab">Overview</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs" type="button" role="tab">Jobs (12)</button>
+        <button class="nav-link"
+                id="jobs-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#jobs"
+                type="button"
+                role="tab">Jobs (12)</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#students" type="button" role="tab">Student Programs</button>
+        <button class="nav-link"
+                id="students-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#students"
+                type="button"
+                role="tab">Student Programs</button>
       </li>
     </ul>
-
     <!-- Tab Content -->
     <div class="tab-content" id="companyEmployerTabContent">
       <!-- Overview Tab (Original view mode + edit mode integrated) -->
@@ -112,10 +138,13 @@
               <!-- About Company -->
               <div class="info-card">
                 <h5 class="section-title">About Company</h5>
-                <p>TechStart Inc. is a leading IT services company specializing in web development, mobile applications, and cloud solutions. We work with startups and enterprise clients to deliver innovative digital products.</p>
-                <p class="mb-0">We are passionate about nurturing young talent and provide internship programs for students. Our team consists of experienced developers who mentor junior team members.</p>
+                <p>
+                  TechStart Inc. is a leading IT services company specializing in web development, mobile applications, and cloud solutions. We work with startups and enterprise clients to deliver innovative digital products.
+                </p>
+                <p class="mb-0">
+                  We are passionate about nurturing young talent and provide internship programs for students. Our team consists of experienced developers who mentor junior team members.
+                </p>
               </div>
-
               <!-- Company Details -->
               <div class="info-card">
                 <h5 class="section-title">Company Details</h5>
@@ -169,13 +198,14 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-4">
               <!-- Contact Card -->
               <div class="info-card">
                 <h5 class="section-title">Contact Person</h5>
                 <div class="text-center">
-                  <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="HR" />
+                  <img src="https://via.placeholder.com/100"
+                       class="rounded-circle mb-3"
+                       alt="HR" />
                   <h6 class="fw-bold mb-1">Elena Kozlova</h6>
                   <p class="text-muted small">HR Manager</p>
                   <hr />
@@ -218,7 +248,6 @@
             </div>
           </div>
         </div>
-
         <!-- Edit Mode (hidden by default) -->
         <div id="editMode" style="display: none;">
           <div class="info-card mt-4">
@@ -260,7 +289,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Logo & Cover -->
               <div class="mb-4">
                 <h6 class="fw-bold mb-3">Logo & Cover Image</h6>
@@ -283,7 +311,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Contact Information -->
               <div class="mb-4">
                 <h6 class="fw-bold mb-3">Contact Information</h6>
@@ -306,7 +333,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Social Media -->
               <div class="mb-4">
                 <h6 class="fw-bold mb-3">Social Media</h6>
@@ -314,19 +340,28 @@
                   <div class="col-md-6">
                     <div class="social-input">
                       <i class="bi bi-linkedin social-icon text-primary"></i>
-                      <input type="url" class="form-control" placeholder="LinkedIn URL" value="https://linkedin.com/company/techstart" />
+                      <input type="url"
+                             class="form-control"
+                             placeholder="LinkedIn URL"
+                             value="https://linkedin.com/company/techstart" />
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="social-input">
                       <i class="bi bi-facebook social-icon text-primary"></i>
-                      <input type="url" class="form-control" placeholder="Facebook URL" value="https://facebook.com/techstart" />
+                      <input type="url"
+                             class="form-control"
+                             placeholder="Facebook URL"
+                             value="https://facebook.com/techstart" />
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="social-input">
                       <i class="bi bi-instagram social-icon text-danger"></i>
-                      <input type="url" class="form-control" placeholder="Instagram URL" value="https://instagram.com/techstart" />
+                      <input type="url"
+                             class="form-control"
+                             placeholder="Instagram URL"
+                             value="https://instagram.com/techstart" />
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -337,7 +372,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Benefits -->
               <div class="mb-4">
                 <h6 class="fw-bold mb-3">Benefits & Perks</h6>
@@ -374,7 +408,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- HR Contact -->
               <div class="mb-4">
                 <h6 class="fw-bold mb-3">HR Contact Person</h6>
@@ -393,16 +426,16 @@
                   </div>
                 </div>
               </div>
-
               <div class="text-end">
-                <button type="button" class="btn btn-outline-secondary me-2" onclick="cancelEdit()">Cancel</button>
+                <button type="button"
+                        class="btn btn-outline-secondary me-2"
+                        onclick="cancelEdit()">Cancel</button>
                 <button type="submit" class="btn-save" onclick="saveProfile()">Save Changes</button>
               </div>
             </form>
           </div>
         </div>
       </div>
-
       <!-- Jobs Tab (copied and adapted from company-profile.html) -->
       <div class="tab-pane fade" id="jobs" role="tabpanel">
         <div class="info-card">
@@ -415,10 +448,11 @@
                 <option>Internship</option>
                 <option>Part-time</option>
               </select>
-              <button class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Post New Job</button>
+              <button class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Post New Job
+              </button>
             </div>
           </div>
-
           <!-- Job 1 (from company-profile.html) -->
           <div class="job-mini-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -433,17 +467,21 @@
               <div class="d-flex gap-2 align-items-center">
                 <span class="student-friendly-badge">Student-friendly</span>
                 <div class="job-action-buttons">
-                  <button class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                  <button class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
               </div>
             </div>
             <div class="mt-2">
               <small class="text-muted"><i class="bi bi-people"></i> 8 applicants</small>
-              <a href="job-details.html" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
+              {#  TODO: link to job detail page  #}
+              <a href="" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
             </div>
           </div>
-
           <!-- Job 2 (from company-profile.html) -->
           <div class="job-mini-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -458,17 +496,21 @@
               <div class="d-flex gap-2 align-items-center">
                 <span class="student-friendly-badge">Internship</span>
                 <div class="job-action-buttons">
-                  <button class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                  <button class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
               </div>
             </div>
             <div class="mt-2">
               <small class="text-muted"><i class="bi bi-people"></i> 12 applicants</small>
-              <a href="job-details.html" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
+              {#  TODO: link to job detail page  #}
+              <a href="" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
             </div>
           </div>
-
           <!-- Job 3 (from company-profile.html) -->
           <div class="job-mini-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -483,23 +525,26 @@
               <div class="d-flex gap-2 align-items-center">
                 <span class="student-friendly-badge">Training Provided</span>
                 <div class="job-action-buttons">
-                  <button class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                  <button class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
               </div>
             </div>
             <div class="mt-2">
               <small class="text-muted"><i class="bi bi-people"></i> 5 applicants</small>
-              <a href="job-details.html" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
+              {#  TODO: link to job detail page  #}
+              <a href="" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
             </div>
           </div>
-
           <div class="text-center mt-4">
             <a href="#" class="btn btn-outline-primary">View All 12 Jobs <i class="bi bi-arrow-right"></i></a>
           </div>
         </div>
       </div>
-
       <!-- Student Programs Tab -->
       <div class="tab-pane fade" id="students" role="tabpanel">
         <div class="info-card">
@@ -522,7 +567,9 @@
             <div class="col-12">
               <div class="border rounded-3 p-3">
                 <h6 class="fw-bold mb-2">TechStart Academy</h6>
-                <p class="small text-muted">Free online courses and certification for IT students. Includes mentorship from industry experts and project-based learning.</p>
+                <p class="small text-muted">
+                  Free online courses and certification for IT students. Includes mentorship from industry experts and project-based learning.
+                </p>
                 <button class="btn btn-sm btn-outline-primary">Learn More</button>
               </div>
             </div>
@@ -531,77 +578,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer class="bg-dark text-white pt-5 pb-4 mt-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">StartJob</h5>
-          <p>Your gateway to first job and successful career start.</p>
-          <div class="social-links">
-            <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="text-white me-2"><i class="bi bi-linkedin"></i></a>
-            <a href="#" class="text-white me-2"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-white"><i class="bi bi-telegram"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">For Candidates</h5>
-          <ul class="list-unstyled">
-            <li>
-              <a href="jobs.html" class="text-white-50 text-decoration-none">Browse Jobs</a>
-            </li>
-            <li>
-              <a href="resume-builder.html" class="text-white-50 text-decoration-none">Create Resume</a>
-            </li>
-            <li>
-              <a href="#" class="text-white-50 text-decoration-none">Career Advice</a>
-            </li>
-            <li>
-              <a href="saved-jobs.html" class="text-white-50 text-decoration-none">Saved Jobs</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">For Employers</h5>
-          <ul class="list-unstyled">
-            <li>
-              <a href="post-vacancy.html" class="text-white-50 text-decoration-none">Post a Job</a>
-            </li>
-            <li>
-              <a href="#" class="text-white-50 text-decoration-none">Browse Candidates</a>
-            </li>
-            <li>
-              <a href="#" class="text-white-50 text-decoration-none">Pricing</a>
-            </li>
-            <li>
-              <a href="employer-dashboard.html" class="text-white-50 text-decoration-none">Employer Dashboard</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">Contact Info</h5>
-          <ul class="list-unstyled">
-            <li class="mb-2">
-              <i class="bi bi-envelope me-2"></i>info@startjob.com
-            </li>
-            <li class="mb-2">
-              <i class="bi bi-telephone me-2"></i>+375 29 123-45-67
-            </li>
-            <li class="mb-2">
-              <i class="bi bi-geo-alt me-2"></i>Minsk, Belarus
-            </li>
-          </ul>
-        </div>
-      </div>
-      <hr class="bg-secondary" />
-      <div class="text-center">
-        <p class="mb-0">&copy; 2024 StartJob. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
   <script>
     function toggleEdit() {
       document.getElementById('viewMode').style.display = 'none'
@@ -623,4 +599,4 @@
       cancelEdit()
     }
   </script>
-{% endblock %}
+{% endblock content %}

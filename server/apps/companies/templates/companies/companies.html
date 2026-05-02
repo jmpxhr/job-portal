@@ -2,11 +2,10 @@
 {% load static %}
 {% block title %}
   Companies | StartJob
-{% endblock %}
+{% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'companies/css/styles.css' %}" />
-{% endblock %}
-
+{% endblock head %}
 {% block content %}
   <!-- Page Header -->
   <section class="bg-light py-4">
@@ -19,13 +18,14 @@
         <div class="col-md-4">
           <div class="input-group">
             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" class="form-control border-start-0" placeholder="Search companies..." />
+            <input type="text"
+                   class="form-control border-start-0"
+                   placeholder="Search companies..." />
           </div>
         </div>
       </div>
     </div>
   </section>
-
   <!-- Main Content -->
   <section class="py-5">
     <div class="container">
@@ -84,7 +84,6 @@
           </div>
         </div>
       </div>
-
       <!-- Results Stats -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <p class="mb-0">
@@ -100,7 +99,6 @@
           </select>
         </div>
       </div>
-
       <!-- Companies Grid -->
       <div class="row g-4">
         <!-- Company Card 1 - Featured -->
@@ -111,7 +109,8 @@
             </div>
             <div class="d-flex align-items-center mb-2">
               <h4 class="fw-bold mb-0">Google</h4>
-              <i class="bi bi-patch-check-fill verified-badge" title="Verified Company"></i>
+              <i class="bi bi-patch-check-fill verified-badge"
+                 title="Verified Company"></i>
             </div>
             <p class="text-muted mb-2">Technology • Internet</p>
             <div class="d-flex flex-wrap gap-2 mb-3">
@@ -136,14 +135,15 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Multiple locations
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
-
         <!-- Company Card 2 -->
         <div class="col-lg-4 col-md-6">
           <div class="company-card">
-            <div class="company-logo-medium" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+            <div class="company-logo-medium"
+                 style="background: linear-gradient(135deg, #00b09b, #96c93d)">
               <i class="bi bi-microsoft"></i>
             </div>
             <div class="d-flex align-items-center mb-2">
@@ -173,14 +173,15 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Warsaw, Krakow
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
-
         <!-- Company Card 3 -->
         <div class="col-lg-4 col-md-6">
           <div class="company-card">
-            <div class="company-logo-medium" style="background: linear-gradient(135deg, #f2994a, #f2c94c);">
+            <div class="company-logo-medium"
+                 style="background: linear-gradient(135deg, #f2994a, #f2c94c)">
               <i class="bi bi-amazon"></i>
             </div>
             <div class="d-flex align-items-center mb-2">
@@ -210,14 +211,15 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Berlin, Munich
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
-
         <!-- Company Card 4 -->
         <div class="col-lg-4 col-md-6">
           <div class="company-card">
-            <div class="company-logo-medium" style="background: linear-gradient(135deg, #3b5998, #8b9dc3);">
+            <div class="company-logo-medium"
+                 style="background: linear-gradient(135deg, #3b5998, #8b9dc3)">
               <i class="bi bi-facebook"></i>
             </div>
             <div class="d-flex align-items-center mb-2">
@@ -247,14 +249,15 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Dublin, Remote
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
-
         <!-- Company Card 5 - Local Company -->
         <div class="col-lg-4 col-md-6">
           <div class="company-card">
-            <div class="company-logo-medium" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <div class="company-logo-medium"
+                 style="background: linear-gradient(135deg, #667eea, #764ba2)">
               <i class="bi bi-building"></i>
             </div>
             <div class="d-flex align-items-center mb-2">
@@ -284,14 +287,16 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Minsk, Brest, Gomel
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
-
         <!-- Company Card 6 - Startup -->
         <div class="col-lg-4 col-md-6">
           <div class="company-card">
-            <div class="company-logo-medium" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e);">
+            <div class="company-logo-medium"
+                 style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e)">
               <i class="bi bi-rocket-takeoff"></i>
             </div>
             <div class="d-flex align-items-center mb-2">
@@ -321,11 +326,11 @@
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i> Remote, Minsk
             </p>
-            <a href="company-profile.html" class="btn btn-outline-primary w-100">View Profile</a>
+            {#  TODO: link to company profile page  #}
+            <a href="" class="btn btn-outline-primary w-100">View Profile</a>
           </div>
         </div>
       </div>
-
       <!-- Pagination -->
       <nav class="mt-5">
         <ul class="pagination justify-content-center">
@@ -354,4 +359,4 @@
       </nav>
     </div>
   </section>
-{% endblock %}
+{% endblock content %}
