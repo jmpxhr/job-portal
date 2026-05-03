@@ -59,28 +59,22 @@
   <section class="py-5">
     <div class="container">
       <div class="row">
-        <div class="col-md-3 col-6">
+        <div class="col-md-4 col-6">
           <div class="stat-item">
             <div class="stat-number">10K+</div>
             <p class="text-muted">Active Jobs</p>
           </div>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md-4 col-6">
           <div class="stat-item">
             <div class="stat-number">5K+</div>
             <p class="text-muted">Companies</p>
           </div>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md-4 col-6">
           <div class="stat-item">
             <div class="stat-number">50K+</div>
             <p class="text-muted">Students</p>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number">15K+</div>
-            <p class="text-muted">Success Stories</p>
           </div>
         </div>
       </div>
@@ -91,103 +85,55 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Featured Jobs</h2>
-        {#  TODO: link to jobs list page  #}
-        <a href="" class="btn btn-link">View All Jobs <i class="bi bi-arrow-right"></i></a>
+        <a href="{% url 'jobs:jobs-list' %}" class="btn btn-link">View All Jobs <i class="bi bi-arrow-right"></i></a>
       </div>
       <div class="row">
-        <!-- Job Card 1 -->
-        <div class="col-lg-4 col-md-6">
-          <div class="job-card bg-white">
-            <div class="d-flex">
-              <div class="company-logo me-3">
-                <i class="bi bi-google"></i>
+        {% for job in latest_jobs %}
+          <div class="col-lg-4 col-md-6">
+            <div class="job-card bg-white">
+              <div class="d-flex">
+                <div class="company-logo me-3">
+                  {% if job.company.logo %}
+                    <img src="{{ job.company.logo.url }}"
+                         alt="{{ job.company.name }}"
+                         style="width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 8px" />
+                  {% else %}
+                    <span class="fw-bold">{{ job.company.initial }}</span>
+                  {% endif %}
+                </div>
+                <div>
+                  <h5 class="fw-bold">{{ job.title }}</h5>
+                  <p class="text-muted mb-1">{{ job.company.name }}</p>
+                  {% if job.is_student_friendly %}<span class="badge-student">Student-friendly</span>{% endif %}
+                </div>
               </div>
-              <div>
-                <h5 class="fw-bold">Junior Frontend Developer</h5>
-                <p class="text-muted mb-1">Google</p>
-                <span class="badge-student">Student-friendly</span>
+              <div class="mt-3">
+                <p>
+                  <i class="bi bi-geo-alt me-2"></i>{{ job.location|default:"Remote" }}, {{ job.work_format_label }}
+                </p>
+                <p>
+                  <i class="bi bi-cash me-2"></i>{{ job.salary_display }}
+                </p>
+                <p>
+                  <i class="bi bi-clock me-2"></i>{{ job.employment_type_label }}
+                </p>
               </div>
-            </div>
-            <div class="mt-3">
-              <p>
-                <i class="bi bi-geo-alt me-2"></i>Minsk, Remote
-              </p>
-              <p>
-                <i class="bi bi-cash me-2"></i>$800 - $1200/month
-              </p>
-              <p>
-                <i class="bi bi-clock me-2"></i>Full-time, Internship
-              </p>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">Posted 2 days ago</small>
-              {#  TODO: link to job detail page  #}
-              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Posted {{ job.posted_at|timesince }} ago</small>
+                <a href="{% url 'jobs:jobs-detail' job.pk %}"
+                   class="btn btn-outline-primary btn-sm">View Details</a>
+              </div>
             </div>
           </div>
-        </div>
-        <!-- Job Card 2 -->
-        <div class="col-lg-4 col-md-6">
-          <div class="job-card bg-white">
-            <div class="d-flex">
-              <div class="company-logo me-3">
-                <i class="bi bi-microsoft"></i>
-              </div>
-              <div>
-                <h5 class="fw-bold">Marketing Intern</h5>
-                <p class="text-muted mb-1">Microsoft</p>
-                <span class="badge-student">Internship</span>
-              </div>
-            </div>
-            <div class="mt-3">
-              <p>
-                <i class="bi bi-geo-alt me-2"></i>Warsaw, Hybrid
-              </p>
-              <p>
-                <i class="bi bi-cash me-2"></i>$500 - $700/month
-              </p>
-              <p>
-                <i class="bi bi-clock me-2"></i>Part-time, Internship
-              </p>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">Posted 3 days ago</small>
-              {#  TODO: link to job detail page   #}
-              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
-            </div>
+        {% empty %}
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-briefcase display-4 text-muted"></i>
+            <p class="mt-3 text-muted">No jobs available yet. Check back soon!</p>
           </div>
-        </div>
-        <!-- Job Card 3 -->
-        <div class="col-lg-4 col-md-6">
-          <div class="job-card bg-white">
-            <div class="d-flex">
-              <div class="company-logo me-3">
-                <i class="bi bi-amazon"></i>
-              </div>
-              <div>
-                <h5 class="fw-bold">Data Analyst (Entry Level)</h5>
-                <p class="text-muted mb-1">Amazon</p>
-                <span class="badge-student">No experience</span>
-              </div>
-            </div>
-            <div class="mt-3">
-              <p>
-                <i class="bi bi-geo-alt me-2"></i>Berlin, On-site
-              </p>
-              <p>
-                <i class="bi bi-cash me-2"></i>$900 - $1300/month
-              </p>
-              <p>
-                <i class="bi bi-clock me-2"></i>Full-time
-              </p>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">Posted 5 days ago</small>
-              {#  TODO: link to job detail page  #}
-              <a href="" class="btn btn-outline-primary btn-sm">View Details</a>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </section>
