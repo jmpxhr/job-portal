@@ -63,9 +63,7 @@
               <button class="btn btn-primary btn-lg flex-grow-1">
                 <i class="bi bi-send me-2"></i>Apply Now
               </button>
-              <button class="btn btn-outline-secondary btn-lg">
-                <i class="bi bi-bookmark"></i>
-              </button>
+              {% include "jobs/partials/save-button-partial.html" with is_saved=is_saved %}
               <button class="btn btn-outline-secondary btn-lg">
                 <i class="bi bi-share"></i>
               </button>

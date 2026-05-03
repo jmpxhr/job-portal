@@ -1,0 +1,7 @@
+<button class="btn {% if is_saved %}btn-primary{% else %}btn-outline-secondary{% endif %} btn-lg"
+        hx-post="{% url 'jobs:jobs-save-toggle' job.pk %}"
+        hx-target="this"
+        hx-swap="outerHTML"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <i class="bi bi-bookmark{% if is_saved %}-fill{% endif %}"></i>
+</button>

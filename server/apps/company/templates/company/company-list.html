@@ -19,7 +19,11 @@
     </div>
   </section>
   <!-- Main Content -->
-  <form method="get" action="{% url 'company:company-list' %}" id="filterForm">
+  <form hx-get="{% url 'company:company-list' %}"
+        hx-target="#companies-cards"
+        hx-swap="innerHTML"
+        hx-trigger="change,submit"
+        id="filterForm">
     <section class="py-5">
       <div class="container">
         <!-- Search + Filters Row -->
@@ -36,17 +40,19 @@
           </div>
           <div class="col-md-3">
             <label class="form-label">Industry</label>
-            <select name="industry" class="form-select" onchange="this.form.submit()">
+            <select name="industry" class="form-select">
               <option value="">All Industries</option>
               {% for industry in industries %}
                 <option value="{{ industry.pk }}"
-                        {% if current_industry == industry.pk|stringformat:"s" %}selected{% endif %}>{{ industry.name }}</option>
+                        {% if current_industry == industry.pk|stringformat:"s" %}selected{% endif %}>
+                  {{ industry.name }}
+                </option>
               {% endfor %}
             </select>
           </div>
           <div class="col-md-3">
             <label class="form-label">Size</label>
-            <select name="size" class="form-select" onchange="this.form.submit()">
+            <select name="size" class="form-select">
               <option value="">Company Size</option>
               {% for value, label in size_choices %}
                 {% if value %}
@@ -88,10 +94,7 @@
           </p>
           <div class="d-flex align-items-center">
             <label class="me-2">Sort by:</label>
-            <select name="sort"
-                    class="form-select"
-                    style="width: auto"
-                    onchange="this.form.submit()">
+            <select name="sort" class="form-select" style="width: auto">
               <option value=""{% if not current_sort %} selected{% endif %}>Most Popular</option>
               <option value="newest"{% if current_sort == 'newest' %} selected{% endif %}>Newest</option>
               <option value="name"{% if current_sort == 'name' %} selected{% endif %}>Name A-Z</option>
@@ -99,7 +102,8 @@
           </div>
         </div>
         <!-- Companies Grid -->
-        <div class="row g-4">
+        <div class="row g-4" id="companies-cards">
+          {% partialdef companies inline %}
           {% for company in companies %}
             <div class="col-lg-4 col-md-6">
               <div class="company-card">
@@ -155,44 +159,51 @@
               </div>
             </div>
           {% endfor %}
-        </div>
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-          <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-              {% if page_obj.has_previous %}
-                <li class="page-item">
-                  <button type="submit" name="page" value="{{ page_obj.previous_page_number }}" class="page-link">Previous</button>
-                </li>
-              {% else %}
-                <li class="page-item disabled">
-                  <span class="page-link">Previous</span>
-                </li>
-              {% endif %}
-              {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                  <li class="page-item active">
-                    <span class="page-link">{{ num }}</span>
-                  </li>
-                {% else %}
-                  <li class="page-item">
-                    <button type="submit" name="page" value="{{ num }}" class="page-link">{{ num }}</button>
-                  </li>
-                {% endif %}
-              {% endfor %}
-              {% if page_obj.has_next %}
-                <li class="page-item">
-                  <button type="submit" name="page" value="{{ page_obj.next_page_number }}" class="page-link">Next</button>
-                </li>
-              {% else %}
-                <li class="page-item disabled">
-                  <span class="page-link">Next</span>
-                </li>
-              {% endif %}
-            </ul>
-          </nav>
-        {% endif %}
+        {% endpartialdef %}
       </div>
-    </section>
-  </form>
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+        <nav class="mt-5">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <button type="submit"
+                        name="page"
+                        value="{{ page_obj.previous_page_number }}"
+                        class="page-link">Previous</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li class="page-item active">
+                  <span class="page-link">{{ num }}</span>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <button type="submit" name="page" value="{{ num }}" class="page-link">{{ num }}</button>
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <button type="submit"
+                        name="page"
+                        value="{{ page_obj.next_page_number }}"
+                        class="page-link">Next</button>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Next</span>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+  </section>
+</form>
 {% endblock content %}

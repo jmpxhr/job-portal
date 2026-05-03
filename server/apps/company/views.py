@@ -12,10 +12,11 @@ from server.apps.company.services import (
     CompanyService,
     StudentProgramService,
 )
+from server.common.types import HtmxRequest
 
 
 class CompanyListView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: HtmxRequest) -> HttpResponse:
         company_filter = filters.CompanyFilter(
             request.GET,
             queryset=Company.objects.select_related(
@@ -47,6 +48,9 @@ class CompanyListView(View):
             'current_sort': current_sort,
             'search_query': search_query,
         }
+        if request.htmx:
+            return render(request, const.COMPANY_LIST + '#companies', context)
+
         return render(request, const.COMPANY_LIST, context)
 
 

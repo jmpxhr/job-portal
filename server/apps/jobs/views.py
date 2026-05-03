@@ -1,12 +1,16 @@
 from typing import Any
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.views import View
 from django.views.generic import DetailView, ListView
 
+from server.apps.accounts.models import JobSeeker, User
 from server.apps.jobs import const, filters
-from server.apps.jobs.models import Job
+from server.apps.jobs.models import Job, SavedJob
+from server.common.types import HtmxRequest
 
 
 class JobListView(ListView):
@@ -100,4 +104,42 @@ class JobDetailView(DetailView):
             .order_by('-similarity', '-posted_at')[:3]
         )
         context['similar_jobs'] = similar_jobs
+
+        is_saved = False
+        if (
+            self.request.user.is_authenticated
+            and self.request.user.account_type == User.AccountTypeEnum.JOBSEEKER
+        ):
+            is_saved = SavedJob.objects.filter(
+                job=job,
+                jobseeker__user=self.request.user,
+            ).exists()
+        context['is_saved'] = is_saved
         return context
+
+
+class SavedJobToggleView(LoginRequiredMixin, View):
+    def post(self, request: HtmxRequest, pk: int) -> HttpResponse:
+        job = get_object_or_404(Job, pk=pk, is_active=True)
+        try:
+            jobseeker = JobSeeker.objects.get(user=request.user)
+        except JobSeeker.DoesNotExist:
+            raise Http404
+
+        saved = SavedJob.objects.filter(job=job, jobseeker=jobseeker).first()
+        if saved:
+            saved.delete()
+            is_saved = False
+        else:
+            SavedJob.objects.create(job=job, jobseeker=jobseeker)
+            is_saved = True
+
+        context = {
+            'job': job,
+            'is_saved': is_saved,
+        }
+        return render(
+            request,
+            'jobs/partials/save-button-partial.html',
+            context,
+        )

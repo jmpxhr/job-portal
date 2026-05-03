@@ -14,13 +14,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <h1 class="fw-bold mb-0">Saved Jobs</h1>
-          <p class="text-muted mb-0">You have 8 saved jobs</p>
-        </div>
-        <div>
-          <button class="btn btn-outline-primary">
-            <i class="bi bi-folder-plus"></i> Create New
-            Collection
-          </button>
+          <p class="text-muted mb-0">You have {{ total_saved }} saved job{{ total_saved|pluralize }}</p>
         </div>
       </div>
     </div>
@@ -28,225 +22,130 @@
   <!-- Main Content -->
   <section class="py-5">
     <div class="container">
-      <!-- Collections Row -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <h5 class="fw-bold mb-3">My Collections</h5>
-        </div>
-        <div class="col-md-3">
-          <div class="collection-card">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-bookmark-star-fill text-primary fs-4 me-3"></i>
-              <div>
-                <h6 class="fw-bold mb-1">All Saved Jobs</h6>
-                <small class="text-muted">8 jobs</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="collection-card">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-briefcase-fill text-primary fs-4 me-3"></i>
-              <div>
-                <h6 class="fw-bold mb-1">Frontend Roles</h6>
-                <small class="text-muted">4 jobs</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="collection-card">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-mortarboard-fill text-primary fs-4 me-3"></i>
-              <div>
-                <h6 class="fw-bold mb-1">Internships</h6>
-                <small class="text-muted">3 jobs</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="collection-card">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-star-fill text-primary fs-4 me-3"></i>
-              <div>
-                <h6 class="fw-bold mb-1">Dream Jobs</h6>
-                <small class="text-muted">2 jobs</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Sort and Filter -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <p class="mb-0">
-          Showing <strong>1-5</strong> of <strong>8</strong> saved jobs
+          Showing <strong>{{ page_obj.start_index }}-{{ page_obj.end_index }}</strong> of <strong>{{ total_saved }}</strong> saved job{{ total_saved|pluralize }}
         </p>
-        <select class="form-select" style="width: auto;">
-          <option>Recently Saved</option>
-          <option>Oldest First</option>
-          <option>Company Name</option>
-          <option>Salary: High to Low</option>
-        </select>
+        <form method="get" class="d-inline">
+          <select class="form-select"
+                  style="width: auto"
+                  name="sort"
+                  hx-get="{% url 'dashboard:saved-jobs' %}"
+                  hx-target="#saved-jobs-list"
+                  hx-push-url="true">
+            {% for value, label in sort_choices %}
+              <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </form>
       </div>
       <!-- Saved Jobs List -->
-      <div class="saved-job-card">
-        <i class="bi bi-bookmark-x-fill remove-bookmark"
-           title="Remove from saved"></i>
-        <div class="row">
-          <div class="col-md-1">
-            <div class="company-logo-small mx-auto">
-              <i class="bi bi-google"></i>
+      <div id="saved-jobs-list">
+        {% partialdef job_cards inline %}
+        {% for saved in saved_jobs %}
+          <div class="saved-job-card">
+            <i class="bi bi-bookmark-x-fill remove-bookmark"
+               title="Remove from saved"
+               hx-delete="{% url 'dashboard:saved-jobs' saved.pk %}"
+               hx-target="closest .saved-job-card"
+               hx-swap="outerHTML swap:0.5s"
+               hx-confirm="Are you sure you want to remove this saved job?"></i>
+            <div class="row">
+              <div class="col-md-1">
+                <div class="company-logo-small mx-auto">
+                  {% if saved.job.company.logo %}
+                    <img src="{{ saved.job.company.logo.url }}"
+                         alt="{{ saved.job.company.name }}"
+                         style="width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 8px" />
+                  {% else %}
+                    <span class="fw-bold">{{ saved.job.company.initial }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-11">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">{{ saved.job.title }}</h4>
+                    <p class="text-primary mb-2">{{ saved.job.company.name }}</p>
+                    {% if saved.job.is_student_friendly %}<span class="badge bg-success">Student-friendly</span>{% endif %}
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4">
+                    <small><i class="bi bi-geo-alt me-1"></i>{{ saved.job.location|default:"Remote" }}, {{ saved.job.work_format_label }}</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-cash me-1"></i>{{ saved.job.salary_display }}</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-clock me-1"></i>Posted {{ saved.job.posted_at|timesince }} ago</small>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span class="job-tag">{{ saved.job.employment_type_label }}</span>
+                  <span class="job-tag">{{ saved.job.experience_level_label }}</span>
+                  {% for skill in saved.job.skills.all %}<span class="job-tag">{{ skill.name }}</span>{% endfor %}
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                  <a href="{% url 'jobs:jobs-detail' saved.job.pk %}"
+                     class="btn btn-primary btn-sm">View Details</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-md-11">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4 class="fw-bold mb-1">Junior Frontend Developer</h4>
-                <p class="text-primary mb-2">Google</p>
-              </div>
-              <span class="badge bg-success">New</span>
-            </div>
-            <div class="row mt-2">
-              <div class="col-md-4">
-                <small><i class="bi bi-geo-alt me-1"></i>Minsk, Remote</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-cash me-1"></i>$800 - $1200/month</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-clock me-1"></i>Posted 2 days ago</small>
-              </div>
-            </div>
-            <div class="mt-2">
-              <span class="job-tag">Full-time</span>
-              <span class="job-tag">Entry Level</span>
-              <span class="job-tag">React</span>
-            </div>
-            <div class="d-flex gap-2 mt-3">
-              {#  TODO: url for job-details  #}
-              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
-              <button class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-folder-plus"></i> Move to
-                Collection
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="saved-job-card">
-        <i class="bi bi-bookmark-x-fill remove-bookmark"></i>
-        <div class="row">
-          <div class="col-md-1">
-            <div class="company-logo-small mx-auto"
-                 style="background: linear-gradient(135deg, #00b09b, #96c93d)">
-              <i class="bi bi-microsoft"></i>
-            </div>
-          </div>
-          <div class="col-md-11">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4 class="fw-bold mb-1">Marketing Intern</h4>
-                <p class="text-primary mb-2">Microsoft</p>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-md-4">
-                <small><i class="bi bi-geo-alt me-1"></i>Warsaw, Hybrid</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-cash me-1"></i>$500 - $700/month</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-clock me-1"></i>Posted 3 days ago</small>
-              </div>
-            </div>
-            <div class="mt-2">
-              <span class="job-tag">Internship</span>
-              <span class="job-tag">Marketing</span>
-              <span class="job-tag">Student-friendly</span>
-            </div>
-            <div class="d-flex gap-2 mt-3">
-              {#  TODO: url for job-details  #}
-              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
-              <button class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-folder-plus"></i> Move to
-                Collection
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="saved-job-card">
-        <i class="bi bi-bookmark-x-fill remove-bookmark"></i>
-        <div class="row">
-          <div class="col-md-1">
-            <div class="company-logo-small mx-auto"
-                 style="background: linear-gradient(135deg, #f2994a, #f2c94c)">
-              <i class="bi bi-amazon"></i>
-            </div>
-          </div>
-          <div class="col-md-11">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h4 class="fw-bold mb-1">Data Analyst (Entry Level)</h4>
-                <p class="text-primary mb-2">Amazon</p>
-              </div>
-              <span class="badge bg-warning">Closing Soon</span>
-            </div>
-            <div class="row mt-2">
-              <div class="col-md-4">
-                <small><i class="bi bi-geo-alt me-1"></i>Berlin, On-site</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-cash me-1"></i>$900 - $1300/month</small>
-              </div>
-              <div class="col-md-4">
-                <small><i class="bi bi-clock me-1"></i>Posted 5 days ago</small>
-              </div>
-            </div>
-            <div class="mt-2">
-              <span class="job-tag">Full-time</span>
-              <span class="job-tag">Entry Level</span>
-              <span class="job-tag">SQL</span>
-              <span class="job-tag">Python</span>
-            </div>
-            <div class="d-flex gap-2 mt-3">
-              {#  TODO: url for job-details  #}
-              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
-              <button class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-folder-plus"></i> Move to
-                Collection
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Empty State (hidden by default, show when no jobs) -->
-      <!-- <div class="empty-state">
+        {% empty %}
+          <div class="empty-state">
             <i class="bi bi-bookmark"></i>
             <h4 class="fw-bold mt-3">No saved jobs yet</h4>
             <p class="text-muted">Start saving jobs you're interested in</p>
-            <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
-</div> -->
+            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary">Browse Jobs</a>
+          </div>
+        {% endfor %}
+      {% endpartialdef %}
       <!-- Pagination -->
-      <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <span class="page-link">Previous</span>
-          </li>
-          <li class="page-item active">
-            <span class="page-link">1</span>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
+      {% if page_obj.has_other_pages %}
+        <nav class="mt-4">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li class="page-item active">
+                  <span class="page-link">{{ num }}</span>
+                </li>
+              {% else %}
+                <li class="page-item">
+                  <a class="page-link"
+                     href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ num }}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link"
+                   href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <span class="page-link">Next</span>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
     </div>
-  </section>
+  </div>
+</section>
 {% endblock content %}
