@@ -1,4 +1,4 @@
-from dmr.routing import path
+from django.urls import path
 
 from server.apps.dashboard.views import HomePageView
 

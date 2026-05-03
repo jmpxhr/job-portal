@@ -42,10 +42,11 @@ DJANGO_APPS: tuple[str, ...] = (
 )
 
 THIRD_PARTY_APPS: tuple[str, ...] = (
-    'dmr',
+    'rest_framework',
     'corsheaders',
     'django_tasks_db',
     'django_htmx',
+    'django_filters',
 )
 
 INSTALLED_APPS: tuple[str, ...] = (

@@ -1,0 +1,23 @@
+<div class="info-card mt-4">
+  <h5 class="section-title">Delete Program</h5>
+  <p>Are you sure you want to delete <strong>"{{ program.title }}"</strong>?</p>
+  <p class="text-muted small">This action cannot be undone.</p>
+  <form hx-post="{% url 'company:student-program-delete' company.pk program.pk %}"
+        hx-target="#student-programs-content"
+        hx-swap="innerHTML">
+    {% csrf_token %}
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Delete
+      </button>
+      <button type="button"
+              class="btn btn-outline-secondary"
+              hx-get="{% url 'company:student-program-create' company.pk %}"
+              hx-target="#student-programs-content"
+              hx-swap="innerHTML"
+              hx-on="click: null">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

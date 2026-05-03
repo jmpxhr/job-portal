@@ -53,7 +53,7 @@ class GenericRegisterView(View):
             )
         return render(request, const.REG_PAGE)
 
-    def post(self, request: HtmxRequest) -> HttpResponse:
+    def post(self, request: HttpRequest) -> HttpResponse:
         user_type = request.POST.get('user_type', 'jobseeker')
 
         form_class = self._get_form(user_type)

@@ -1,0 +1,280 @@
+<div class="tab-content" id="companyEmployerTabContent">
+  <div class="tab-pane fade show active" id="overview" role="tabpanel">
+    <div class="info-card mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="section-title mb-0">Edit Company Profile</h5>
+        <div>
+          <a href="{% url 'company:company-detail' company.pk %}"
+             class="btn btn-outline-secondary me-2">Cancel</a>
+          <button type="submit"
+                   form="editProfileForm"
+                   class="btn btn-save">Save Changes</button>
+        </div>
+      </div>
+      <form id="editProfileForm"
+            hx-post="{% url 'company:company-edit' company.pk %}"
+            hx-target="#companyContent"
+            hx-swap="innerHTML"
+            enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Basic Information -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Basic Information</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.name.id_for_label }}">Company Name</label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.industry.id_for_label }}">Industry</label>
+              {{ form.industry }}
+              {% if form.industry.errors %}
+                {% for error in form.industry.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.founded_year.id_for_label }}">Founded Year</label>
+              {{ form.founded_year }}
+              {% if form.founded_year.errors %}
+                {% for error in form.founded_year.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.size.id_for_label }}">Company Size</label>
+              {{ form.size }}
+              {% if form.size.errors %}
+                {% for error in form.size.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="{{ form.description.id_for_label }}">About Company</label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <!-- Logo & Cover -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Logo & Cover Image</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.logo.id_for_label }}">Company Logo</label>
+              {% if company.logo %}
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <img src="{{ company.logo.url }}"
+                       alt="Current logo"
+                       style="max-width: 100px; max-height: 100px; border-radius: 12px;" />
+                  <div class="form-check">
+                    <input type="checkbox"
+                           name="clear_logo"
+                           class="form-check-input"
+                           id="id_clear_logo" />
+                    <label class="form-check-label" for="id_clear_logo">Remove logo</label>
+                  </div>
+                </div>
+              {% endif %}
+              {{ form.logo }}
+              {% if form.logo.errors %}
+                {% for error in form.logo.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.cover_image.id_for_label }}">Cover Image</label>
+              {% if company.cover_image %}
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <img src="{{ company.cover_image.url }}"
+                       alt="Current cover"
+                       style="max-width: 200px; max-height: 100px; border-radius: 12px;" />
+                  <div class="form-check">
+                    <input type="checkbox"
+                           name="clear_cover_image"
+                           class="form-check-input"
+                           id="id_clear_cover_image" />
+                    <label class="form-check-label" for="id_clear_cover_image">Remove cover</label>
+                  </div>
+                </div>
+              {% endif %}
+              {{ form.cover_image }}
+              {% if form.cover_image.errors %}
+                {% for error in form.cover_image.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <!-- Contact Information -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Contact Information</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.website.id_for_label }}">Website</label>
+              {{ form.website }}
+              {% if form.website.errors %}
+                {% for error in form.website.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.email.id_for_label }}">Company Email</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.phone.id_for_label }}">Phone Number</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}
+                {% for error in form.phone.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.headquarters.id_for_label }}">Headquarters</label>
+              {{ form.headquarters }}
+              {% if form.headquarters.errors %}
+                {% for error in form.headquarters.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <!-- Social Media -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Social Media</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="social-input">
+                <i class="bi bi-linkedin social-icon text-primary"></i>
+                {{ form.linkedin_url }}
+              </div>
+              {% if form.linkedin_url.errors %}
+                {% for error in form.linkedin_url.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <div class="social-input">
+                <i class="bi bi-facebook social-icon text-primary"></i>
+                {{ form.facebook_url }}
+              </div>
+              {% if form.facebook_url.errors %}
+                {% for error in form.facebook_url.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <div class="social-input">
+                <i class="bi bi-instagram social-icon text-danger"></i>
+                {{ form.instagram_url }}
+              </div>
+              {% if form.instagram_url.errors %}
+                {% for error in form.instagram_url.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <div class="social-input">
+                <i class="bi bi-telegram social-icon text-primary"></i>
+                {{ form.telegram_url }}
+              </div>
+              {% if form.telegram_url.errors %}
+                {% for error in form.telegram_url.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <!-- Benefits -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Benefits & Perks</h6>
+          <div class="row">
+            {% for benefit in form.benefits.field.queryset %}
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input type="checkbox"
+                         name="benefits"
+                         value="{{ benefit.pk }}"
+                         class="form-check-input"
+                         id="benefit_{{ benefit.pk }}"
+                         {% if benefit in company.benefits.all %}checked{% endif %} />
+                  <label class="form-check-label" for="benefit_{{ benefit.pk }}">{{ benefit.name }}</label>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          {% if form.benefits.errors %}
+            {% for error in form.benefits.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <!-- HR Contact Person -->
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">HR Contact Person</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label" for="{{ form.hr_contact_name.id_for_label }}">Name</label>
+              {{ form.hr_contact_name }}
+              {% if form.hr_contact_name.errors %}
+                {% for error in form.hr_contact_name.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="{{ form.hr_contact_position.id_for_label }}">Position</label>
+              {{ form.hr_contact_position }}
+              {% if form.hr_contact_position.errors %}
+                {% for error in form.hr_contact_position.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="{{ form.hr_contact_email.id_for_label }}">Email</label>
+              {{ form.hr_contact_email }}
+              {% if form.hr_contact_email.errors %}
+                {% for error in form.hr_contact_email.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="text-end">
+          <a href="{% url 'company:company-detail' company.pk %}"
+             class="btn btn-outline-secondary me-2">Cancel</a>
+          <button type="submit" class="btn btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
