@@ -96,6 +96,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self) -> str:
         return f'User[id={self.pk}]'
 
+    def get_full_name(self) -> str:
+        return f'{self.first_name} {self.last_name}'
+
     def generate_verification_code(self) -> str:
         code = f'{secrets.randbelow(1000000):06d}'
         self.email_verification_code = code

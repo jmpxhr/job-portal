@@ -27,7 +27,9 @@ from dmr.plugins.msgspec import MsgspecSerializer
 from dmr.routing import Router, build_404_handler, build_500_handler, path
 
 from server.apps.accounts import urls as accounts_urls
+from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
+from server.apps.jobs import urls as jobs_urls
 
 if TYPE_CHECKING:
     from django.urls import URLPattern, URLResolver
@@ -47,6 +49,14 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     path(
         'accounts/',
         include((accounts_urls, 'accounts'), namespace='accounts'),
+    ),
+    path(
+        'company/',
+        include((company_urls, 'company'), namespace='company'),
+    ),
+    path(
+        'jobs/',
+        include((jobs_urls, 'jobs'), namespace='jobs'),
     ),
     # Dashboard
     path(

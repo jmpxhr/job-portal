@@ -43,4 +43,5 @@ urlpatterns = [
         views.PasswordRecoveryResetView.as_view(),
         name='password_recovery_reset',
     ),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
 ]

@@ -9,7 +9,7 @@ from server.apps.accounts.models import (
     Recruiter,
     User,
 )
-from server.apps.companies.models import Company, Industry
+from server.apps.company.models import Company, Industry
 
 
 class JobSeekerRegistrationForm(forms.Form):

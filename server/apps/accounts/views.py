@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, override
 
+from django.contrib.auth import logout
 from django.http import (
     HttpRequest,
     HttpResponse,
@@ -377,3 +378,9 @@ class PasswordRecoveryResetView(View):
             const.PASSWORD_RECOVERY_RESET,
             {'form': form},
         )
+
+
+class LogoutView(View):
+    def get(self, request: HttpRequest) -> HttpResponseRedirect:
+        logout(request)
+        return redirect(reverse('dashboard:home'))

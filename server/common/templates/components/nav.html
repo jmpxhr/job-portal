@@ -1,8 +1,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
-    {#  TODO: link to home page  #}
-    <a class="navbar-brand" href="">
+    <a class="navbar-brand" href="{% url 'dashboard:home' %}">
       <i class="bi bi-briefcase-fill text-primary"></i>
       <span class="fw-bold">StartJob</span>
     </a>
@@ -15,23 +14,90 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          {#  TODO: link to home page  #}
-          <a class="nav-link active" href="">Home</a>
+          <a class="nav-link active" href="{% url 'dashboard:home' %}">Home</a>
         </li>
         <li class="nav-item">
-          {#  TODO: link to jobs list page  #}
-          <a class="nav-link" href="">Jobs</a>
+          <a class="nav-link" href="{% url 'jobs:jobs_list' %}">Jobs</a>
         </li>
         <li class="nav-item">
-          {#  TODO: link to companies list page  #}
-          <a class="nav-link" href="">Companies</a>
+          <a class="nav-link" href="{% url 'company:company-list' %}">Company</a>
         </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active"
+               href="#"
+               id="navbarDropdown"
+               role="button"
+               data-bs-toggle="dropdown">
+              {% if user.account_type == 1 %}
+                <i class="bi bi-person-circle"></i>
+              {% else %}
+                <i class="bi bi-building"></i>
+              {% endif %}
+              {{ user.get_full_name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% if user.account_type == 1 %}
+                <li>
+                  {#  TODO: url for candidate-profile  #}
+                  <a class="dropdown-item active" href="">My Profile</a>
+                </li>
+                <li>
+                  {#  TODO: url for resume-builder  #}
+                  <a class="dropdown-item" href="">My Resume</a>
+                </li>
+                <li>
+                  {#  TODO: url for my-applications  #}
+                  <a class="dropdown-item" href="">Applications</a>
+                </li>
+                <li>
+                  {#  TODO: url for saved-jobs  #}
+                  <a class="dropdown-item" href="">Saved Jobs</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">Settings</a>
+                </li>
+              {% else %}
+                <li>
+                  {# TODO: url for company dashboard  #}
+                  <a class="dropdown-item" href="">Dashboard</a>
+                </li>
+                <li>
+                  {#  TODO: url for post vacancy  #}
+                  <a class="dropdown-item" href="">Post a Job</a>
+                </li>
+                <li>
+                  {#  TODO: url for manage-vacancies  #}
+                  <a class="dropdown-item" href="">Manage Jobs</a>
+                </li>
+                <li>
+                  {#  TODO: url for applicants-list  #}
+                  <a class="dropdown-item" href="">Applicants</a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li>
+                  {#  TODO: url for company-detail (for current company)  #}
+                  <a class="dropdown-item href="">Company Profile</a>
+                </li>
+              {% endif %}
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
+              </li>
+            </ul>
+          </li>
+        {% else %}
+          <div class="d-flex ms-lg-3">
+            <a href="{% url 'accounts:login' %}"
+               class="btn btn-outline-primary me-2">Login</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Register</a>
+          </div>
+        {% endif %}
       </ul>
-      <div class="d-flex ms-lg-3">
-        <a href="{% url 'accounts:login' %}"
-           class="btn btn-outline-primary me-2">Login</a>
-        <a href="{% url 'accounts:register' %}" class="btn btn-primary">Register</a>
-      </div>
     </div>
   </div>
 </nav>
