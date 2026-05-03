@@ -1,5 +1,6 @@
+from typing import override
+
 from django import forms
-from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -60,8 +61,9 @@ class JobSeekerRegistrationForm(forms.Form):
         if User.objects.filter(email__iexact=email).exists():
             msg = 'An account with this email already exists.'
             raise ValidationError(msg)
-        return email
+        return str(email)
 
+    @override
     def clean(self) -> dict[str, str] | None:
         cleaned_data = super().clean()
         if cleaned_data is None:
@@ -177,8 +179,9 @@ class CompanyRegistrationForm(forms.Form):
         if User.objects.filter(email__iexact=email).exists():
             msg = 'An account with this email already exists.'
             raise ValidationError(msg)
-        return email
+        return str(email)
 
+    @override
     def clean(self) -> dict[str, str] | None:
         cleaned_data = super().clean()
         if cleaned_data is None:
@@ -249,33 +252,11 @@ class LoginForm(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
 
-    def __init__(self, *args: object, **kwargs: object) -> None:
-        self.request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)  # type: ignore
-        self.user_cache = None
-
-    def clean(self) -> dict[str, str] | None:
-        cleaned_data = super().clean()
-        if cleaned_data is None:
-            return None
-        email = cleaned_data.get('email')
-        password = cleaned_data.get('password')
-        if email and password:
-            self.user_cache = authenticate(
-                request=self.request,  # type: ignore
-                username=email,
-                password=password,
-            )
-            if self.user_cache is None:
-                msg = 'Invalid email or password.'
-                raise ValidationError(msg)
-            if not self.user_cache.is_active:
-                msg = 'Please verify your email address before logging in.'
-                raise ValidationError(msg)
-        return cleaned_data
-
-    def get_user(self) -> User | None:
-        return self.user_cache
+    def clean_email(self) -> str:
+        email = str(self.cleaned_data.get('email'))
+        if email and '@' not in email:
+            raise ValidationError('Enter a valid email address.')
+        return email
 
 
 class PasswordRecoveryEmailForm(forms.Form):
@@ -307,10 +288,11 @@ class PasswordResetForm(forms.Form):
         ),
     )
 
-    def __init__(self, *args: object, **kwargs: object) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)  # type: ignore
+        super().__init__(*args, **kwargs)
 
+    @override
     def clean(self) -> dict[str, str] | None:
         cleaned_data = super().clean()
         if cleaned_data is None:
@@ -325,7 +307,7 @@ class PasswordResetForm(forms.Form):
                 try:
                     validate_password(
                         new_password,
-                        user=self.user,  # type: ignore
+                        user=self.user,
                     )
                 except ValidationError as e:
                     self.add_error('new_password', e)

@@ -1,19 +1,32 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
-from django.contrib.auth import login
-from django.http import HttpResponse
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseBase,
+    HttpResponseRedirect,
+)
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import FormView, TemplateView
 
 from server.apps.accounts import const, forms
+from server.apps.accounts.exceptions import (
+    InvalidCredentialsError,
+    UnverifiedAccountError,
+)
+from server.apps.accounts.forms import (
+    CompanyRegistrationForm,
+    JobSeekerRegistrationForm,
+    LoginForm,
+)
 from server.apps.accounts.models import User
+from server.apps.accounts.services import AuthService
 from server.apps.accounts.tasks import (
     send_password_reset_email,
     send_verification_email,
 )
-from server.common.types import HttpRequest
 
 if TYPE_CHECKING:
     from django.forms import forms as django_forms
@@ -51,7 +64,10 @@ class RegisterFormView(View):
 
 
 class RegisterSubmitView(View):
-    def get_form_class(self, user_type: str):
+    def get_form_class(
+        self,
+        user_type: str,
+    ) -> type[CompanyRegistrationForm] | type[JobSeekerRegistrationForm]:
         if user_type == 'company':
             return forms.CompanyRegistrationForm
         return forms.JobSeekerRegistrationForm
@@ -89,11 +105,17 @@ class RegisterSubmitView(View):
         )
 
 
-class VerifyCodeView(FormView):
+class VerifyCodeView(FormView):  # type: ignore[type-arg]
     form_class = forms.VerificationForm
     template_name = const.VERIFY_FORM
 
-    def dispatch(self, request, *args, **kwargs):
+    @override
+    def dispatch(  # type: ignore[no-untyped-def]
+        self,
+        request: HttpRequest,
+        *args,
+        **kwargs,
+    ) -> HttpResponseBase | HttpResponseRedirect:
         user_pk = request.session.get('registration_user_pk')
         if not user_pk:
             return redirect('accounts:register')
@@ -105,12 +127,14 @@ class VerifyCodeView(FormView):
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get_initial(self):
+    @override
+    def get_initial(self) -> dict[str, str]:
         return {
             'email': self.user.email,
         }
 
-    def get_context_data(self, **kwargs):
+    @override
+    def get_context_data(self, **kwargs) -> dict[str, Any]:  # type: ignore[no-untyped-def]
         context = super().get_context_data(**kwargs)
         context['email'] = self.user.email
         context['resend_message'] = None
@@ -118,7 +142,8 @@ class VerifyCodeView(FormView):
             context['error'] = kwargs['error']
         return context
 
-    def form_valid(self, form):
+    @override
+    def form_valid(self, form: type['django_forms.Form']) -> HttpResponse:
         code = form.cleaned_data['otp']
 
         if code == self.user.email_verification_code:
@@ -148,14 +173,16 @@ class VerifyCodeView(FormView):
 
         return self.form_invalid(form)
 
-    def form_invalid(self, form):
+    @override
+    def form_invalid(self, form: type['django_forms.Form']) -> HttpResponse:
         context = self.get_context_data(
             form=form,
             error='Invalid verification code. Please try again.',
         )
         return self.render_to_response(context)
 
-    def post(self, request, *args, **kwargs):
+    @override
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:  # type: ignore[no-untyped-def]
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
@@ -163,7 +190,7 @@ class VerifyCodeView(FormView):
 
 
 class ResendVerificationView(View):
-    def get_user_from_session(self, request: HttpRequest):
+    def get_user_from_session(self, request: HttpRequest) -> User | None:
         user_pk = request.session.get('registration_user_pk')
         if not user_pk:
             return None
@@ -173,7 +200,7 @@ class ResendVerificationView(View):
         except User.DoesNotExist:
             return None
 
-    def resend_verification_code(self, user: 'User'):
+    def resend_verification_code(self, user: 'User') -> None:
         code = user.generate_verification_code()
         send_verification_email.enqueue(user.pk, code)
 
@@ -199,34 +226,41 @@ class ResendVerificationView(View):
 
 class LoginView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        form = forms.LoginForm()
-        return render(
-            request,
-            const.LOGIN_PAGE,
-            {'form': form},
-        )
+        form = LoginForm()
+        return render(request, const.LOGIN_PAGE, {'form': form})
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        form = forms.LoginForm(request.POST, request=request)
+        form = forms.LoginForm(request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            remember = form.cleaned_data.get('remember_me')
-            if not user:
-                return redirect(reverse('accounts:login'))
-            if not remember:
-                request.session.set_expiry(0)
-            if user.account_type == User.AccountTypeEnum.JOBSEEKER:
-                return redirect(reverse('dashboard:home'))
-            if user.account_type == User.AccountTypeEnum.COMPANY:
-                return redirect('/employer/dashboard/')
-            return redirect('/')
+            try:
+                user = AuthService.authenticate_user(
+                    request,
+                    form.cleaned_data['email'],
+                    form.cleaned_data['password'],
+                )
 
-        return render(
-            request,
-            const.LOGIN_PAGE,
-            {'form': form},
-        )
+                AuthService.perform_login(
+                    request,
+                    user,
+                    remember=bool(form.cleaned_data.get('remember_me')),
+                )
+
+                return self._redirect_by_user_type(user)
+
+            except InvalidCredentialsError as e:
+                form.add_error(None, str(e))
+            except UnverifiedAccountError as e:
+                form.add_error(None, str(e))
+
+        return render(request, const.LOGIN_PAGE, {'form': form})
+
+    def _redirect_by_user_type(self, user: User) -> HttpResponse:
+        """Handle post-login redirection based on user type."""
+        redirect_map = {
+            User.AccountTypeEnum.JOBSEEKER: reverse('dashboard:home'),
+            User.AccountTypeEnum.COMPANY: '/employer/dashboard/',
+        }
+        return redirect(redirect_map.get(user.account_type, '/'))
 
 
 class PasswordRecoveryView(View):
