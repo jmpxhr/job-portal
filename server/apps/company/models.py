@@ -127,16 +127,9 @@ class Company(models.Model):
     linkedin_url = models.URLField(
         _('LinkedIn URL'), blank=True, default='',
     )
-    facebook_url = models.URLField(
-        _('Facebook URL'), blank=True, default='',
-    )
-    instagram_url = models.URLField(
-        _('Instagram URL'), blank=True, default='',
-    )
     telegram_url = models.URLField(
         _('Telegram URL'), blank=True, default='',
     )
-    is_verified = models.BooleanField(_('verified'), default=False)
     hr_contact_name = models.CharField(
         _('HR contact name'), max_length=150, blank=True, default='',
     )

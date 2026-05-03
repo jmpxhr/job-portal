@@ -16,10 +16,9 @@ class CompanyAdmin(admin.ModelAdmin[Company]):
         'recruiter',
         'industry',
         'size',
-        'is_verified',
     )
     search_fields = ('name', 'recruiter__user__email')
-    list_filter = ('industry', 'size', 'is_verified')
+    list_filter = ('industry', 'size')
     raw_id_fields = ('recruiter',)
     filter_horizontal = ('benefits',)
 

@@ -43,8 +43,6 @@ class CompanyUpdateForm(forms.ModelForm):  # type: ignore[type-arg]
             'logo',
             'cover_image',
             'linkedin_url',
-            'facebook_url',
-            'instagram_url',
             'telegram_url',
             'hr_contact_name',
             'hr_contact_position',
@@ -89,18 +87,6 @@ class CompanyUpdateForm(forms.ModelForm):  # type: ignore[type-arg]
                 attrs={
                     'class': 'form-control',
                     'placeholder': 'LinkedIn URL',
-                },
-            ),
-            'facebook_url': forms.URLInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Facebook URL',
-                },
-            ),
-            'instagram_url': forms.URLInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Instagram URL',
                 },
             ),
             'telegram_url': forms.URLInput(

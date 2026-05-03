@@ -179,28 +179,6 @@
             </div>
             <div class="col-md-6">
               <div class="social-input">
-                <i class="bi bi-facebook social-icon text-primary"></i>
-                {{ form.facebook_url }}
-              </div>
-              {% if form.facebook_url.errors %}
-                {% for error in form.facebook_url.errors %}
-                  <small class="text-danger">{{ error }}</small>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="col-md-6">
-              <div class="social-input">
-                <i class="bi bi-instagram social-icon text-danger"></i>
-                {{ form.instagram_url }}
-              </div>
-              {% if form.instagram_url.errors %}
-                {% for error in form.instagram_url.errors %}
-                  <small class="text-danger">{{ error }}</small>
-                {% endfor %}
-              {% endif %}
-            </div>
-            <div class="col-md-6">
-              <div class="social-input">
                 <i class="bi bi-telegram social-icon text-primary"></i>
                 {{ form.telegram_url }}
               </div>
