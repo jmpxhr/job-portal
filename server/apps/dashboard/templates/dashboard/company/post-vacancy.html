@@ -1,0 +1,265 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="fw-bold mb-0">Post a New Job</h1>
+          <p class="text-muted mb-0">Create a vacancy and attract young talents</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Main Form -->
+        <div class="col-lg-8">
+          <form id="jobPostForm">
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-info-circle text-primary me-2"></i>Basic
+                Information
+              </h5>
+              <div class="mb-3">
+                <label class="form-label required">Job Title</label>
+                <input type="text"
+                       class="form-control"
+                       placeholder="e.g., Junior Frontend Developer"
+                       value="Junior Frontend Developer">
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label required">Employment Type</label>
+                  <select class="form-select">
+                    <option>Full-time</option>
+                    <option>Part-time</option>
+                    <option>Internship</option>
+                    <option>Contract</option>
+                    <option>Temporary</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label required">Experience Level</label>
+                  <select class="form-select">
+                    <option>Entry Level (0-1 year)</option>
+                    <option>Junior (1-2 years)</option>
+                    <option>Mid Level (2-4 years)</option>
+                    <option>Internship</option>
+                    <option>No experience required</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Work Location</label>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="City" value="Minsk">
+                  </div>
+                  <div class="col-md-6">
+                    <select class="form-select">
+                      <option>On-site</option>
+                      <option>Remote</option>
+                      <option>Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label required">Salary Range (per month)</label>
+                <div class="salary-input-group">
+                  <input type="text" class="form-control" placeholder="From" value="$800">
+                  <input type="text" class="form-control" placeholder="To" value="$1200">
+                  <select class="form-select" style="width: 120px;">
+                    <option>USD</option>
+                    <option>EUR</option>
+                    <option>BYN</option>
+                  </select>
+                </div>
+                <small class="text-muted">Leave empty if negotiable</small>
+              </div>
+            </div>
+            <!-- Job Description -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-file-text text-primary me-2"></i>Job Description
+              </h5>
+              <div class="mb-3">
+                <label class="form-label required">Job Description</label>
+                <div id="editor-container">
+                  <p>
+                    We are looking for a passionate Junior Frontend Developer to join our team. This
+                    is an excellent opportunity for students and recent graduates who want to start
+                    their career.
+                  </p>
+                  <p>
+                    <strong>Responsibilities:</strong>
+                  </p>
+                  <ul>
+                    <li>Develop and maintain user interfaces</li>
+                    <li>Collaborate with design team</li>
+                    <li>Write clean, maintainable code</li>
+                  </ul>
+                  <p>
+                    <strong>Requirements:</strong>
+                  </p>
+                  <ul>
+                    <li>Basic knowledge of HTML, CSS, JavaScript</li>
+                    <li>Understanding of responsive design</li>
+                    <li>Eagerness to learn</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Required Skills (comma separated)</label>
+                <input type="text"
+                       class="form-control"
+                       placeholder="e.g., HTML, CSS, JavaScript, React"
+                       value="HTML, CSS, JavaScript, React">
+              </div>
+            </div>
+            <!-- Student-Friendly Options -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-mortarboard text-primary me-2"></i>Student-Friendly Options
+              </h5>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flexibleHours" checked>
+                    <label class="form-check-label" for="flexibleHours">Flexible working hours</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="mentorship" checked>
+                    <label class="form-check-label" for="mentorship">Mentorship program</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="training">
+                    <label class="form-check-label" for="training">Training provided</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="parttime">
+                    <label class="form-check-label" for="parttime">Part-time available</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="remote">
+                    <label class="form-check-label" for="remote">Remote work possible</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="nothird">
+                    <label class="form-check-label" for="nothird">No experience required</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Form Actions -->
+            <div class="d-flex gap-3 mt-4">
+              <button type="submit" class="btn-publish" onclick="publishJob(event)">
+                <i class="bi bi-check-circle"></i> Publish Job
+              </button>
+              <button type="button" class="btn-save-draft" onclick="saveDraft()">
+                <i class="bi bi-save"></i> Save as Draft
+              </button>
+            </div>
+          </form>
+        </div>
+        <!-- Right Sidebar - Preview & Tips -->
+        <div class="col-lg-4">
+          <div class="preview-card">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-eye"></i> Job Preview
+            </h5>
+            <div class="job-preview-content">
+              <div class="company-info d-flex align-items-center mb-3">
+                <div class="company-logo-small me-2"
+                     style="width: 40px;
+                            height: 40px;
+                            font-size: 20px">
+                  <i class="bi bi-building"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">TechStart Inc.</h6>
+                  <small class="text-muted">IT Services</small>
+                </div>
+              </div>
+              <h6 class="fw-bold" id="previewTitle">Junior Frontend Developer</h6>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="badge bg-primary">Full-time</span>
+                <span class="badge bg-success">Entry Level</span>
+                <span class="badge bg-info">Remote</span>
+              </div>
+              <p class="small text-muted mb-2">
+                <i class="bi bi-geo-alt"></i> Minsk, Remote
+                <br>
+                <i class="bi bi-cash"></i> $800 - $1200/month
+              </p>
+              <hr>
+              <h6 class="fw-bold mb-2">Tips for better results:</h6>
+              <ul class="small text-muted">
+                <li class="mb-2">✓ Add specific requirements for students</li>
+                <li class="mb-2">✓ Mention if you offer flexible hours</li>
+                <li class="mb-2">✓ Include salary range to get more applications</li>
+                <li class="mb-2">✓ Specify if no experience is required</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
+{% block javascript %}
+  <!-- Quill Rich Text Editor -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+        // Initialize Quill editor
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Write job description here...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Preview update
+        document.querySelector('input[placeholder="e.g., Junior Frontend Developer"]').addEventListener('input', function (e) {
+            document.getElementById('previewTitle').textContent = e.target.value || 'Job Title';
+        });
+
+        function publishJob(event) {
+            event.preventDefault();
+            // In real app, save to database
+            alert('Job posted successfully!');
+            window.location.href = 'manage-vacancies.html';
+        }
+
+        function saveDraft() {
+            alert('Job saved as draft');
+        }
+  </script>
+{% endblock javascript %}

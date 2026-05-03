@@ -1,0 +1,207 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">Applicants</h1>
+      <p class="text-muted">Review and manage candidate applications</p>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Job Filter Dropdown -->
+      <div class="job-filter-tabs">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <label class="fw-bold mb-2">Select Job:</label>
+            <select class="form-select">
+              <option>All Jobs</option>
+              <option>Junior Frontend Developer (24 applicants)</option>
+              <option>Marketing Intern (18 applicants)</option>
+              <option>Data Analyst (6 applicants)</option>
+            </select>
+          </div>
+          <div class="col-md-8">
+            <label class="fw-bold mb-2">Filter by Status:</label>
+            <div class="status-selector">
+              <span class="status-option active">All (48)</span>
+              <span class="status-option">New (12)</span>
+              <span class="status-option">Reviewed (15)</span>
+              <span class="status-option">Interview (8)</span>
+              <span class="status-option">Offer (3)</span>
+              <span class="status-option">Rejected (10)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Applicants List -->
+      <div class="applicant-card"
+           onclick="window.location.href='candidate-view.html'">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="applicant-avatar">AP</div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Anna Petrova</h5>
+            <p class="text-muted mb-0">anna.petrova@email.com</p>
+            <small class="text-success">Applied 2 hours ago</small>
+          </div>
+          <div class="col-md-2">
+            <span class="badge bg-primary">Junior Frontend Developer</span>
+          </div>
+          <div class="col-md-2">
+            <div class="match-score">92%</div>
+            <small class="text-muted">Match score</small>
+          </div>
+          <div class="col-md-2">
+            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
+              <option>New</option>
+              <option>Reviewed</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-sm btn-outline-primary"
+                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <small class="text-muted">
+              <i class="bi bi-mortarboard"></i> BSU, Computer Science (3rd year) •
+              <i class="bi bi-stars"></i> Skills: HTML, CSS, JavaScript, React
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="applicant-card"
+           onclick="window.location.href='candidate-view.html'">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="applicant-avatar">IS</div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Ivan Sidorov</h5>
+            <p class="text-muted mb-0">ivan.sidorov@email.com</p>
+            <small class="text-warning">Applied yesterday</small>
+          </div>
+          <div class="col-md-2">
+            <span class="badge bg-info">Marketing Intern</span>
+          </div>
+          <div class="col-md-2">
+            <div class="match-score">78%</div>
+            <small class="text-muted">Match score</small>
+          </div>
+          <div class="col-md-2">
+            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
+              <option>New</option>
+              <option>Reviewed</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-sm btn-outline-primary"
+                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <small class="text-muted">
+              <i class="bi bi-mortarboard"></i> BSUIR, Marketing (4th year) •
+              <i class="bi bi-stars"></i> Skills: Digital Marketing, SMM, Analytics
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="applicant-card"
+           onclick="window.location.href='candidate-view.html'">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="applicant-avatar">MK</div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Maria Kovalenko</h5>
+            <p class="text-muted mb-0">maria.k@email.com</p>
+            <small class="text-muted">Applied 3 days ago</small>
+          </div>
+          <div class="col-md-2">
+            <span class="badge bg-success">Data Analyst</span>
+          </div>
+          <div class="col-md-2">
+            <div class="match-score">85%</div>
+            <small class="text-muted">Match score</small>
+          </div>
+          <div class="col-md-2">
+            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
+              <option>New</option>
+              <option>Reviewed</option>
+              <option selected>Interview</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-sm btn-outline-primary"
+                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <small class="text-muted">
+              <i class="bi bi-mortarboard"></i> BSU, Applied Mathematics •
+              <i class="bi bi-stars"></i> Skills: Python, SQL, Excel, Statistics
+            </small>
+          </div>
+        </div>
+      </div>
+      <!-- Bulk Actions -->
+      <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-outline-secondary">
+          <i class="bi bi-check-all"></i> Select All
+        </button>
+        <button class="btn btn-outline-success">
+          <i class="bi bi-envelope"></i> Message Selected
+        </button>
+        <button class="btn btn-outline-warning">
+          <i class="bi bi-star"></i> Shortlist
+        </button>
+        <button class="btn btn-outline-danger">
+          <i class="bi bi-x-circle"></i> Reject Selected
+        </button>
+      </div>
+      <!-- Pagination -->
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          <li class="page-item active">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">3</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+{% endblock content %}

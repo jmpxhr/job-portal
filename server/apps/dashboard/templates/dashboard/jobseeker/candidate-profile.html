@@ -1,0 +1,465 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/jobseeker/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Profile Header -->
+  <section class="profile-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="fw-bold">Candidate Profile</h1>
+        <div>
+          <button class="btn btn-light me-2">
+            <i class="bi bi-pencil"></i> Edit Profile
+          </button>
+          <button class="btn btn-outline-light">
+            <i class="bi bi-share"></i> Share
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="container">
+    <div class="row">
+      <!-- Left Column - Profile Navigation -->
+      <div class="col-lg-3">
+        <div class="profile-card mb-4">
+          <div class="profile-avatar mx-auto">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="text-center mb-4">
+            <h4 class="fw-bold mb-1">Anna Petrova</h4>
+            <p class="text-muted">Computer Science Student</p>
+            <span class="badge bg-success">Profile Verified</span>
+          </div>
+          <!-- Profile Completion -->
+          <div class="mb-4">
+            <div class="d-flex justify-content-between mb-2">
+              <small>Profile Completeness</small>
+              <small class="fw-bold">75%</small>
+            </div>
+            <div class="progress completion-progress">
+              <div class="progress-bar bg-success" style="width: 75%"></div>
+            </div>
+          </div>
+          <!-- Navigation Pills -->
+          <div class="nav nav-pills flex-column" id="profileTabs" role="tablist">
+            <button class="nav-link active"
+                    id="overview-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#overview"
+                    type="button">
+              <i class="bi bi-person"></i> Overview
+            </button>
+            <button class="nav-link"
+                    id="resume-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#resume"
+                    type="button">
+              <i class="bi bi-file-text"></i> Resume
+            </button>
+            <button class="nav-link"
+                    id="education-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#education"
+                    type="button">
+              <i class="bi bi-mortarboard"></i> Education
+            </button>
+            <button class="nav-link"
+                    id="experience-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#experience"
+                    type="button">
+              <i class="bi bi-briefcase"></i> Experience
+            </button>
+            <button class="nav-link"
+                    id="skills-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#skills"
+                    type="button">
+              <i class="bi bi-stars"></i> Skills
+            </button>
+            <button class="nav-link"
+                    id="settings-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#settings"
+                    type="button">
+              <i class="bi bi-gear"></i> Settings
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Right Column - Tab Content -->
+      <div class="col-lg-9">
+        <div class="profile-card">
+          <div class="tab-content" id="profileTabsContent">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Profile Overview</h4>
+                <span class="text-muted">Last updated: 2 days ago</span>
+              </div>
+              <!-- Stats Row -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                  <div class="stat-circle">
+                    <h3>12</h3>
+                    <small>Applications</small>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-circle">
+                    <h3>8</h3>
+                    <small>Saved Jobs</small>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-circle">
+                    <h3>3</h3>
+                    <small>Interviews</small>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-circle">
+                    <h3>2</h3>
+                    <small>Offers</small>
+                  </div>
+                </div>
+              </div>
+              <!-- Quick Info -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <div class="d-flex mb-3">
+                    <i class="bi bi-envelope-fill text-primary me-3 fs-5"></i>
+                    <div>
+                      <small class="text-muted">Email</small>
+                      <p class="mb-0">anna.petrova@email.com</p>
+                    </div>
+                  </div>
+                  <div class="d-flex mb-3">
+                    <i class="bi bi-telephone-fill text-primary me-3 fs-5"></i>
+                    <div>
+                      <small class="text-muted">Phone</small>
+                      <p class="mb-0">+375 29 123-45-67</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex mb-3">
+                    <i class="bi bi-geo-alt-fill text-primary me-3 fs-5"></i>
+                    <div>
+                      <small class="text-muted">Location</small>
+                      <p class="mb-0">Minsk, Belarus</p>
+                    </div>
+                  </div>
+                  <div class="d-flex mb-3">
+                    <i class="bi bi-calendar-fill text-primary me-3 fs-5"></i>
+                    <div>
+                      <small class="text-muted">Member since</small>
+                      <p class="mb-0">January 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- About Me -->
+              <div class="mb-4">
+                <h5 class="fw-bold mb-3">About Me</h5>
+                <p class="text-muted">
+                  3rd-year Computer Science student passionate about web development
+                  and UI/UX design. Looking for internship opportunities to gain practical experience
+                  and learn from industry professionals. Quick learner with strong problem-solving
+                  skills.
+                </p>
+              </div>
+              <!-- Quick Skills Preview -->
+              <div>
+                <h5 class="fw-bold mb-3">Top Skills</h5>
+                <div class="skill-badge">HTML/CSS</div>
+                <div class="skill-badge">JavaScript</div>
+                <div class="skill-badge">React</div>
+                <div class="skill-badge">Python</div>
+                <div class="skill-badge">Figma</div>
+                <a href="#" class="btn btn-link btn-sm">+ Add more</a>
+              </div>
+            </div>
+            <!-- Resume Tab -->
+            <div class="tab-pane fade" id="resume" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">My Resume</h4>
+                {#  TODO: url for resume-builder  #}
+                <a href="" class="btn btn-primary">
+                  <i class="bi bi-pencil-square"></i> Edit Resume
+                </a>
+              </div>
+              <!-- Resume Preview -->
+              <div class="border rounded-3 p-4 bg-light">
+                <div class="text-center mb-4">
+                  <h3 class="fw-bold">ANNA PETROVA</h3>
+                  <p class="text-muted">Computer Science Student | Aspiring Frontend Developer</p>
+                  <div class="d-flex justify-content-center gap-3">
+                    <span><i class="bi bi-envelope"></i> anna@email.com</span>
+                    <span><i class="bi bi-telephone"></i> +375 29 123-45-67</span>
+                    <span><i class="bi bi-linkedin"></i> linkedin.com/in/anna</span>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-md-8">
+                    <h5 class="fw-bold mb-3">Education</h5>
+                    <div class="mb-3">
+                      <p class="fw-bold mb-1">BSc in Computer Science</p>
+                      <p class="text-muted mb-1">Belarusian State University | 2022 - Present</p>
+                      <small>GPA: 3.8/4.0</small>
+                    </div>
+                    <h5 class="fw-bold mb-3 mt-4">Projects</h5>
+                    <div class="mb-3">
+                      <p class="fw-bold mb-1">E-commerce Website</p>
+                      <p class="text-muted small">
+                        Built a full-stack e-commerce platform using
+                        React and Node.js
+                      </p>
+                    </div>
+                    <div class="mb-3">
+                      <p class="fw-bold mb-1">Student Portal</p>
+                      <p class="text-muted small">
+                        Developed a student management system for
+                        university
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">Skills</h5>
+                    <p class="mb-1">HTML/CSS</p>
+                    <div class="progress mb-2" style="height: 5px;">
+                      <div class="progress-bar bg-success" style="width: 90%"></div>
+                    </div>
+                    <p class="mb-1">JavaScript</p>
+                    <div class="progress mb-2" style="height: 5px;">
+                      <div class="progress-bar bg-success" style="width: 75%"></div>
+                    </div>
+                    <p class="mb-1">React</p>
+                    <div class="progress mb-2" style="height: 5px;">
+                      <div class="progress-bar bg-success" style="width: 60%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button class="btn btn-outline-primary me-2">
+                  <i class="bi bi-download"></i> Download
+                  PDF
+                </button>
+                <button class="btn btn-outline-secondary">
+                  <i class="bi bi-printer"></i> Print
+                </button>
+              </div>
+            </div>
+            <!-- Education Tab -->
+            <div class="tab-pane fade" id="education" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Education</h4>
+                <button class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-plus-lg"></i> Add Education
+                </button>
+              </div>
+              <div class="education-item">
+                <div class="d-flex justify-content-between">
+                  <h5 class="fw-bold mb-2">Belarusian State University</h5>
+                  <button class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </div>
+                <p class="text-muted mb-2">
+                  Bachelor of Science in Computer Science | 2022 - Present
+                  (Expected 2026)
+                </p>
+                <p>
+                  Relevant coursework: Web Development, Algorithms, Databases, UI/UX Design, Software
+                  Engineering
+                </p>
+                <span class="badge bg-light text-dark">GPA: 3.8/4.0</span>
+              </div>
+              <div class="education-item">
+                <div class="d-flex justify-content-between">
+                  <h5 class="fw-bold mb-2">Gymnasium No. 1</h5>
+                  <button class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </div>
+                <p class="text-muted mb-2">High School Diploma | 2012 - 2022</p>
+                <p>Specialized in Mathematics and Physics</p>
+              </div>
+            </div>
+            <!-- Experience Tab -->
+            <div class="tab-pane fade" id="experience" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Work Experience</h4>
+                <button class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-plus-lg"></i> Add Experience
+                </button>
+              </div>
+              <div class="experience-item">
+                <div class="d-flex justify-content-between">
+                  <h5 class="fw-bold mb-2">Frontend Developer Intern</h5>
+                  <span class="badge bg-primary">Current</span>
+                </div>
+                <p class="text-muted mb-2">TechStart Inc. | June 2024 - Present</p>
+                <ul class="small">
+                  <li>Developing responsive web interfaces using React and Bootstrap</li>
+                  <li>Collaborating with design team on UI/UX improvements</li>
+                  <li>Participating in code reviews and agile ceremonies</li>
+                </ul>
+                <button class="btn btn-sm btn-outline-secondary mt-2">
+                  <i class="bi bi-pencil"></i>
+                  Edit
+                </button>
+              </div>
+              <div class="experience-item">
+                <div class="d-flex justify-content-between">
+                  <h5 class="fw-bold mb-2">Junior Web Developer (Freelance)</h5>
+                </div>
+                <p class="text-muted mb-2">Self-employed | Jan 2024 - May 2024</p>
+                <ul class="small">
+                  <li>Built websites for 3 local businesses using HTML, CSS, and JavaScript</li>
+                  <li>Managed client communications and project deadlines</li>
+                </ul>
+                <button class="btn btn-sm btn-outline-secondary mt-2">
+                  <i class="bi bi-pencil"></i>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <!-- Skills Tab -->
+            <div class="tab-pane fade" id="skills" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Skills</h4>
+                <button class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-plus-lg"></i> Add Skill
+                </button>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <h6 class="fw-bold mb-3">Technical Skills</h6>
+                  <div class="skill-badge">
+                    HTML5 <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    CSS3 <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    JavaScript <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    React <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Python <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Node.js <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Git <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Bootstrap <i class="bi bi-x"></i>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="fw-bold mb-3">Soft Skills</h6>
+                  <div class="skill-badge">
+                    Teamwork <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Communication <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Problem Solving <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Time Management <i class="bi bi-x"></i>
+                  </div>
+                  <div class="skill-badge">
+                    Adaptability <i class="bi bi-x"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- Language Skills -->
+              <h6 class="fw-bold mt-4 mb-3">Languages</h6>
+              <div class="row">
+                <div class="col-md-4">
+                  <p class="mb-1">
+                    Russian <span class="text-muted">(Native)</span>
+                  </p>
+                </div>
+                <div class="col-md-4">
+                  <p class="mb-1">
+                    English <span class="text-muted">(Fluent)</span>
+                  </p>
+                </div>
+                <div class="col-md-4">
+                  <p class="mb-1">
+                    German <span class="text-muted">(Basic)</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="settings" role="tabpanel">
+              <h4 class="fw-bold mb-4">Account Settings</h4>
+              <form>
+                <!-- Privacy Settings -->
+                <div class="mb-4">
+                  <h5 class="fw-bold mb-3">Privacy</h5>
+                  <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="profileVisible" checked>
+                    <label class="form-check-label" for="profileVisible">
+                      Profile visible to
+                      employers
+                    </label>
+                  </div>
+                  <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="resumePublic" checked>
+                    <label class="form-check-label" for="resumePublic">Resume public</label>
+                  </div>
+                  <div class="form-check form-switch mb-2">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="emailNotifications"
+                           checked>
+                    <label class="form-check-label" for="emailNotifications">
+                      Email
+                      notifications
+                    </label>
+                  </div>
+                </div>
+                <!-- Change Password -->
+                <div class="mb-4">
+                  <h5 class="fw-bold mb-3">Change Password</h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <input type="password" class="form-control" placeholder="Current password">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="password" class="form-control" placeholder="New password">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="password" class="form-control" placeholder="Confirm password">
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

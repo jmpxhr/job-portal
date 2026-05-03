@@ -1,0 +1,608 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Search Header -->
+  <section class="search-header">
+    <div class="container">
+      <h1 class="fw-bold text-center mb-3">Find the Perfect Candidate</h1>
+      <p class="text-center mb-4 opacity-75">Browse through thousands of talented students and young specialists</p>
+      <!-- Search Box -->
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="search-box d-flex">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Search by skills, job title, university...">
+            <button class="btn">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </div>
+          <!-- Popular Searches -->
+          <div class="text-center mt-3">
+            <small class="text-white-50">Popular:</small>
+            <a href="#" class="text-white text-decoration-none me-2">Frontend Developer</a>
+            <a href="#" class="text-white text-decoration-none me-2">Marketing Intern</a>
+            <a href="#" class="text-white text-decoration-none">Data Analyst</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-4">
+    <div class="container">
+      <!-- Results Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h5 class="fw-bold mb-0">1,248 candidates found</h5>
+          <small class="text-muted">Showing 1-12 of 1,248 results</small>
+        </div>
+        <div class="d-flex gap-3">
+          <!-- Sort Dropdown -->
+          <select class="form-select" style="width: 200px;">
+            <option>Most Relevant</option>
+            <option>Newest First</option>
+            <option>Highest Match</option>
+            <option>Experience: High to Low</option>
+          </select>
+          <!-- View Toggle -->
+          <div class="view-toggle btn-group">
+            <button class="btn active" onclick="toggleView('list')" id="listViewBtn">
+              <i class="bi bi-list-ul"></i>
+            </button>
+            <button class="btn" onclick="toggleView('grid')" id="gridViewBtn">
+              <i class="bi bi-grid"></i>
+            </button>
+          </div>
+          <!-- Save Search -->
+          <button class="btn btn-outline-primary" onclick="saveSearch()">
+            <i class="bi bi-bookmark-plus"></i> Save Search
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3">
+          <div class="filter-sidebar">
+            <h5 class="fw-bold mb-3">Filters</h5>
+            <!-- Saved Searches -->
+            <div class="filter-section">
+              <div class="filter-title">Saved Searches</div>
+              <div class="saved-search-item">
+                <i class="bi bi-bookmark-fill text-primary me-2"></i>
+                Frontend Developers
+                <small class="float-end text-muted">124</small>
+              </div>
+              <div class="saved-search-item">
+                <i class="bi bi-bookmark-fill text-primary me-2"></i>
+                Marketing Interns
+                <small class="float-end text-muted">89</small>
+              </div>
+              <div class="saved-search-item">
+                <i class="bi bi-bookmark-fill text-primary me-2"></i>
+                Data Analysts
+                <small class="float-end text-muted">67</small>
+              </div>
+            </div>
+            <!-- Skills -->
+            <div class="filter-section">
+              <div class="filter-title">Skills</div>
+              <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Add skills...">
+              </div>
+              <div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="skill1" checked>
+                  <label class="form-check-label" for="skill1">JavaScript (324)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="skill2" checked>
+                  <label class="form-check-label" for="skill2">React (245)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="skill3">
+                  <label class="form-check-label" for="skill3">Python (189)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="skill4">
+                  <label class="form-check-label" for="skill4">HTML/CSS (412)</label>
+                </div>
+                <a href="#" class="text-decoration-none small">+ 12 more</a>
+              </div>
+            </div>
+            <!-- Education Level -->
+            <div class="filter-section">
+              <div class="filter-title">Education</div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="education" id="edu1">
+                <label class="form-check-label" for="edu1">High School (124)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       name="education"
+                       id="edu2"
+                       checked>
+                <label class="form-check-label" for="edu2">Bachelor's Degree (845)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="education" id="edu3">
+                <label class="form-check-label" for="edu3">Master's Degree (279)</label>
+              </div>
+            </div>
+            <!-- Experience Level -->
+            <div class="filter-section">
+              <div class="filter-title">Experience</div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="exp1" checked>
+                <label class="form-check-label" for="exp1">No experience (456)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="exp2" checked>
+                <label class="form-check-label" for="exp2">Less than 1 year (523)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="exp3">
+                <label class="form-check-label" for="exp3">1-2 years (189)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="exp4">
+                <label class="form-check-label" for="exp4">2-3 years (80)</label>
+              </div>
+            </div>
+            <!-- Availability -->
+            <div class="filter-section">
+              <div class="filter-title">Availability</div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="avail1" checked>
+                <label class="form-check-label" for="avail1">Immediate (324)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="avail2" checked>
+                <label class="form-check-label" for="avail2">Within 1 month (456)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="avail3">
+                <label class="form-check-label" for="avail3">Students (678)</label>
+              </div>
+            </div>
+            <!-- Location -->
+            <div class="filter-section">
+              <div class="filter-title">Location</div>
+              <div class="mb-2">
+                <input type="text" class="form-control" placeholder="City or remote">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="loc1" checked>
+                <label class="form-check-label" for="loc1">Remote (567)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="loc2">
+                <label class="form-check-label" for="loc2">Minsk (423)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="loc3">
+                <label class="form-check-label" for="loc3">Warsaw (234)</label>
+              </div>
+            </div>
+            <!-- Expected Salary -->
+            <div class="filter-section">
+              <div class="filter-title">Expected Salary</div>
+              <input type="range"
+                     class="range-slider w-100"
+                     min="0"
+                     max="3000"
+                     value="1500">
+              <div class="d-flex justify-content-between mt-2">
+                <span>$0</span>
+                <span>$1500</span>
+                <span>$3000+</span>
+              </div>
+            </div>
+            <button class="btn btn-primary w-100">Apply Filters</button>
+            <button class="btn btn-link w-100 mt-2">Clear All</button>
+          </div>
+        </div>
+        <!-- Candidates List (List View - default) -->
+        <div class="col-lg-9" id="listView">
+          <!-- Candidate Card 1 -->
+          <div class="candidate-card"
+               onclick="window.location.href='candidate-view.html'">
+            <div class="match-score">92%</div>
+            <div class="row">
+              <div class="col-md-2">
+                <div class="candidate-avatar mx-auto">AP</div>
+              </div>
+              <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Anna Petrova</h4>
+                    <p class="text-muted mb-2">Computer Science Student at BSU</p>
+                  </div>
+                  <span class="availability-badge availability-student">Student (3rd year)</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4">
+                    <small><i class="bi bi-geo-alt me-1"></i>Minsk, Belarus</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-briefcase me-1"></i>Looking for internship</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-cash me-1"></i>Expected: $800-1200</small>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="skill-badge">JavaScript</span>
+                  <span class="skill-badge">React</span>
+                  <span class="skill-badge">HTML/CSS</span>
+                  <span class="skill-badge">Git</span>
+                  <span class="skill-badge">Figma</span>
+                </div>
+                <div class="mt-2 d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">
+                      <i class="bi bi-mortarboard"></i> GPA: 3.8/4.0 •
+                      <i class="bi bi-translate"></i> English (Fluent)
+                    </small>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary"
+                            onclick="event.stopPropagation(); window.location.href='candidate-view.html'">
+                      View Profile
+                    </button>
+                    <button class="btn btn-sm btn-primary"
+                            onclick="event.stopPropagation(); saveCandidate('Anna Petrova')">
+                      <i class="bi bi-bookmark-plus"></i> Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Candidate Card 2 -->
+          <div class="candidate-card"
+               onclick="window.location.href='candidate-view.html'">
+            <div class="match-score">87%</div>
+            <div class="row">
+              <div class="col-md-2">
+                <div class="candidate-avatar mx-auto">IS</div>
+              </div>
+              <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Ivan Sidorov</h4>
+                    <p class="text-muted mb-2">Marketing Student at BSUIR</p>
+                  </div>
+                  <span class="availability-badge availability-1month">Available in 1 month</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4">
+                    <small><i class="bi bi-geo-alt me-1"></i>Minsk, Belarus</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-briefcase me-1"></i>Looking for part-time</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-cash me-1"></i>Expected: $500-800</small>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="skill-badge">Digital Marketing</span>
+                  <span class="skill-badge">SMM</span>
+                  <span class="skill-badge">Google Analytics</span>
+                  <span class="skill-badge">Content Strategy</span>
+                </div>
+                <div class="mt-2 d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">
+                      <i class="bi bi-mortarboard"></i> 4th year •
+                      <i class="bi bi-translate"></i> English (Intermediate)
+                    </small>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary">View Profile</button>
+                    <button class="btn btn-sm btn-primary">
+                      <i class="bi bi-bookmark-plus"></i>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Candidate Card 3 -->
+          <div class="candidate-card"
+               onclick="window.location.href='candidate-view.html'">
+            <div class="match-score">95%</div>
+            <div class="row">
+              <div class="col-md-2">
+                <div class="candidate-avatar mx-auto">MK</div>
+              </div>
+              <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Maria Kovalenko</h4>
+                    <p class="text-muted mb-2">Applied Mathematics Graduate</p>
+                  </div>
+                  <span class="availability-badge availability-immediate">Immediate</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4">
+                    <small><i class="bi bi-geo-alt me-1"></i>Remote / Warsaw</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-briefcase me-1"></i>Looking for full-time</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-cash me-1"></i>Expected: $900-1300</small>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="skill-badge">Python</span>
+                  <span class="skill-badge">SQL</span>
+                  <span class="skill-badge">Excel</span>
+                  <span class="skill-badge">Pandas</span>
+                  <span class="skill-badge">Statistics</span>
+                </div>
+                <div class="mt-2 d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">
+                      <i class="bi bi-mortarboard"></i> BSU, 2024 •
+                      <i class="bi bi-translate"></i> English (Fluent)
+                    </small>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary">View Profile</button>
+                    <button class="btn btn-sm btn-primary">
+                      <i class="bi bi-bookmark-plus"></i>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Candidate Card 4 -->
+          <div class="candidate-card"
+               onclick="window.location.href='candidate-view.html'">
+            <div class="match-score">78%</div>
+            <div class="row">
+              <div class="col-md-2">
+                <div class="candidate-avatar mx-auto">DP</div>
+              </div>
+              <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h4 class="fw-bold mb-1">Dmitry Petrov</h4>
+                    <p class="text-muted mb-2">UX/UI Design Student</p>
+                  </div>
+                  <span class="availability-badge availability-student">Student (2nd year)</span>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-4">
+                    <small><i class="bi bi-geo-alt me-1"></i>Minsk, Belarus</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-briefcase me-1"></i>Looking for internship</small>
+                  </div>
+                  <div class="col-md-4">
+                    <small><i class="bi bi-cash me-1"></i>Expected: $600-900</small>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="skill-badge">Figma</span>
+                  <span class="skill-badge">UI Design</span>
+                  <span class="skill-badge">Wireframing</span>
+                  <span class="skill-badge">Prototyping</span>
+                  <span class="skill-badge">Adobe XD</span>
+                </div>
+                <div class="mt-2 d-flex justify-content-between align-items-center">
+                  <div>
+                    <small class="text-muted">
+                      <i class="bi bi-mortarboard"></i> Portfolio included •
+                      <i class="bi bi-translate"></i> English (Intermediate)
+                    </small>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary">View Profile</button>
+                    <button class="btn btn-sm btn-primary">
+                      <i class="bi bi-bookmark-plus"></i>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Pagination -->
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">1</span>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">4</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">5</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <!-- Candidates Grid View (hidden by default) -->
+        <div class="col-lg-9" id="gridView" style="display: none;">
+          <div class="candidate-grid-view">
+            <!-- Grid Card 1 -->
+            <div class="candidate-grid-card"
+                 onclick="window.location.href='candidate-view.html'">
+              <div class="match-score">92%</div>
+              <div class="candidate-avatar mx-auto">AP</div>
+              <h5 class="fw-bold mb-1">Anna Petrova</h5>
+              <p class="text-muted small">CS Student at BSU</p>
+              <span class="availability-badge availability-student mb-2">Student (3rd year)</span>
+              <div class="mb-2">
+                <span class="skill-badge">React</span>
+                <span class="skill-badge">JS</span>
+                <span class="skill-badge">HTML</span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary w-100">View Profile</button>
+            </div>
+            <!-- Grid Card 2 -->
+            <div class="candidate-grid-card"
+                 onclick="window.location.href='candidate-view.html'">
+              <div class="match-score">87%</div>
+              <div class="candidate-avatar mx-auto">IS</div>
+              <h5 class="fw-bold mb-1">Ivan Sidorov</h5>
+              <p class="text-muted small">Marketing Student</p>
+              <span class="availability-badge availability-1month mb-2">1 month</span>
+              <div class="mb-2">
+                <span class="skill-badge">SMM</span>
+                <span class="skill-badge">Analytics</span>
+                <span class="skill-badge">Content</span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary w-100">View Profile</button>
+            </div>
+            <!-- Grid Card 3 -->
+            <div class="candidate-grid-card"
+                 onclick="window.location.href='candidate-view.html'">
+              <div class="match-score">95%</div>
+              <div class="candidate-avatar mx-auto">MK</div>
+              <h5 class="fw-bold mb-1">Maria Kovalenko</h5>
+              <p class="text-muted small">Math Graduate</p>
+              <span class="availability-badge availability-immediate mb-2">Immediate</span>
+              <div class="mb-2">
+                <span class="skill-badge">Python</span>
+                <span class="skill-badge">SQL</span>
+                <span class="skill-badge">Excel</span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary w-100">View Profile</button>
+            </div>
+            <!-- Grid Card 4 -->
+            <div class="candidate-grid-card"
+                 onclick="window.location.href='candidate-view.html'">
+              <div class="match-score">78%</div>
+              <div class="candidate-avatar mx-auto">DP</div>
+              <h5 class="fw-bold mb-1">Dmitry Petrov</h5>
+              <p class="text-muted small">UX/UI Designer</p>
+              <span class="availability-badge availability-student mb-2">Student</span>
+              <div class="mb-2">
+                <span class="skill-badge">Figma</span>
+                <span class="skill-badge">UI</span>
+                <span class="skill-badge">XD</span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary w-100">View Profile</button>
+            </div>
+          </div>
+          <!-- Pagination for Grid View -->
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">1</span>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Save Search Modal -->
+  <div class="modal fade" id="saveSearchModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Save This Search</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Search Name</label>
+            <input type="text"
+                   class="form-control"
+                   placeholder="e.g., Frontend Developers in Minsk">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email Alerts</label>
+            <select class="form-select">
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Never</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="confirmSaveSearch()">Save Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block javascript %}
+  {{ block.super }}
+  <script>
+        function toggleView(view) {
+            const listView = document.getElementById('listView');
+            const gridView = document.getElementById('gridView');
+            const listBtn = document.getElementById('listViewBtn');
+            const gridBtn = document.getElementById('gridViewBtn');
+
+            if (view === 'list') {
+                listView.style.display = 'block';
+                gridView.style.display = 'none';
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            } else {
+                listView.style.display = 'none';
+                gridView.style.display = 'block';
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            }
+        }
+
+        function saveSearch() {
+            var saveModal = new bootstrap.Modal(document.getElementById('saveSearchModal'));
+            saveModal.show();
+        }
+
+        function confirmSaveSearch() {
+            bootstrap.Modal.getInstance(document.getElementById('saveSearchModal')).hide();
+            alert('Search saved successfully! You will receive email alerts for matching candidates.');
+        }
+
+        function saveCandidate(name) {
+            alert(name + ' has been saved to your candidate list');
+        }
+  </script>
+{% endblock javascript %}

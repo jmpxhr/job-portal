@@ -1,0 +1,273 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="fw-bold mb-0">Manage Jobs</h1>
+          <p class="text-muted mb-0">View, edit and manage your job postings</p>
+        </div>
+        {#  TODO: url for post-vacancy  #}
+        <a href="" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> Post New Job
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Statistics Overview -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">12</div>
+            <small class="text-muted">Active Jobs</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">5</div>
+            <small class="text-muted">Drafts</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">48</div>
+            <small class="text-muted">Total Applicants</small>
+          </div>
+        </div>
+      </div>
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <select class="form-select">
+              <option>All Statuses</option>
+              <option>Active</option>
+              <option>Draft</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select">
+              <option>All Types</option>
+              <option>Full-time</option>
+              <option>Part-time</option>
+              <option>Internship</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search jobs...">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100">Filter</button>
+          </div>
+        </div>
+      </div>
+      <!-- Vacancy List -->
+      <div class="vacancy-card">
+        <div class="row align-items-center">
+          <div class="col-lg-1">
+            <span class="status-badge status-active">Active</span>
+          </div>
+          <div class="col-lg-4">
+            <h5 class="fw-bold mb-1">Junior Frontend Developer</h5>
+            <p class="text-muted mb-0 small">
+              <i class="bi bi-geo-alt"></i> Minsk, Remote •
+              <i class="bi bi-cash"></i> $800-$1200
+            </p>
+          </div>
+          <div class="col-lg-2">
+            <div class="text-center">
+              <div class="fw-bold">24</div>
+              <small class="text-muted">Applications</small>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="text-center">
+              <div class="fw-bold">124</div>
+              <small class="text-muted">Views</small>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="d-flex gap-2 justify-content-end">
+              <button class="btn btn-sm btn-outline-primary"
+                      onclick="window.location.href='edit-vacancy.html'">
+                <i class="bi bi-pencil"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-success"
+                      onclick="window.location.href='applicants-list.html'">
+                <i class="bi bi-people"></i> View
+              </button>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="#"><i class="bi bi-eye"></i> Preview</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"><i class="bi bi-copy"></i> Duplicate</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"><i class="bi bi-pause"></i> Pause</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li>
+                  <a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i>
+                Delete</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-12">
+        <small class="text-muted">
+          <i class="bi bi-calendar"></i> Posted: Mar 15, 2024
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="vacancy-card">
+    <div class="row align-items-center">
+      <div class="col-lg-1">
+        <span class="status-badge status-active">Active</span>
+      </div>
+      <div class="col-lg-4">
+        <h5 class="fw-bold mb-1">Marketing Intern</h5>
+        <p class="text-muted mb-0 small">
+          <i class="bi bi-geo-alt"></i> Warsaw, Hybrid •
+          <i class="bi bi-cash"></i> $500-$700
+        </p>
+      </div>
+      <div class="col-lg-2">
+        <div class="text-center">
+          <div class="fw-bold">18</div>
+          <small class="text-muted">Applications</small>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="text-center">
+          <div class="fw-bold">89</div>
+          <small class="text-muted">Views</small>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit
+          </button>
+          <button class="btn btn-sm btn-outline-success">
+            <i class="bi bi-people"></i> View
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+              <i class="bi bi-three-dots"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="#"><i class="bi bi-eye"></i> Preview</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="bi bi-copy"></i> Duplicate</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"><i class="bi bi-pause"></i> Pause</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+              <a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i>
+            Delete</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="vacancy-card">
+  <div class="row align-items-center">
+    <div class="col-lg-1">
+      <span class="status-badge status-draft">Draft</span>
+    </div>
+    <div class="col-lg-4">
+      <h5 class="fw-bold mb-1">Data Analyst (Entry Level)</h5>
+      <p class="text-muted mb-0 small">
+        <i class="bi bi-geo-alt"></i> Berlin •
+        <i class="bi bi-cash"></i> $900-$1300
+      </p>
+    </div>
+    <div class="col-lg-2">
+      <div class="text-center">
+        <div class="fw-bold">-</div>
+        <small class="text-muted">Not published</small>
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="text-center">
+        <div class="fw-bold">-</div>
+        <small class="text-muted">Draft</small>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="d-flex gap-2 justify-content-end">
+        <button class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-pencil"></i> Edit
+        </button>
+        <button class="btn btn-sm btn-outline-success">
+          <i class="bi bi-send"></i> Publish
+        </button>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+            <a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i>
+          Delete</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled">
+      <span class="page-link">Previous</span>
+    </li>
+    <li class="page-item active">
+      <span class="page-link">1</span>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="#">2</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="#">3</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</nav>
+</div>
+</section>
+{% endblock content %}

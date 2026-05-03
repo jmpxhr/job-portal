@@ -1,0 +1,287 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/jobseeker/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+    <!-- Page Header -->
+    <section class="bg-light py-4">
+        <div class="container">
+            <h1 class="fw-bold mb-0">Resume Builder</h1>
+            <p class="text-muted">Create a professional resume that stands out to employers</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Left Sidebar - Progress & Tips -->
+                <div class="col-lg-3">
+                    <div class="builder-sidebar">
+                        <h5 class="fw-bold mb-3">Resume Progress</h5>
+
+                        <!-- Progress Steps -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="progress-step completed me-3">✓</div>
+                            <div>
+                                <p class="fw-bold mb-0">Personal Info</p>
+                                <small class="text-success">Completed</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="progress-step active me-3">2</div>
+                            <div>
+                                <p class="fw-bold mb-0">Education</p>
+                                <small class="text-muted">In Progress</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="progress-step me-3">3</div>
+                            <div>
+                                <p class="fw-bold mb-0">Experience</p>
+                                <small class="text-muted">Not Started</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="progress-step me-3">4</div>
+                            <div>
+                                <p class="fw-bold mb-0">Skills</p>
+                                <small class="text-muted">Not Started</small>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Tips -->
+                        <h6 class="fw-bold mb-3">Pro Tips</h6>
+                        <div class="alert alert-info bg-light border-0">
+                            <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                            <small>Add quantifiable achievements to your experience section</small>
+                        </div>
+                        <div class="alert alert-info bg-light border-0">
+                            <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+                            <small>Keep your resume to 1-2 pages maximum</small>
+                        </div>
+
+                        <!-- Resume Score -->
+                        <div class="text-center mt-4">
+                            <h2 class="text-primary fw-bold">65%</h2>
+                            <p class="small text-muted">Resume Strength Score</p>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Builder Area -->
+                <div class="col-lg-6">
+                    <!-- Personal Information Section -->
+                    <div class="section-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-person-circle text-primary me-2"></i>Personal
+                                Information</h5>
+                            <span class="badge bg-success">Completed</span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" value="Anna">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" value="Petrova">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="anna.petrova@email.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" value="+375 29 123-45-67">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" value="Minsk">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country</label>
+                                <input type="text" class="form-control" value="Belarus">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Professional Summary</label>
+                                <textarea class="form-control"
+                                    rows="3">3rd-year Computer Science student passionate about web development. Seeking an internship to apply my skills and learn from industry professionals.</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education Section -->
+                    <div class="section-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-mortarboard text-primary me-2"></i>Education</h5>
+                            <span class="badge bg-warning">In Progress</span>
+                        </div>
+
+                        <!-- Education Item -->
+                        <div class="border-start border-3 border-primary ps-3 mb-3">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control mb-2" placeholder="Institution Name"
+                                        value="Belarusian State University">
+                                    <input type="text" class="form-control mb-2" placeholder="Degree"
+                                        value="Bachelor of Science in Computer Science">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control mb-2" placeholder="Start Year" value="2022">
+                                    <input type="text" class="form-control mb-2" placeholder="End Year" value="2026">
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control" rows="2"
+                                        placeholder="Description">Relevant coursework: Web Development, Algorithms, Databases, UI/UX Design</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i>
+                                        Edit</button>
+                                    <button class="btn btn-outline-danger btn-sm ms-2"><i
+                                            class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-plus-lg"></i> Add Another Education
+                        </button>
+                    </div>
+
+                    <!-- Work Experience Section -->
+                    <div class="section-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-briefcase text-primary me-2"></i>Work Experience
+                            </h5>
+                            <span class="badge bg-secondary">Optional</span>
+                        </div>
+
+                        <!-- Experience Item -->
+                        <div class="border-start border-3 border-success ps-3 mb-3">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control mb-2" placeholder="Job Title"
+                                        value="Frontend Developer Intern">
+                                    <input type="text" class="form-control mb-2" placeholder="Company"
+                                        value="TechStart Inc.">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control mb-2" placeholder="Start Date"
+                                        value="June 2024">
+                                    <input type="text" class="form-control mb-2" placeholder="End Date" value="Present">
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control" rows="3"
+                                        placeholder="Description">Developing responsive web interfaces using React and Bootstrap. Collaborating with design team on UI/UX improvements.</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-plus-lg"></i> Add Work Experience
+                        </button>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="section-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-stars text-primary me-2"></i>Skills</h5>
+                            <span class="badge bg-secondary">Optional</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Technical Skills</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="badge bg-light text-dark p-2">HTML5 <i class="bi bi-x ms-1"></i></span>
+                                <span class="badge bg-light text-dark p-2">CSS3 <i class="bi bi-x ms-1"></i></span>
+                                <span class="badge bg-light text-dark p-2">JavaScript <i
+                                        class="bi bi-x ms-1"></i></span>
+                                <span class="badge bg-light text-dark p-2">React <i class="bi bi-x ms-1"></i></span>
+                                <span class="badge bg-light text-dark p-2">Python <i class="bi bi-x ms-1"></i></span>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Add a skill">
+                                <button class="btn btn-outline-primary">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Languages</label>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" placeholder="Language" value="Russian">
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select">
+                                        <option>Native</option>
+                                        <option>Fluent</option>
+                                        <option>Intermediate</option>
+                                        <option>Basic</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Buttons -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1"><i class="bi bi-save"></i> Save Resume</button>
+                        <button class="btn btn-outline-secondary"><i class="bi bi-eye"></i> Preview</button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar - Templates & Preview -->
+                <div class="col-lg-3">
+                    <div class="builder-sidebar">
+                        <h5 class="fw-bold mb-3">Choose Template</h5>
+
+                        <div class="template-option active mb-2">
+                            <i class="bi bi-file-text"></i>
+                            <p class="mb-0 fw-bold">Modern</p>
+                            <small class="text-muted">Clean and professional</small>
+                        </div>
+
+                        <div class="template-option mb-2">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <p class="mb-0 fw-bold">Creative</p>
+                            <small class="text-muted">For design roles</small>
+                        </div>
+
+                        <div class="template-option mb-2">
+                            <i class="bi bi-file-check"></i>
+                            <p class="mb-0 fw-bold">Simple</p>
+                            <small class="text-muted">Minimalist design</small>
+                        </div>
+
+                        <hr>
+
+                        <h6 class="fw-bold mb-3">Quick Preview</h6>
+                        <div class="resume-template-preview text-center p-3">
+                            <i class="bi bi-file-earmark-person fs-1 text-muted"></i>
+                            <p class="small text-muted mt-2">Your resume preview will appear here</p>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-outline-primary"><i class="bi bi-download"></i> Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

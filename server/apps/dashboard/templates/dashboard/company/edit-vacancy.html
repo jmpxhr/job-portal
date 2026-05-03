@@ -1,0 +1,409 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="fw-bold mb-0">Edit Job Posting</h1>
+          <p class="text-muted mb-0">Update your job vacancy details</p>
+        </div>
+        <div>
+          {#  TODO: url for manage-vacancies  #}
+          <a href="" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Jobs
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Warning Message for Active Job -->
+      <div class="warning-message">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Note:</strong> This job is currently active and receiving applications. Changes will be visible
+        immediately to applicants.
+      </div>
+      <div class="row">
+        <!-- Main Edit Form -->
+        <div class="col-lg-8">
+          <form id="editJobForm">
+            <!-- Job Status -->
+            <div class="form-section">
+              <div class="section-title">
+                <span><i class="bi bi-info-circle text-primary me-2"></i>Job Status</span>
+                <span class="status-badge status-active">Active</span>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Job Status</label>
+                  <select class="form-select">
+                    <option selected>Active (Receiving applications)</option>
+                    <option>Paused (Not receiving applications)</option>
+                    <option>Draft (Hidden from public)</option>
+                    <option>Closed (Job filled/removed)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Posted Date</label>
+                  <input type="text" class="form-control" value="March 15, 2024" readonly>
+                </div>
+              </div>
+            </div>
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-info-circle text-primary me-2"></i>Basic
+                Information
+              </h5>
+              <div class="mb-3">
+                <label class="form-label required">Job Title</label>
+                <input type="text" class="form-control" value="Junior Frontend Developer">
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label required">Employment Type</label>
+                  <select class="form-select">
+                    <option selected>Full-time</option>
+                    <option>Part-time</option>
+                    <option>Internship</option>
+                    <option>Contract</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label required">Experience Level</label>
+                  <select class="form-select">
+                    <option>Entry Level (0-1 year)</option>
+                    <option selected>Junior (1-2 years)</option>
+                    <option>Mid Level (2-4 years)</option>
+                    <option>Internship</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Work Location</label>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" value="Minsk">
+                  </div>
+                  <div class="col-md-6">
+                    <select class="form-select">
+                      <option>On-site</option>
+                      <option>Remote</option>
+                      <option selected>Hybrid</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label required">Salary Range</label>
+                <div class="row g-2">
+                  <div class="col-md-5">
+                    <input type="text" class="form-control" value="$800">
+                  </div>
+                  <div class="col-md-5">
+                    <input type="text" class="form-control" value="$1200">
+                  </div>
+                  <div class="col-md-2">
+                    <select class="form-select">
+                      <option>USD</option>
+                      <option>EUR</option>
+                      <option>BYN</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Job Description -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-file-text text-primary me-2"></i>Job Description
+              </h5>
+              <div class="mb-3">
+                <label class="form-label required">Job Description</label>
+                <div id="editor-container">
+                  <p>
+                    We are looking for a passionate Junior Frontend Developer to join our team. This
+                    is an excellent opportunity for students and recent graduates who want to start
+                    their career.
+                  </p>
+                  <p>
+                    <strong>Responsibilities:</strong>
+                  </p>
+                  <ul>
+                    <li>Develop and maintain user interfaces using React</li>
+                    <li>Collaborate with design team to implement responsive designs</li>
+                    <li>Write clean, maintainable, and efficient code</li>
+                    <li>Participate in code reviews and team meetings</li>
+                  </ul>
+                  <p>
+                    <strong>Requirements:</strong>
+                  </p>
+                  <ul>
+                    <li>Basic knowledge of HTML, CSS, JavaScript</li>
+                    <li>Understanding of responsive design principles</li>
+                    <li>Eagerness to learn and grow professionally</li>
+                    <li>Good communication skills</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Required Skills</label>
+                <input type="text"
+                       class="form-control"
+                       value="HTML, CSS, JavaScript, React, Git">
+              </div>
+            </div>
+            <!-- Student-Friendly Options -->
+            <div class="form-section">
+              <h5 class="section-title">
+                <i class="bi bi-mortarboard text-primary me-2"></i>Student-Friendly Options
+              </h5>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flexibleHours" checked>
+                    <label class="form-check-label" for="flexibleHours">Flexible working hours</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="mentorship" checked>
+                    <label class="form-check-label" for="mentorship">Mentorship program</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="training" checked>
+                    <label class="form-check-label" for="training">Training provided</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="parttime">
+                    <label class="form-check-label" for="parttime">Part-time available</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="remoteWork" checked>
+                    <label class="form-check-label" for="remoteWork">Remote work possible</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="noExperience">
+                    <label class="form-check-label" for="noExperience">No experience required</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Right Sidebar - Preview & Stats -->
+        <div class="col-lg-4">
+          <!-- Live Preview -->
+          <div class="preview-card mb-4">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-eye"></i> Live Preview
+            </h5>
+            <div class="job-preview">
+              <div class="company-info d-flex align-items-center mb-3">
+                <div class="company-logo-small me-2">
+                  <i class="bi bi-building"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">TechStart Inc.</h6>
+                  <small class="text-muted">Posted 15 days ago</small>
+                </div>
+              </div>
+              <h6 class="fw-bold" id="previewTitle">Junior Frontend Developer</h6>
+              <div class="d-flex flex-wrap gap-1 mb-2">
+                <span class="badge bg-primary">Full-time</span>
+                <span class="badge bg-success">Entry Level</span>
+                <span class="badge bg-info">Hybrid</span>
+              </div>
+              <p class="small text-muted mb-2">
+                <i class="bi bi-geo-alt"></i> Minsk, Hybrid
+                <br>
+                <i class="bi bi-cash"></i> $800 - $1200/month
+              </p>
+              <hr>
+              <div class="text-center">
+                <span class="badge bg-warning text-dark">24 applicants so far</span>
+              </div>
+            </div>
+          </div>
+          <!-- Job Statistics -->
+          <div class="preview-card mb-4">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-graph-up"></i> Job Statistics
+            </h5>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Views</span>
+                <span class="fw-bold">124</span>
+              </div>
+              <div class="progress" style="height: 5px;">
+                <div class="progress-bar bg-primary" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Applications</span>
+                <span class="fw-bold">24</span>
+              </div>
+              <div class="progress" style="height: 5px;">
+                <div class="progress-bar bg-success" style="width: 19%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Interviews</span>
+                <span class="fw-bold">5</span>
+              </div>
+              <div class="progress" style="height: 5px;">
+                <div class="progress-bar bg-warning" style="width: 21%"></div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Hires</span>
+                <span class="fw-bold">1</span>
+              </div>
+              <div class="progress" style="height: 5px;">
+                <div class="progress-bar bg-info" style="width: 4%"></div>
+              </div>
+            </div>
+            <hr>
+            <div class="text-center">
+              {#  TODO: url for applicants-list  #}
+              <a href="" class="btn btn-outline-primary btn-sm">View All Applicants (24)</a>
+            </div>
+          </div>
+          <!-- Quick Actions -->
+          <div class="preview-card mt-4">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-lightning"></i> Quick Actions
+            </h5>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-success" onclick="deleteJob()">
+                <i class="bi bi-archive"></i> Update Job
+              </button>
+              <button class="btn btn-outline-dark" onclick="deleteJob()">
+                <i class="bi bi-archive"></i> Save as Daft
+              </button>
+              <button class="btn btn-outline-warning" onclick="deleteJob()">
+                <i class="bi bi-archive"></i> Archive
+              </button>
+              <button class="btn btn-outline-danger" onclick="deleteJob()">
+                <i class="bi bi-trash"></i> Delete Permanently
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this job posting? This action cannot be undone.</p>
+          <p class="text-danger">
+            <strong>Note:</strong> All associated applications will also be deleted.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Permanently</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block javascript %}
+  {{ block.super }}
+  <!-- Quill Rich Text Editor -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+        // Initialize Quill editor
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Preview update
+        document.querySelector('input[value="Junior Frontend Developer"]').addEventListener('input', function (e) {
+            document.getElementById('previewTitle').textContent = e.target.value || 'Job Title';
+        });
+
+        function updateJob(event) {
+            event.preventDefault();
+            // In real app, save to database
+            if (confirm('Job updated successfully! Changes are now live.')) {
+                window.location.href = 'manage-vacancies.html';
+            }
+        }
+
+        function saveAsDraft() {
+            alert('Changes saved as draft');
+        }
+
+        function archiveJob() {
+            if (confirm('Are you sure you want to archive this job? It will no longer be visible to applicants.')) {
+                alert('Job archived successfully');
+                window.location.href = 'manage-vacancies.html';
+            }
+        }
+
+        function duplicateJob() {
+            alert('Creating a copy of this job...');
+            window.location.href = 'post-vacancy.html';
+        }
+
+        function promoteJob() {
+            alert('Promotion options will be available soon');
+        }
+
+        function refreshJob() {
+            if (confirm('Refresh this job posting? It will appear as new in search results.')) {
+                alert('Job refreshed successfully');
+            }
+        }
+
+        function deleteJob() {
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        function confirmDelete() {
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+            alert('Job deleted permanently');
+            window.location.href = 'manage-vacancies.html';
+        }
+  </script>
+{% endblock javascript %}

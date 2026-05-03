@@ -1,0 +1,443 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/jobseeker/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">My Applications</h1>
+      <p class="text-muted">Track and manage your job applications</p>
+    </div>
+  </section>
+  <!-- Statistics Summary -->
+  <section class="py-4">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="stat-summary">
+            <h3>12</h3>
+            <p class="text-muted mb-0">Total Applications</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-summary">
+            <h3>5</h3>
+            <p class="text-muted mb-0">In Review</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-summary">
+            <h3>3</h3>
+            <p class="text-muted mb-0">Interviews</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-summary">
+            <h3>2</h3>
+            <p class="text-muted mb-0">Offers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="pb-5">
+    <div class="container">
+      <!-- Filter Tabs -->
+      <div class="filter-tabs mb-4">
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-primary">All Applications</button>
+          <button class="btn btn-outline-secondary">Pending</button>
+          <button class="btn btn-outline-secondary">In Review</button>
+          <button class="btn btn-outline-secondary">Interview</button>
+          <button class="btn btn-outline-secondary">Offers</button>
+          <button class="btn btn-outline-secondary">Rejected</button>
+        </div>
+      </div>
+      <!-- Applications List -->
+      <div class="application-card">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="company-logo-tiny mx-auto">
+              <i class="bi bi-google"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Junior Frontend Developer</h5>
+            <p class="text-muted mb-0">Google</p>
+          </div>
+          <div class="col-md-2">
+            <p class="mb-1">
+              <small>Applied: Mar 15, 2024</small>
+            </p>
+            <p class="mb-0">
+              <small>📍 Minsk, Remote</small>
+            </p>
+          </div>
+          <div class="col-md-2">
+            <span class="status-badge status-review">In Review</span>
+          </div>
+          <div class="col-md-2">
+            <div class="d-flex align-items-center">
+              <span class="timeline-dot bg-warning"></span>
+              <small>Application under review</small>
+            </div>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#applicationDetailModal">View Details</button>
+            <button class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="application-card">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="company-logo-tiny mx-auto"
+                 style="background: linear-gradient(135deg, #00b09b, #96c93d)">
+              <i class="bi bi-microsoft"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Marketing Intern</h5>
+            <p class="text-muted mb-0">Microsoft</p>
+          </div>
+          <div class="col-md-2">
+            <p class="mb-1">
+              <small>Applied: Mar 10, 2024</small>
+            </p>
+            <p class="mb-0">
+              <small>📍 Warsaw, Hybrid</small>
+            </p>
+          </div>
+          <div class="col-md-2">
+            <span class="status-badge status-interview">Interview Scheduled</span>
+          </div>
+          <div class="col-md-2">
+            <div class="d-flex align-items-center">
+              <span class="timeline-dot bg-success"></span>
+              <small>Interview: Mar 25, 11:00</small>
+            </div>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-outline-primary btn-sm">View Details</button>
+            <button class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="application-card">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="company-logo-tiny mx-auto"
+                 style="background: linear-gradient(135deg, #f2994a, #f2c94c)">
+              <i class="bi bi-amazon"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">Data Analyst (Entry Level)</h5>
+            <p class="text-muted mb-0">Amazon</p>
+          </div>
+          <div class="col-md-2">
+            <p class="mb-1">
+              <small>Applied: Mar 5, 2024</small>
+            </p>
+            <p class="mb-0">
+              <small>📍 Berlin, On-site</small>
+            </p>
+          </div>
+          <div class="col-md-2">
+            <span class="status-badge status-offer">Offer Received</span>
+          </div>
+          <div class="col-md-2">
+            <div class="d-flex align-items-center">
+              <span class="timeline-dot bg-success"></span>
+              <small>Offer expires in 5 days</small>
+            </div>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-outline-primary btn-sm">View Details</button>
+            <button class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="application-card">
+        <div class="row align-items-center">
+          <div class="col-md-1">
+            <div class="company-logo-tiny mx-auto"
+                 style="background: linear-gradient(135deg, #3b5998, #8b9dc3)">
+              <i class="bi bi-facebook"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <h5 class="fw-bold mb-1">UI/UX Design Intern</h5>
+            <p class="text-muted mb-0">Meta</p>
+          </div>
+          <div class="col-md-2">
+            <p class="mb-1">
+              <small>Applied: Feb 28, 2024</small>
+            </p>
+            <p class="mb-0">
+              <small>📍 Dublin, Remote</small>
+            </p>
+          </div>
+          <div class="col-md-2">
+            <span class="status-badge status-rejected">Not Selected</span>
+          </div>
+          <div class="col-md-2">
+            <div class="d-flex align-items-center">
+              <span class="timeline-dot bg-danger"></span>
+              <small>Position filled</small>
+            </div>
+          </div>
+          <div class="col-md-2 text-end">
+            <button class="btn btn-outline-primary btn-sm">View Details</button>
+            <button class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Pagination -->
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          <li class="page-item active">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">3</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+  <!-- Application Details Modal -->
+  <div class="modal fade"
+       id="applicationDetailModal"
+       tabindex="-1"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h4 class="fw-bold modal-title">Application Details</h4>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Application Status Timeline -->
+          <div class="application-timeline mb-4 p-3 bg-light rounded-3">
+            <h6 class="fw-bold mb-3">Application Timeline</h6>
+            <div class="timeline-steps">
+              <div class="d-flex align-items-center mb-3">
+                <div class="timeline-dot bg-success me-3"
+                     style="width: 12px;
+                            height: 12px"></div>
+                <div class="flex-grow-1">
+                  <p class="fw-bold mb-0">Application Submitted</p>
+                  <small class="text-muted">March 15, 2024 at 10:30 AM</small>
+                </div>
+                <span class="badge bg-success">Completed</span>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <div class="timeline-dot bg-success me-3"
+                     style="width: 12px;
+                            height: 12px"></div>
+                <div class="flex-grow-1">
+                  <p class="fw-bold mb-0">Resume Viewed by Employer</p>
+                  <small class="text-muted">March 16, 2024 at 2:15 PM</small>
+                </div>
+                <span class="badge bg-success">Viewed</span>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <div class="timeline-dot bg-warning me-3"
+                     style="width: 12px;
+                            height: 12px"></div>
+                <div class="flex-grow-1">
+                  <p class="fw-bold mb-0">Application Under Review</p>
+                  <small class="text-muted">Current status</small>
+                </div>
+                <span class="badge bg-warning">In Progress</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="timeline-dot bg-secondary me-3"
+                     style="width: 12px;
+                            height: 12px"></div>
+                <div class="flex-grow-1">
+                  <p class="fw-bold mb-0">Interview Decision</p>
+                  <small class="text-muted">Expected within 3-5 days</small>
+                </div>
+                <span class="badge bg-secondary">Pending</span>
+              </div>
+            </div>
+          </div>
+          <!-- Job Information -->
+          <div class="job-info-section mb-4">
+            <h6 class="fw-bold mb-3">Job Information</h6>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="d-flex">
+                  <div class="company-logo-small me-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-google"></i>
+                  </div>
+                  <div>
+                    <h5 class="fw-bold mb-1">Junior Frontend Developer</h5>
+                    <p class="text-primary mb-2">Google</p>
+                    <div class="d-flex gap-3">
+                      <small><i class="bi bi-geo-alt me-1"></i>Minsk, Remote</small>
+                      <small><i class="bi bi-cash me-1"></i>$800 - $1200/month</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 text-md-end">
+                {#  TODO: url for job-details  #}
+                <a href="" class="btn btn-outline-primary btn-sm">View Original Job
+                Posting</a>
+              </div>
+            </div>
+          </div>
+          <!-- Application Details Grid -->
+          <div class="application-details-grid">
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="detail-card p-3 border rounded-3">
+                  <small class="text-muted d-block">Application ID</small>
+                  <p class="fw-bold mb-0">APP-2024-0315-001</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-card p-3 border rounded-3">
+                  <small class="text-muted d-block">Applied Via</small>
+                  <p class="fw-bold mb-0">StartJob Platform</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-card p-3 border rounded-3">
+                  <small class="text-muted d-block">Application Deadline</small>
+                  <p class="fw-bold mb-0">March 30, 2024</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-card p-3 border rounded-3">
+                  <small class="text-muted d-block">Days Since Applied</small>
+                  <p class="fw-bold mb-0">5 days ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Submitted Documents -->
+          <div class="documents-section mb-4">
+            <h6 class="fw-bold mb-3">Submitted Documents</h6>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <div class="document-item p-3 border rounded-3 d-flex align-items-center">
+                  <i class="bi bi-file-pdf-fill text-danger fs-3 me-3"></i>
+                  <div class="flex-grow-1">
+                    <p class="fw-bold mb-0">Resume_Anna_Petrova.pdf</p>
+                    <small class="text-muted">Uploaded Mar 15, 2024 • 245 KB</small>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="document-item p-3 border rounded-3 d-flex align-items-center">
+                  <i class="bi bi-file-pdf-fill text-danger fs-3 me-3"></i>
+                  <div class="flex-grow-1">
+                    <p class="fw-bold mb-0">Cover_Letter_Google.pdf</p>
+                    <small class="text-muted">Uploaded Mar 15, 2024 • 120 KB</small>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-download"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Cover Letter Preview (if applicable) -->
+          <div class="cover-letter-section mb-4">
+            <h6 class="fw-bold mb-3">Cover Letter</h6>
+            <div class="border rounded-3 p-3 bg-light">
+              <p class="mb-2">Dear Hiring Team at Google,</p>
+              <p>
+                I am writing to express my strong interest in the Junior Frontend Developer position. As
+                a 3rd-year Computer Science student with a passion for web development, I am excited
+                about the opportunity to contribute to Google's innovative projects...
+              </p>
+              <button class="btn btn-link btn-sm p-0">Read full cover letter</button>
+            </div>
+          </div>
+          <!-- Employer's Notes / Feedback (if any) -->
+          <div class="feedback-section mb-4">
+            <h6 class="fw-bold mb-3">Employer Feedback</h6>
+            <div class="alert alert-info border-0 bg-light">
+              <i class="bi bi-chat-dots-fill me-2"></i>
+              <strong>Recruiter's note:</strong> Your resume has been forwarded to the technical team for
+              review. We'll contact you within 3-5 business days if your profile matches our requirements.
+            </div>
+          </div>
+          <!-- Next Steps / Recommendations -->
+          <div class="recommendations-section">
+            <h6 class="fw-bold mb-3">Recommended Actions</h6>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil"></i> Edit
+                Application
+              </button>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-pdf"></i> Download All
+                Documents
+              </button>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-envelope"></i> Contact
+                Support
+              </button>
+              <button class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-x-circle"></i> Withdraw
+                Application
+              </button>
+            </div>
+            <div class="mt-3 p-3 bg-warning bg-opacity-10 rounded-3">
+              <small><i class="bi bi-lightbulb-fill text-warning me-2"></i> Tip: Research Google's
+                interview process for frontend positions and start preparing common technical
+              questions.</small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button"
+                  class="btn btn-primary"
+                  onclick="window.location.href='job-details.html'">
+            View
+            Job Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

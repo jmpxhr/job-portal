@@ -1,0 +1,252 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/jobseeker/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Page Header -->
+  <section class="bg-light py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="fw-bold mb-0">Saved Jobs</h1>
+          <p class="text-muted mb-0">You have 8 saved jobs</p>
+        </div>
+        <div>
+          <button class="btn btn-outline-primary">
+            <i class="bi bi-folder-plus"></i> Create New
+            Collection
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="py-5">
+    <div class="container">
+      <!-- Collections Row -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h5 class="fw-bold mb-3">My Collections</h5>
+        </div>
+        <div class="col-md-3">
+          <div class="collection-card">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-bookmark-star-fill text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="fw-bold mb-1">All Saved Jobs</h6>
+                <small class="text-muted">8 jobs</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="collection-card">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-briefcase-fill text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="fw-bold mb-1">Frontend Roles</h6>
+                <small class="text-muted">4 jobs</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="collection-card">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-mortarboard-fill text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="fw-bold mb-1">Internships</h6>
+                <small class="text-muted">3 jobs</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="collection-card">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-star-fill text-primary fs-4 me-3"></i>
+              <div>
+                <h6 class="fw-bold mb-1">Dream Jobs</h6>
+                <small class="text-muted">2 jobs</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Sort and Filter -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="mb-0">
+          Showing <strong>1-5</strong> of <strong>8</strong> saved jobs
+        </p>
+        <select class="form-select" style="width: auto;">
+          <option>Recently Saved</option>
+          <option>Oldest First</option>
+          <option>Company Name</option>
+          <option>Salary: High to Low</option>
+        </select>
+      </div>
+      <!-- Saved Jobs List -->
+      <div class="saved-job-card">
+        <i class="bi bi-bookmark-x-fill remove-bookmark"
+           title="Remove from saved"></i>
+        <div class="row">
+          <div class="col-md-1">
+            <div class="company-logo-small mx-auto">
+              <i class="bi bi-google"></i>
+            </div>
+          </div>
+          <div class="col-md-11">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="fw-bold mb-1">Junior Frontend Developer</h4>
+                <p class="text-primary mb-2">Google</p>
+              </div>
+              <span class="badge bg-success">New</span>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-4">
+                <small><i class="bi bi-geo-alt me-1"></i>Minsk, Remote</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-cash me-1"></i>$800 - $1200/month</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-clock me-1"></i>Posted 2 days ago</small>
+              </div>
+            </div>
+            <div class="mt-2">
+              <span class="job-tag">Full-time</span>
+              <span class="job-tag">Entry Level</span>
+              <span class="job-tag">React</span>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              {#  TODO: url for job-details  #}
+              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-folder-plus"></i> Move to
+                Collection
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="saved-job-card">
+        <i class="bi bi-bookmark-x-fill remove-bookmark"></i>
+        <div class="row">
+          <div class="col-md-1">
+            <div class="company-logo-small mx-auto"
+                 style="background: linear-gradient(135deg, #00b09b, #96c93d)">
+              <i class="bi bi-microsoft"></i>
+            </div>
+          </div>
+          <div class="col-md-11">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="fw-bold mb-1">Marketing Intern</h4>
+                <p class="text-primary mb-2">Microsoft</p>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-4">
+                <small><i class="bi bi-geo-alt me-1"></i>Warsaw, Hybrid</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-cash me-1"></i>$500 - $700/month</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-clock me-1"></i>Posted 3 days ago</small>
+              </div>
+            </div>
+            <div class="mt-2">
+              <span class="job-tag">Internship</span>
+              <span class="job-tag">Marketing</span>
+              <span class="job-tag">Student-friendly</span>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              {#  TODO: url for job-details  #}
+              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-folder-plus"></i> Move to
+                Collection
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="saved-job-card">
+        <i class="bi bi-bookmark-x-fill remove-bookmark"></i>
+        <div class="row">
+          <div class="col-md-1">
+            <div class="company-logo-small mx-auto"
+                 style="background: linear-gradient(135deg, #f2994a, #f2c94c)">
+              <i class="bi bi-amazon"></i>
+            </div>
+          </div>
+          <div class="col-md-11">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h4 class="fw-bold mb-1">Data Analyst (Entry Level)</h4>
+                <p class="text-primary mb-2">Amazon</p>
+              </div>
+              <span class="badge bg-warning">Closing Soon</span>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-4">
+                <small><i class="bi bi-geo-alt me-1"></i>Berlin, On-site</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-cash me-1"></i>$900 - $1300/month</small>
+              </div>
+              <div class="col-md-4">
+                <small><i class="bi bi-clock me-1"></i>Posted 5 days ago</small>
+              </div>
+            </div>
+            <div class="mt-2">
+              <span class="job-tag">Full-time</span>
+              <span class="job-tag">Entry Level</span>
+              <span class="job-tag">SQL</span>
+              <span class="job-tag">Python</span>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              {#  TODO: url for job-details  #}
+              <a href="" class="btn btn-primary btn-sm">Apply Now</a>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-folder-plus"></i> Move to
+                Collection
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Empty State (hidden by default, show when no jobs) -->
+      <!-- <div class="empty-state">
+            <i class="bi bi-bookmark"></i>
+            <h4 class="fw-bold mt-3">No saved jobs yet</h4>
+            <p class="text-muted">Start saving jobs you're interested in</p>
+            <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
+</div> -->
+      <!-- Pagination -->
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          <li class="page-item active">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+{% endblock content %}

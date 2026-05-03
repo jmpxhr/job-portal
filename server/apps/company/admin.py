@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from server.apps.companies.models import Company, Industry
+from server.apps.company.models import Company, Industry
 
 # Register your models here.
 

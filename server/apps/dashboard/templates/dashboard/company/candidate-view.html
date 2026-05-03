@@ -1,0 +1,219 @@
+{% extends 'container.html' %}
+{% load static %}
+{% block title %}
+  Saved Jobs | StartJob
+{% endblock title %}
+{% block head %}
+  <link rel="stylesheet"
+        href="{% static 'dashboard/css/company/styles.css' %}" />
+{% endblock head %}
+{% block content %}
+  <!-- Candidate Header -->
+  <section class="candidate-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        {#  TODO: url for applicants-list  #}
+        <a href="" class="text-white text-decoration-none">
+          <i class="bi bi-arrow-left"></i> Back to Applicants
+        </a>
+        <div>
+          <span class="badge bg-light text-dark p-2">Applied for: Junior Frontend Developer</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main Content -->
+  <section class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- Profile Card -->
+        <div class="profile-card mb-4">
+          <div class="text-center mb-4">
+            <div class="candidate-avatar-large mx-auto">
+              <span>AP</span>
+            </div>
+            <h2 class="fw-bold mb-1">Anna Petrova</h2>
+            <p class="text-muted">Computer Science Student | Aspiring Frontend Developer</p>
+            <div class="d-flex justify-content-center gap-3">
+              <span><i class="bi bi-geo-alt"></i> Minsk, Belarus</span>
+              <span><i class="bi bi-briefcase"></i> Student (3rd year)</span>
+            </div>
+          </div>
+          <!-- Match Score & Status -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="info-card text-center">
+                <h3 class="fw-bold text-primary">92%</h3>
+                <small>Match Score</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="info-card text-center">
+                <h3 class="fw-bold text-success">High</h3>
+                <small>Skill Match</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="info-card text-center">
+                <h3 class="fw-bold text-warning">2 days</h3>
+                <small>Response Time</small>
+              </div>
+            </div>
+          </div>
+          <!-- Application Status Update -->
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-info-circle-fill me-2"></i>
+              <strong>Current Status:</strong> Under Review
+            </div>
+            <select class="form-select form-select-sm" style="width: 150px;">
+              <option>New</option>
+              <option selected>Under Review</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+            </select>
+          </div>
+          <!-- About -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">About</h5>
+            <p>
+              3rd-year Computer Science student passionate about web development and UI/UX design. Looking
+              for internship opportunities to gain practical experience and learn from industry
+              professionals. Quick learner with strong problem-solving skills.
+            </p>
+          </div>
+          <!-- Skills -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Skills</h5>
+            <div class="skill-badge">HTML5</div>
+            <div class="skill-badge">CSS3</div>
+            <div class="skill-badge">JavaScript</div>
+            <div class="skill-badge">React</div>
+            <div class="skill-badge">Git</div>
+            <div class="skill-badge">Bootstrap</div>
+            <div class="skill-badge">Figma</div>
+          </div>
+          <!-- Education -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Education</h5>
+            <div class="education-item">
+              <div class="d-flex justify-content-between">
+                <h6 class="fw-bold mb-1">Belarusian State University</h6>
+                <small class="text-muted">2022 - 2026</small>
+              </div>
+              <p class="text-muted mb-1">Bachelor of Science in Computer Science</p>
+              <small>GPA: 3.8/4.0</small>
+            </div>
+          </div>
+          <!-- Experience -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Experience</h5>
+            <div class="experience-item">
+              <div class="d-flex justify-content-between">
+                <h6 class="fw-bold mb-1">Frontend Developer Intern</h6>
+                <small class="text-success">Current</small>
+              </div>
+              <p class="text-muted mb-2">TechStart Inc. | June 2024 - Present</p>
+              <ul class="small">
+                <li>Developing responsive web interfaces using React and Bootstrap</li>
+                <li>Collaborating with design team on UI/UX improvements</li>
+              </ul>
+            </div>
+            <div class="experience-item">
+              <div class="d-flex justify-content-between">
+                <h6 class="fw-bold mb-1">Junior Web Developer (Freelance)</h6>
+              </div>
+              <p class="text-muted mb-2">Self-employed | Jan 2024 - May 2024</p>
+              <ul class="small">
+                <li>Built websites for 3 local businesses using HTML, CSS, JavaScript</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Projects -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Projects</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="border rounded-3 p-3">
+                  <h6 class="fw-bold mb-1">E-commerce Website</h6>
+                  <small class="text-muted">React, Node.js, MongoDB</small>
+                  <p class="small mt-2">
+                    Built a full-stack e-commerce platform with user
+                    authentication and payment integration.
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-3 p-3">
+                  <h6 class="fw-bold mb-1">Student Portal</h6>
+                  <small class="text-muted">Vue.js, Firebase</small>
+                  <p class="small mt-2">
+                    Developed a student management system for university course
+                    registration.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right Sidebar - Actions & Contact -->
+      <div class="col-lg-4">
+        <!-- Action Buttons -->
+        <div class="action-buttons mb-4">
+          <h5 class="fw-bold mb-3">Actions</h5>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary">
+              <i class="bi bi-envelope"></i> Send Message
+            </button>
+            <button class="btn btn-success">
+              <i class="bi bi-calendar-check"></i> Schedule Interview
+            </button>
+            <button class="btn btn-outline-primary">
+              <i class="bi bi-star"></i> Add to Shortlist
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-download"></i> Download Resume
+            </button>
+            <hr>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-success flex-grow-1">
+                <i class="bi bi-check-circle"></i> Accept
+              </button>
+              <button class="btn btn-outline-danger flex-grow-1">
+                <i class="bi bi-x-circle"></i> Reject
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Contact Information -->
+        <div class="contact-info mb-4">
+          <h5 class="fw-bold mb-3">Contact Information</h5>
+          <div class="mb-3">
+            <small class="text-muted">Email</small>
+            <p class="fw-bold mb-2">anna.petrova@email.com</p>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">Phone</small>
+            <p class="fw-bold mb-2">+375 29 123-45-67</p>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">Location</small>
+            <p class="fw-bold mb-2">Minsk, Belarus</p>
+          </div>
+          <div class="mb-3">
+            <small class="text-muted">Portfolio</small>
+            <p class="mb-2">
+              <a href="#" class="text-decoration-none">github.com/annapetrova</a>
+            </p>
+          </div>
+          <div>
+            <small class="text-muted">Languages</small>
+            <p class="mb-2">Russian (Native), English (Fluent), German (Basic)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
