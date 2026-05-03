@@ -1,0 +1,108 @@
+{% load static %}
+{% for job in jobs %}
+  <div class="job-card">
+    <div class="row">
+      <div class="col-md-2 col-3">
+        <div class="company-logo-small mx-auto">
+          {% if job.company.logo %}
+            <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" />
+          {% else %}
+            <span class="fw-bold">{{ job.company.initial }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-10 col-9">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h4 class="fw-bold mb-1">{{ job.title }}</h4>
+            <p class="text-primary mb-2">{{ job.company.name }}</p>
+          </div>
+          <span class="job-type-badge badge-{{ job.employment_type_label|lower|cut:" "|cut:"-" }}">{{ job.employment_type_label }}</span>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-4 col-6">
+            <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:"Remote" }}</small>
+          </div>
+          <div class="col-md-4 col-6">
+            <small><i class="bi bi-cash me-1"></i>{{ job.salary_display }}</small>
+          </div>
+          <div class="col-md-4">
+            <small><i class="bi bi-clock me-1"></i>Posted {{ job.posted_at|timesince }} ago</small>
+          </div>
+        </div>
+        <p class="mt-2 text-muted">{{ job.description|striptags|truncatewords:20 }}</p>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <div>
+            {% for skill in job.skills.all %}
+              <span class="badge bg-light text-dark me-1">{{ skill.name }}</span>
+            {% empty %}
+              <span class="badge bg-light text-dark me-1">General</span>
+            {% endfor %}
+          </div>
+          <a href="{% url 'jobs:jobs-detail' job.pk %}" class="btn btn-primary btn-sm">View Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% empty %}
+  <div class="text-center py-5">
+    <i class="bi bi-search display-4 text-muted"></i>
+    <p class="mt-3 text-muted">No jobs found matching your criteria.</p>
+  </div>
+{% endfor %}
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link"
+             href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}"
+             hx-get="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}"
+             hx-target="#job-list-container"
+             hx-push-url="true">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ num }}"
+               hx-get="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ num }}"
+               hx-target="#job-list-container"
+               hx-push-url="true">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link"
+             href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}"
+             hx-get="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}"
+             hx-target="#job-list-container"
+             hx-push-url="true">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
+<!-- Results info -->
+<p class="mb-0 mt-3 text-muted small">
+  Showing <strong>{{ page_obj.start_index }}-{{ page_obj.end_index }}</strong> of <strong>{{ paginator.count }}</strong> jobs
+</p>

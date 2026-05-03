@@ -23,6 +23,7 @@ I'll create a custom User model following Django best practices:
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class UserManager(models.Manager):
     """Custom manager for User model with common query methods."""
 
@@ -33,6 +34,7 @@ class UserManager(models.Manager):
     def get_by_email(self, email):
         """Case-insensitive email lookup."""
         return self.get(email__iexact=email)
+
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, db_index=True)
@@ -59,7 +61,7 @@ class User(AbstractUser):
 
     def get_full_name(self):
         """Return user's full name or email if name not set."""
-        full_name = f"{self.first_name} {self.last_name}".strip()
+        full_name = f'{self.first_name} {self.last_name}'.strip()
         return full_name if full_name else self.email
 ```
 
@@ -81,6 +83,7 @@ class User(AbstractUser):
 def post_list(request):
     posts = Post.objects.all()  # 1 query
     return render(request, 'posts/list.html', {'posts': posts})
+
 
 # Template causes N+1:
 # {% for post in posts %}
@@ -104,19 +107,31 @@ reverse relationships.
 # GOOD: Optimized with proper eager loading
 from django.db.models import Count, Prefetch
 
+
 def post_list(request):
-    posts = Post.objects.select_related(
-        'author'  # ForeignKey - use select_related (SQL JOIN)
-    ).prefetch_related(
-        Prefetch(
-            'comments',
-            queryset=Comment.objects.select_related('author').filter(is_approved=True)
+    posts = (
+        Post.objects
+        .select_related(
+            'author'  # ForeignKey - use select_related (SQL JOIN)
         )
-    ).annotate(
-        comment_count=Count('comments', filter=Q(comments__is_approved=True))
-    ).order_by('-published_at')
+        .prefetch_related(
+            Prefetch(
+                'comments',
+                queryset=Comment.objects.select_related('author').filter(
+                    is_approved=True
+                ),
+            )
+        )
+        .annotate(
+            comment_count=Count(
+                'comments', filter=Q(comments__is_approved=True)
+            )
+        )
+        .order_by('-published_at')
+    )
 
     return render(request, 'posts/list.html', {'posts': posts})
+
 
 # Now template only uses the prefetched data - no additional queries!
 ```
@@ -150,15 +165,25 @@ I'll implement a complete DRF endpoint following best practices:
 from rest_framework import serializers
 from .models import Product
 
+
 class ProductSerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_name = serializers.CharField(
+        source='category.name', read_only=True
+    )
     is_available = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'price', 'stock',
-            'category', 'category_name', 'is_available', 'created_at'
+            'id',
+            'name',
+            'description',
+            'price',
+            'stock',
+            'category',
+            'category_name',
+            'is_available',
+            'created_at',
         ]
         read_only_fields = ['id', 'created_at']
 
@@ -169,8 +194,9 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate_price(self, value):
         """Ensure price is positive."""
         if value <= 0:
-            raise serializers.ValidationError("Price must be greater than zero")
+            raise serializers.ValidationError('Price must be greater than zero')
         return value
+
 
 # views.py
 from rest_framework import viewsets, filters
@@ -179,16 +205,22 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product
 from .serializers import ProductSerializer
 
+
 class ProductViewSet(viewsets.ModelViewSet):
     """
     ViewSet for Product CRUD operations.
 
     List and retrieve are public, create/update/delete require authentication.
     """
+
     queryset = Product.objects.select_related('category').filter(is_active=True)
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_fields = ['category', 'stock']
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at', 'stock']
@@ -208,6 +240,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(price__lte=max_price)
 
         return queryset
+
 
 # urls.py
 from django.urls import path, include
@@ -268,6 +301,7 @@ from .models import Product, Category
 
 User = get_user_model()
 
+
 class ProductAPITestCase(TestCase):
     """Test suite for Product API endpoints."""
 
@@ -275,8 +309,7 @@ class ProductAPITestCase(TestCase):
         """Set up test data before each test."""
         self.client = APIClient()
         self.user = User.objects.create_user(
-            email='test@example.com',
-            password='testpass123'
+            email='test@example.com', password='testpass123'
         )
         self.category = Category.objects.create(name='Electronics')
         self.product = Product.objects.create(
@@ -284,7 +317,7 @@ class ProductAPITestCase(TestCase):
             description='A test product',
             price=Decimal('99.99'),
             stock=10,
-            category=self.category
+            category=self.category,
         )
 
     def test_list_products_unauthenticated(self):
@@ -300,7 +333,7 @@ class ProductAPITestCase(TestCase):
             'name': 'New Product',
             'price': '49.99',
             'stock': 5,
-            'category': self.category.id
+            'category': self.category.id,
         }
         response = self.client.post('/api/products/', data)
 
@@ -314,7 +347,7 @@ class ProductAPITestCase(TestCase):
             'description': 'A new product',
             'price': '49.99',
             'stock': 5,
-            'category': self.category.id
+            'category': self.category.id,
         }
         response = self.client.post('/api/products/', data)
 
@@ -328,14 +361,16 @@ class ProductAPITestCase(TestCase):
             name='Expensive Product',
             price=Decimal('299.99'),
             stock=5,
-            category=self.category
+            category=self.category,
         )
 
         response = self.client.get('/api/products/?min_price=200')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['name'], 'Expensive Product')
+        self.assertEqual(
+            response.data['results'][0]['name'], 'Expensive Product'
+        )
 
     def test_product_availability_field(self):
         """is_available field correctly reflects stock status."""

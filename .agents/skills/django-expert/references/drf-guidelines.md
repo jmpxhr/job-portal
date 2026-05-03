@@ -8,6 +8,7 @@
 from rest_framework import serializers
 from .models import Post, Comment
 
+
 # ✅ GOOD: Basic ModelSerializer
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,12 +16,14 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'content', 'author', 'created_at']
         read_only_fields = ['id', 'created_at', 'author']
 
+
 # ✅ GOOD: Exclude sensitive fields
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
         # NOT password, last_login, etc.
+
 
 # ❌ BAD: Using __all__ exposes everything
 class UserSerializer(serializers.ModelSerializer):
@@ -42,6 +45,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'content', 'author', 'created_at']
 
+
 class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
@@ -50,23 +54,37 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'title', 'content', 'author', 'comments', 'created_at']
 
+
 # ✅ GOOD: Different serializers for read/write
 class PostListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for list view."""
-    author_name = serializers.CharField(source='author.username', read_only=True)
+
+    author_name = serializers.CharField(
+        source='author.username', read_only=True
+    )
 
     class Meta:
         model = Post
         fields = ['id', 'title', 'author_name', 'created_at']
 
+
 class PostDetailSerializer(serializers.ModelSerializer):
     """Detailed serializer with nested data."""
+
     author = UserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'comments', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'title',
+            'content',
+            'author',
+            'comments',
+            'created_at',
+            'updated_at',
+        ]
 ```
 
 ### Custom Fields and Validation
@@ -88,6 +106,7 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return request.user == obj.author if request else False
 
+
 # ✅ GOOD: Field-level validation
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -96,8 +115,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate_title(self, value):
         if len(value) < 5:
-            raise serializers.ValidationError("Title must be at least 5 characters")
+            raise serializers.ValidationError(
+                'Title must be at least 5 characters'
+            )
         return value
+
 
 # ✅ GOOD: Object-level validation
 class PostSerializer(serializers.ModelSerializer):
@@ -108,7 +130,7 @@ class PostSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data.get('is_published') and not data.get('content'):
             raise serializers.ValidationError(
-                "Cannot publish post without content"
+                'Cannot publish post without content'
             )
         return data
 ```
@@ -135,10 +157,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+
 # ✅ GOOD: Read-only computed field
 class PostSerializer(serializers.ModelSerializer):
-    author_name = serializers.CharField(source='author.username', read_only=True)
-    url = serializers.HyperlinkedIdentityField(view_name='post-detail', read_only=True)
+    author_name = serializers.CharField(
+        source='author.username', read_only=True
+    )
+    url = serializers.HyperlinkedIdentityField(
+        view_name='post-detail', read_only=True
+    )
 
     class Meta:
         model = Post
@@ -155,11 +182,16 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 
+
 # ✅ GOOD: Complete CRUD ViewSet
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_fields = ['author', 'is_published']
     search_fields = ['title', 'content']
     ordering_fields = ['created_at', 'title']
@@ -180,7 +212,9 @@ class PostViewSet(viewsets.ModelViewSet):
                 'id', 'title', 'created_at', 'author__username'
             )
         elif self.action == 'retrieve':
-            return queryset.select_related('author').prefetch_related('comments')
+            return queryset.select_related('author').prefetch_related(
+                'comments'
+            )
 
         return queryset
 
@@ -213,6 +247,7 @@ class PostViewSet(viewsets.ModelViewSet):
 # ✅ GOOD: Read-only API
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """Only allow GET requests (list and retrieve)."""
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
@@ -225,6 +260,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+
 # ✅ GOOD: Custom API endpoint
 class PostStatisticsAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -233,7 +269,9 @@ class PostStatisticsAPIView(APIView):
         user = request.user
         stats = {
             'total_posts': Post.objects.filter(author=user).count(),
-            'published_posts': Post.objects.filter(author=user, is_published=True).count(),
+            'published_posts': Post.objects.filter(
+                author=user, is_published=True
+            ).count(),
             'total_comments': Comment.objects.filter(post__author=user).count(),
         }
         return Response(stats)
@@ -251,10 +289,12 @@ from rest_framework.permissions import (
     IsAdminUser,
 )
 
+
 # ✅ GOOD: Require authentication for all actions
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     ...
+
 
 # ✅ GOOD: Read-only for anonymous, write for authenticated
 class PostViewSet(viewsets.ModelViewSet):
@@ -266,6 +306,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 ```python
 from rest_framework import permissions
+
 
 # ✅ GOOD: Object-level permission
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -279,10 +320,12 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         # Write permissions only for author
         return obj.author == request.user
 
+
 # ✅ GOOD: Staff or owner permission
 class IsStaffOrOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.is_staff or obj.author == request.user
+
 
 # Usage
 class PostViewSet(viewsets.ModelViewSet):
@@ -322,6 +365,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -347,10 +391,12 @@ REST_FRAMEWORK = {
 # Custom pagination
 from rest_framework.pagination import PageNumberPagination
 
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 100
+
 
 class PostViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
@@ -410,16 +456,22 @@ class PostViewSet(viewsets.ModelViewSet):
 ```python
 from django_filters import rest_framework as filters
 
+
 # ✅ GOOD: Custom FilterSet
 class PostFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
-    created_after = filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
-    created_before = filters.DateTimeFilter(field_name='created_at', lookup_expr='lte')
+    created_after = filters.DateTimeFilter(
+        field_name='created_at', lookup_expr='gte'
+    )
+    created_before = filters.DateTimeFilter(
+        field_name='created_at', lookup_expr='lte'
+    )
     min_views = filters.NumberFilter(field_name='view_count', lookup_expr='gte')
 
     class Meta:
         model = Post
         fields = ['author', 'category', 'is_published']
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -445,11 +497,14 @@ REST_FRAMEWORK = {
 # Custom throttle
 from rest_framework.throttling import UserRateThrottle
 
+
 class BurstRateThrottle(UserRateThrottle):
     scope = 'burst'
 
+
 class SustainedRateThrottle(UserRateThrottle):
     scope = 'sustained'
+
 
 # settings.py
 REST_FRAMEWORK = {
@@ -458,6 +513,7 @@ REST_FRAMEWORK = {
         'sustained': '100/hour',
     },
 }
+
 
 # views.py
 class PostViewSet(viewsets.ModelViewSet):
@@ -481,6 +537,7 @@ urlpatterns = [
     path('api/v2/', include('api.urls', namespace='v2')),
 ]
 
+
 # views.py
 class PostViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
@@ -495,6 +552,7 @@ class PostViewSet(viewsets.ModelViewSet):
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 
+
 # ✅ GOOD: Custom exception handler
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
@@ -508,6 +566,7 @@ def custom_exception_handler(exc, context):
 
     return response
 
+
 # settings.py
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'myapp.exceptions.custom_exception_handler',
@@ -515,6 +574,7 @@ REST_FRAMEWORK = {
 
 # Raise custom exceptions
 from rest_framework.exceptions import ValidationError, PermissionDenied
+
 
 def my_view(request):
     if not condition:
@@ -530,12 +590,12 @@ def my_view(request):
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 
+
 # ✅ GOOD: API test case
 class PostAPITestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username='testuser', password='testpass123'
         )
         self.client = APIClient()
 

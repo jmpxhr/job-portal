@@ -44,9 +44,11 @@ class Post(models.Model):
             models.Index(fields=['-view_count']),  # For popular posts
         ]
 
+
 # ✅ GOOD: Check if index is used
 # Run: EXPLAIN ANALYZE SELECT ...
 from django.db import connection
+
 queryset = Post.objects.filter(is_published=True).order_by('-created_at')
 print(queryset.query)
 ```
@@ -81,7 +83,7 @@ from django.test.utils import override_settings
 with override_settings(DEBUG=True):
     posts = Post.objects.select_related('author').all()
     list(posts)  # Force evaluation
-    print(f"Queries: {len(connection.queries)}")
+    print(f'Queries: {len(connection.queries)}')
     for query in connection.queries:
         print(query['sql'])
 ```
@@ -110,15 +112,20 @@ CACHES = {
 ```python
 from django.core.cache import cache
 
+
 # ✅ GOOD: Cache expensive queries
 def get_popular_posts():
     posts = cache.get('popular_posts')
     if posts is None:
-        posts = Post.objects.filter(
-            is_published=True
-        ).select_related('author').order_by('-view_count')[:10]
+        posts = (
+            Post.objects
+            .filter(is_published=True)
+            .select_related('author')
+            .order_by('-view_count')[:10]
+        )
         cache.set('popular_posts', posts, timeout=300)  # 5 minutes
     return posts
+
 
 # ✅ GOOD: Cache with complex key
 def get_user_posts(user_id):
@@ -128,6 +135,7 @@ def get_user_posts(user_id):
         posts = Post.objects.filter(author_id=user_id)
         cache.set(cache_key, posts, timeout=600)
     return posts
+
 
 # Invalidate cache
 def create_post(user, data):
@@ -142,14 +150,17 @@ def create_post(user, data):
 ```python
 from django.views.decorators.cache import cache_page
 
+
 # ✅ GOOD: Cache entire view response
 @cache_page(60 * 15)  # 15 minutes
 def blog_list(request):
     posts = Post.objects.filter(is_published=True)
     return render(request, 'blog/list.html', {'posts': posts})
 
+
 # ✅ GOOD: Cache with conditional logic
 from django.views.decorators.cache import cache_control
+
 
 @cache_control(max_age=3600, public=True)
 def public_content(request):
@@ -182,13 +193,13 @@ def public_content(request):
 # ✅ GOOD: Cache with get_or_set
 from django.core.cache import cache
 
+
 def get_post_stats(post_id):
     cache_key = f'post_{post_id}_stats'
     return cache.get_or_set(
-        cache_key,
-        lambda: compute_expensive_stats(post_id),
-        timeout=3600
+        cache_key, lambda: compute_expensive_stats(post_id), timeout=3600
     )
+
 
 # ✅ GOOD: Cache invalidation pattern
 class Post(models.Model):
@@ -299,7 +310,7 @@ STATICFILES_FINDERS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
-    ...
+    ...,
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -340,6 +351,7 @@ CELERY_TIMEZONE = 'UTC'
 from celery import shared_task
 import time
 
+
 @shared_task
 def send_email(user_id, template):
     """Send email asynchronously."""
@@ -347,6 +359,7 @@ def send_email(user_id, template):
     # Send email logic
     time.sleep(2)  # Simulate email sending
     return f'Email sent to {user.email}'
+
 
 @shared_task
 def generate_report(report_id):
@@ -356,6 +369,7 @@ def generate_report(report_id):
     report.status = 'completed'
     report.save()
     return report_id
+
 
 # views.py
 def register(request):
@@ -370,6 +384,7 @@ def register(request):
 ```python
 from django.core.paginator import Paginator
 
+
 # ✅ GOOD: Paginate large querysets
 def blog_list(request):
     posts = Post.objects.filter(is_published=True).select_related('author')
@@ -379,6 +394,7 @@ def blog_list(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'blog/list.html', {'page_obj': page_obj})
+
 
 # DRF pagination
 # settings.py
@@ -462,6 +478,7 @@ from django.conf import settings
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
@@ -498,8 +515,10 @@ from functools import wraps
 
 logger = logging.getLogger(__name__)
 
+
 def log_performance(func):
     """Decorator to log function performance."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -508,12 +527,14 @@ def log_performance(func):
 
         if duration > 1.0:  # Log if > 1 second
             logger.warning(
-                f"{func.__name__} took {duration:.2f}s",
-                extra={'duration': duration}
+                f'{func.__name__} took {duration:.2f}s',
+                extra={'duration': duration},
             )
 
         return result
+
     return wrapper
+
 
 @log_performance
 def expensive_view(request):

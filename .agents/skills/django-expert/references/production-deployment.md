@@ -47,14 +47,16 @@ daphne myproject.asgi:application
 ```python
 # ✅ GOOD: Load from environment
 import os
-SECRET_KEY = os.environ["SECRET_KEY"]
+
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # ✅ GOOD: Load from file
-with open("/etc/secrets/django_secret_key.txt") as f:
+with open('/etc/secrets/django_secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # ✅ GOOD: Using python-decouple
 from decouple import config
+
 SECRET_KEY = config('SECRET_KEY')
 
 # ❌ BAD: Hardcoded in settings
@@ -64,9 +66,9 @@ SECRET_KEY = 'django-insecure-hardcoded-key-123'
 **Key rotation with fallbacks:**
 
 ```python
-SECRET_KEY = os.environ["CURRENT_SECRET_KEY"]
+SECRET_KEY = os.environ['CURRENT_SECRET_KEY']
 SECRET_KEY_FALLBACKS = [
-    os.environ["OLD_SECRET_KEY"],
+    os.environ['OLD_SECRET_KEY'],
 ]
 ```
 
@@ -274,8 +276,8 @@ STATIC_URL = 'https://cdn.example.com/static/'
 
 # ✅ GOOD: Enable compression
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 ```
@@ -389,17 +391,22 @@ python manage.py clearsessions
 
 ```python
 # ✅ PRODUCTION: Cached template loader
-TEMPLATES = [{
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'OPTIONS': {
-        'loaders': [
-            ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ]),
-        ],
-    },
-}]
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'loaders': [
+                (
+                    'django.template.loaders.cached.Loader',
+                    [
+                        'django.template.loaders.filesystem.Loader',
+                        'django.template.loaders.app_directories.Loader',
+                    ],
+                ),
+            ],
+        },
+    }
+]
 ```
 
 This is automatically enabled when `DEBUG = False`, but explicit configuration provides better control.
@@ -543,9 +550,12 @@ X_FRAME_OPTIONS = 'DENY'
 
 # ✅ GOOD: Content Security Policy
 CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")  # Avoid unsafe-inline in production
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+)  # Avoid unsafe-inline in production
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
-CSP_IMG_SRC = ("'self'", "data:", "https:")
+CSP_IMG_SRC = ("'self'", 'data:', 'https:')
 ```
 
 **Using django-csp:**
@@ -557,10 +567,10 @@ MIDDLEWARE = [
 ]
 
 CSP_DEFAULT_SRC = ("'none'",)
-CSP_SCRIPT_SRC = ("'self'", "https://cdn.example.com")
+CSP_SCRIPT_SRC = ("'self'", 'https://cdn.example.com')
 CSP_STYLE_SRC = ("'self'",)
-CSP_IMG_SRC = ("'self'", "https://cdn.example.com")
-CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
+CSP_IMG_SRC = ("'self'", 'https://cdn.example.com')
+CSP_FONT_SRC = ("'self'", 'https://fonts.gstatic.com')
 ```
 
 **Rule**: Enable all security headers in production.
@@ -735,21 +745,25 @@ kill -HUP $(cat /tmp/gunicorn.pid)
 from django.http import JsonResponse
 from django.db import connection
 
+
 def health_check(request):
     """Simple health check endpoint for load balancers."""
     try:
         # Check database
         with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
+            cursor.execute('SELECT 1')
 
         # Check cache
         from django.core.cache import cache
+
         cache.set('health_check', 'ok', 10)
         cache.get('health_check')
 
         return JsonResponse({'status': 'healthy'})
     except Exception as e:
-        return JsonResponse({'status': 'unhealthy', 'error': str(e)}, status=500)
+        return JsonResponse(
+            {'status': 'unhealthy', 'error': str(e)}, status=500
+        )
 ```
 
 **Rule**: Implement health checks for load balancers and monitoring.
@@ -763,14 +777,17 @@ def health_check(request):
 ```python
 # ✅ New Relic
 import newrelic.agent
+
 newrelic.agent.initialize('/etc/newrelic.ini')
 
 # ✅ DataDog
 from ddtrace import patch_all
+
 patch_all()
 
 # ✅ Application Insights (Azure)
 from applicationinsights.django import ApplicationInsightsMiddleware
+
 MIDDLEWARE = [
     'applicationinsights.django.ApplicationInsightsMiddleware',
     # ...

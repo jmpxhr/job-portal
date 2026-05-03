@@ -1,7 +1,7 @@
 {% extends "container.html" %}
 {% load static %}
 {% block title %}
-  Job Detail | StartJob
+  {{ job.title }} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'jobs/css/styles.css' %}" />
@@ -13,14 +13,12 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            {#  TODO: link to home page  #}
-            <a href="">Home</a>
+            <a href="{% url 'dashboard:home' %}">Home</a>
           </li>
           <li class="breadcrumb-item">
-            {#  TODO: link to jobs list page  #}
-            <a href="">Jobs</a>
+            <a href="{% url 'jobs:jobs-list' %}">Jobs</a>
           </li>
-          <li class="breadcrumb-item active">Junior Frontend Developer</li>
+          <li class="breadcrumb-item active">{{ job.title }}</li>
         </ol>
       </nav>
     </div>
@@ -36,92 +34,47 @@
             <div class="row align-items-center">
               <div class="col-auto">
                 <div class="company-logo-large">
-                  <i class="bi bi-google"></i>
+                  {% if job.company.logo %}
+                    <img src="{{ job.company.logo.url }}"
+                         alt="{{ job.company.name }}"
+                         style="width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 12px" />
+                  {% else %}
+                    <span class="fw-bold fs-3">{{ job.company.initial }}</span>
+                  {% endif %}
                 </div>
               </div>
               <div class="col">
-                <h1 class="fw-bold mb-2">Junior Frontend Developer</h1>
-                <p class="text-primary h5 mb-2">Google</p>
+                <h1 class="fw-bold mb-2">{{ job.title }}</h1>
+                <p class="text-primary h5 mb-2">{{ job.company.name }}</p>
                 <div class="d-flex flex-wrap gap-2">
-                  <span class="badge bg-primary">Student-friendly</span>
-                  <span class="badge bg-success">Entry Level</span>
-                  <span class="badge bg-info">Remote</span>
+                  {% if job.is_student_friendly %}<span class="badge bg-primary">Student-friendly</span>{% endif %}
+                  <span class="badge bg-success">{{ job.experience_level_label }}</span>
+                  <span class="badge bg-info">{{ job.work_format_label }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Action Buttons -->
-          <div class="d-flex gap-2 mb-4">
-            <button class="btn btn-primary btn-lg flex-grow-1">
-              <i class="bi bi-send me-2"></i>Apply Now
-            </button>
-            <button class="btn btn-outline-secondary btn-lg">
-              <i class="bi bi-bookmark"></i>
-            </button>
-            <button class="btn btn-outline-secondary btn-lg">
-              <i class="bi bi-share"></i>
-            </button>
-          </div>
+          {% if user.account_type == 1 %}
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mb-4">
+              <button class="btn btn-primary btn-lg flex-grow-1">
+                <i class="bi bi-send me-2"></i>Apply Now
+              </button>
+              <button class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-bookmark"></i>
+              </button>
+              <button class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-share"></i>
+              </button>
+            </div>
+          {% endif %}
           <!-- Job Description -->
           <div class="info-card mb-4">
             <h4 class="fw-bold mb-3">Job Description</h4>
-            <p>
-              We are looking for a passionate Junior Frontend Developer to join our team in Minsk. This is an excellent opportunity for students and recent graduates who want to start their career in a global company.
-            </p>
-            <h5 class="fw-bold mt-4 mb-3">Responsibilities:</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>Develop and maintain user interfaces for web applications
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>Collaborate with design team to implement responsive designs
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>Write clean, maintainable, and efficient code
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>Participate in code reviews and team meetings
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>Learn and implement new technologies as needed
-              </li>
-            </ul>
-            <h5 class="fw-bold mt-4 mb-3">Requirements:</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-primary me-2"></i>Basic knowledge of HTML, CSS, and JavaScript
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-primary me-2"></i>Understanding of responsive design principles
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-primary me-2"></i>Eagerness to learn and grow professionally
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-primary me-2"></i>Good communication skills
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-check-circle-fill text-primary me-2"></i>Student or recent graduate in Computer Science or related field
-              </li>
-            </ul>
-            <h5 class="fw-bold mt-4 mb-3">We Offer:</h5>
-            <ul class="list-unstyled">
-              <li class="mb-2">
-                <i class="bi bi-gift-fill text-warning me-2"></i>Competitive salary: $800 - $1200/month
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-gift-fill text-warning me-2"></i>Flexible working hours for students
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-gift-fill text-warning me-2"></i>Mentorship program
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-gift-fill text-warning me-2"></i>Opportunity to work with experienced developers
-              </li>
-              <li class="mb-2">
-                <i class="bi bi-gift-fill text-warning me-2"></i>Modern office with free snacks and drinks
-              </li>
-            </ul>
+            <div class="job-description">{{ job.description|safe }}</div>
           </div>
           <!-- Additional Information -->
           <div class="info-card">
@@ -129,21 +82,18 @@
             <div class="row">
               <div class="col-md-6">
                 <p>
-                  <strong>Experience Level:</strong> Entry Level
+                  <strong>Experience Level:</strong> {{ job.experience_level_label }}
                 </p>
                 <p>
-                  <strong>Employment Type:</strong> Full-time
+                  <strong>Employment Type:</strong> {{ job.employment_type_label }}
                 </p>
                 <p>
-                  <strong>Schedule:</strong> Flexible hours
+                  <strong>Schedule:</strong> {{ job.schedule_label }}
                 </p>
               </div>
               <div class="col-md-6">
                 <p>
-                  <strong>Language:</strong> English (Intermediate)
-                </p>
-                <p>
-                  <strong>Work Format:</strong> Remote/Hybrid
+                  <strong>Work Format:</strong> {{ job.work_format_label }}
                 </p>
                 <p>
                   <strong>Start Date:</strong> Immediate
@@ -160,27 +110,22 @@
             <div class="job-meta-item">
               <i class="bi bi-calendar3 me-2 text-primary"></i>
               <strong>Date Posted:</strong>
-              <p class="mb-0 text-muted">2 days ago</p>
-            </div>
-            <div class="job-meta-item">
-              <i class="bi bi-clock me-2 text-primary"></i>
-              <strong>Expiration Date:</strong>
-              <p class="mb-0 text-muted">March 30, 2024</p>
+              <p class="mb-0 text-muted">{{ job.posted_at|date:"F d, Y" }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-briefcase me-2 text-primary"></i>
-              <strong>Job Type:</strong>
-              <p class="mb-0 text-muted">Full-time, Internship</p>
+              <strong>Employment Type:</strong>
+              <p class="mb-0 text-muted">{{ job.employment_type_label }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-cash me-2 text-primary"></i>
               <strong>Salary:</strong>
-              <p class="mb-0 text-muted">$800 - $1200/month</p>
+              <p class="mb-0 text-muted">{{ job.salary_display }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-geo-alt me-2 text-primary"></i>
               <strong>Location:</strong>
-              <p class="mb-0 text-muted">Minsk, Belarus (Remote)</p>
+              <p class="mb-0 text-muted">{{ job.location|default:"Remote" }}</p>
             </div>
           </div>
           <!-- Company Info -->
@@ -188,78 +133,63 @@
             <h5 class="fw-bold mb-3">About Company</h5>
             <div class="text-center mb-3">
               <div class="company-logo-large mx-auto mb-3">
-                <i class="bi bi-google"></i>
+                {% if job.company.logo %}
+                  <img src="{{ job.company.logo.url }}"
+                       alt="{{ job.company.name }}"
+                       style="width: 100%;
+                              height: 100%;
+                              object-fit: cover;
+                              border-radius: 12px" />
+                {% else %}
+                  <span class="fw-bold fs-3">{{ job.company.initial }}</span>
+                {% endif %}
               </div>
-              <h6 class="fw-bold">Google</h6>
-              <p class="text-muted small">Technology • 10,000+ employees</p>
+              <h6 class="fw-bold">{{ job.company.name }}</h6>
+              <p class="text-muted small">
+                {{ job.company.industry.name|default:"Technology" }} &bull; {{ job.company.display_size }}
+              </p>
             </div>
-            <p class="small">
-              Google is a global technology leader focused on improving the ways people connect with information. We innovate in AI, software, and hardware to create solutions for everyone.
-            </p>
-            {#  TODO: link to company profile page  #}
-            <a href="" class="btn btn-outline-primary w-100">View Company Profile</a>
+            <p class="small">{{ job.company.description|truncatewords:30 }}</p>
+            <a href="{% url 'company:company-detail' job.company.pk %}"
+               class="btn btn-outline-primary w-100">View Company Profile</a>
           </div>
           <!-- Similar Jobs -->
-          <div class="info-card">
-            <h5 class="fw-bold mb-3">Similar Jobs</h5>
-            <div class="similar-job-card">
-              <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2"
-                     style="width: 40px;
-                            height: 40px;
-                            font-size: 16px">
-                  <i class="bi bi-microsoft"></i>
+          {% if similar_jobs %}
+            <div class="info-card">
+              <h5 class="fw-bold mb-3">Similar Jobs</h5>
+              {% for similar in similar_jobs %}
+                <div class="similar-job-card">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="company-logo-small me-2"
+                         style="width: 40px;
+                                height: 40px;
+                                font-size: 16px">
+                      {% if similar.company.logo %}
+                        <img src="{{ similar.company.logo.url }}"
+                             alt="{{ similar.company.name }}"
+                             style="width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                    border-radius: 8px" />
+                      {% else %}
+                        <span class="fw-bold small">{{ similar.company.initial }}</span>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-0">{{ similar.title }}</h6>
+                      <small class="text-muted">{{ similar.company.name }}</small>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small><i class="bi bi-geo-alt me-1"></i>{{ similar.location|default:"Remote" }}</small>
+                    <small><i class="bi bi-cash me-1"></i>{{ similar.salary_display }}</small>
+                    <a href="{% url 'jobs:jobs-detail' similar.pk %}"
+                       class="btn btn-sm btn-outline-primary">View</a>
+                  </div>
                 </div>
-                <div>
-                  <h6 class="fw-bold mb-0">Junior UI Developer</h6>
-                  <small class="text-muted">Microsoft</small>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <small><i class="bi bi-geo-alt me-1"></i>Remote</small>
-                <small><i class="bi bi-cash me-1"></i>$900/month</small>
-                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-              </div>
+              {% endfor %}
             </div>
-            <div class="similar-job-card">
-              <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2"
-                     style="width: 40px;
-                            height: 40px;
-                            font-size: 16px">
-                  <i class="bi bi-amazon"></i>
-                </div>
-                <div>
-                  <h6 class="fw-bold mb-0">Frontend Trainee</h6>
-                  <small class="text-muted">Amazon</small>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <small><i class="bi bi-geo-alt me-1"></i>Berlin</small>
-                <small><i class="bi bi-cash me-1"></i>$750/month</small>
-                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-              </div>
-            </div>
-            <div class="similar-job-card">
-              <div class="d-flex align-items-center mb-2">
-                <div class="company-logo-small me-2"
-                     style="width: 40px;
-                            height: 40px;
-                            font-size: 16px">
-                  <i class="bi bi-facebook"></i>
-                </div>
-                <div>
-                  <h6 class="fw-bold mb-0">Web Developer Intern</h6>
-                  <small class="text-muted">Meta</small>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <small><i class="bi bi-geo-alt me-1"></i>Warsaw</small>
-                <small><i class="bi bi-cash me-1"></i>$800/month</small>
-                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
-              </div>
-            </div>
-          </div>
+          {% endif %}
         </div>
       </div>
     </div>

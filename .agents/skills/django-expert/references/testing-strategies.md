@@ -56,6 +56,7 @@ python manage.py test myapp.tests.test_models.PostModelTest.test_create_post
 ```python
 from django.test import TestCase
 
+
 # ✅ GOOD: Faster, uses transactions
 class PostModelTest(TestCase):
     def setUp(self):
@@ -76,6 +77,7 @@ class PostModelTest(TestCase):
 
 ```python
 from django.test import TransactionTestCase
+
 
 # ✅ GOOD: When you need to test transactions
 class PaymentProcessingTest(TransactionTestCase):
@@ -152,28 +154,28 @@ pytest --reuse-db --no-migrations
 
 ```python
 # Database access fixtures
-db                              # Standard database access
-transactional_db                # Transaction testing
-django_db_reset_sequences       # Reset DB sequences
+db  # Standard database access
+transactional_db  # Transaction testing
+django_db_reset_sequences  # Reset DB sequences
 
 # Client fixtures
-client                          # Django test client
-admin_client                    # Pre-authenticated admin client
-async_client                    # AsyncClient for async views
+client  # Django test client
+admin_client  # Pre-authenticated admin client
+async_client  # AsyncClient for async views
 
 # Request factory fixtures
-rf                              # RequestFactory
-async_rf                        # Async RequestFactory
+rf  # RequestFactory
+async_rf  # Async RequestFactory
 
 # User fixtures
-admin_user                      # Superuser instance
-django_user_model               # User model class
+admin_user  # Superuser instance
+django_user_model  # User model class
 
 # Utility fixtures
-settings                        # Modify settings temporarily
-live_server                     # Run development server
-mailoutbox                      # Captured emails
-django_assert_num_queries       # Query count assertions
+settings  # Modify settings temporarily
+live_server  # Run development server
+mailoutbox  # Captured emails
+django_assert_num_queries  # Query count assertions
 ```
 
 ### pytest-django Markers
@@ -181,15 +183,18 @@ django_assert_num_queries       # Query count assertions
 ```python
 import pytest
 
+
 # Grant database access
 @pytest.mark.django_db
 def test_model_save():
     pass
 
+
 # Transaction testing
 @pytest.mark.django_db(transaction=True)
 def test_transaction():
     pass
+
 
 # Override URLs
 @pytest.mark.urls('myapp.test_urls')
@@ -205,20 +210,18 @@ def test_with_custom_urls():
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
+
 # ✅ GOOD: Test model methods and validation
 class PostModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username='testuser', password='testpass123'
         )
 
     def test_create_post(self):
         """Test post creation."""
         post = Post.objects.create(
-            title='Test Post',
-            content='Test content',
-            author=self.user
+            title='Test Post', content='Test content', author=self.user
         )
         self.assertEqual(post.title, 'Test Post')
         self.assertEqual(post.author, self.user)
@@ -231,10 +234,7 @@ class PostModelTest(TestCase):
 
     def test_slug_generation(self):
         """Test automatic slug generation."""
-        post = Post.objects.create(
-            title='Test Post Title',
-            author=self.user
-        )
+        post = Post.objects.create(title='Test Post Title', author=self.user)
         self.assertEqual(post.slug, 'test-post-title')
 
     def test_title_max_length(self):
@@ -253,7 +253,9 @@ class PostModelTest(TestCase):
 
     def test_published_posts_manager(self):
         """Test custom manager."""
-        Post.objects.create(title='Published', author=self.user, is_published=True)
+        Post.objects.create(
+            title='Published', author=self.user, is_published=True
+        )
         Post.objects.create(title='Draft', author=self.user, is_published=False)
 
         published = Post.published.all()
@@ -267,18 +269,16 @@ class PostModelTest(TestCase):
 import pytest
 from django.core.exceptions import ValidationError
 
+
 # ✅ GOOD: Function-based tests with pytest
 @pytest.mark.django_db
 def test_create_post(django_user_model):
     """Test post creation."""
     user = django_user_model.objects.create_user(
-        username='testuser',
-        password='testpass123'
+        username='testuser', password='testpass123'
     )
     post = Post.objects.create(
-        title='Test Post',
-        content='Test content',
-        author=user
+        title='Test Post', content='Test content', author=user
     )
     assert post.title == 'Test Post'
     assert post.author == user
@@ -295,10 +295,7 @@ def test_str_method(db):
 def test_slug_generation(db):
     """Test automatic slug generation."""
     user = User.objects.create_user(username='test', password='pass')
-    post = Post.objects.create(
-        title='Test Post Title',
-        author=user
-    )
+    post = Post.objects.create(title='Test Post Title', author=user)
     assert post.slug == 'test-post-title'
 
 
@@ -335,19 +332,14 @@ def test_published_posts_manager(db):
 @pytest.fixture
 def test_user(db):
     """Create a test user."""
-    return User.objects.create_user(
-        username='testuser',
-        password='testpass123'
-    )
+    return User.objects.create_user(username='testuser', password='testpass123')
 
 
 @pytest.fixture
 def test_post(test_user):
     """Create a test post."""
     return Post.objects.create(
-        title='Test Post',
-        content='Test content',
-        author=test_user
+        title='Test Post', content='Test content', author=test_user
     )
 
 
@@ -359,18 +351,17 @@ def test_post_with_fixtures(test_post):
 
 # ✅ GOOD: Parametrized testing
 @pytest.mark.django_db
-@pytest.mark.parametrize('is_published,expected_count', [
-    (True, 1),
-    (False, 0),
-])
+@pytest.mark.parametrize(
+    'is_published,expected_count',
+    [
+        (True, 1),
+        (False, 0),
+    ],
+)
 def test_published_filter(is_published, expected_count):
     """Test published posts filter."""
     user = User.objects.create_user(username='test', password='pass')
-    Post.objects.create(
-        title='Test',
-        author=user,
-        is_published=is_published
-    )
+    Post.objects.create(title='Test', author=user, is_published=is_published)
     assert Post.published.count() == expected_count
 ```
 
@@ -382,18 +373,16 @@ def test_published_filter(is_published, expected_count):
 from django.test import TestCase, Client
 from django.urls import reverse
 
+
 # ✅ GOOD: Test views thoroughly
 class PostViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username='testuser', password='testpass123'
         )
         self.post = Post.objects.create(
-            title='Test Post',
-            content='Test content',
-            author=self.user
+            title='Test Post', content='Test content', author=self.user
         )
 
     def test_post_list_view(self):
@@ -423,10 +412,7 @@ class PostViewTest(TestCase):
         """Test creating post when logged in."""
         self.client.login(username='testuser', password='testpass123')
 
-        data = {
-            'title': 'New Post',
-            'content': 'New content'
-        }
+        data = {'title': 'New Post', 'content': 'New content'}
         response = self.client.post(reverse('post_create'), data)
 
         self.assertEqual(response.status_code, 302)  # Redirect after success
@@ -487,6 +473,7 @@ class PostViewTest(TestCase):
 import pytest
 from django.urls import reverse
 
+
 # ✅ GOOD: Using client fixture
 def test_post_list_view(client, test_post):
     """Test post list view."""
@@ -516,10 +503,7 @@ def test_create_post_authenticated(client, test_user):
     """Test creating post when logged in."""
     client.force_login(test_user)
 
-    data = {
-        'title': 'New Post',
-        'content': 'New content'
-    }
+    data = {'title': 'New Post', 'content': 'New content'}
     response = client.post(reverse('post_create'), data)
 
     assert response.status_code == 302  # Redirect after success
@@ -598,18 +582,16 @@ def test_view_with_request_factory(rf, test_user):
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 
+
 # ✅ GOOD: Test API endpoints
 class PostAPITest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            username='testuser', password='testpass123'
         )
         self.post = Post.objects.create(
-            title='Test Post',
-            content='Test content',
-            author=self.user
+            title='Test Post', content='Test content', author=self.user
         )
 
     def test_list_posts(self):
@@ -650,9 +632,7 @@ class PostAPITest(APITestCase):
 
         data = {'title': 'Updated', 'content': 'Updated content'}
         response = self.client.put(
-            f'/api/posts/{self.post.id}/',
-            data,
-            format='json'
+            f'/api/posts/{self.post.id}/', data, format='json'
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -665,9 +645,7 @@ class PostAPITest(APITestCase):
 
         data = {'title': 'Patched Title'}
         response = self.client.patch(
-            f'/api/posts/{self.post.id}/',
-            data,
-            format='json'
+            f'/api/posts/{self.post.id}/', data, format='json'
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -697,7 +675,9 @@ class PostAPITest(APITestCase):
 
     def test_search_posts(self):
         """Test searching posts."""
-        Post.objects.create(title='Django Tutorial', content='Learn Django', author=self.user)
+        Post.objects.create(
+            title='Django Tutorial', content='Learn Django', author=self.user
+        )
 
         response = self.client.get('/api/posts/?search=Django')
 
@@ -710,6 +690,7 @@ class PostAPITest(APITestCase):
 ```python
 import pytest
 from rest_framework import status
+
 
 # ✅ GOOD: API tests with pytest
 @pytest.mark.django_db
@@ -756,9 +737,7 @@ def test_update_post(client, test_post):
 
     data = {'title': 'Updated', 'content': 'Updated content'}
     response = client.put(
-        f'/api/posts/{test_post.id}/',
-        data,
-        content_type='application/json'
+        f'/api/posts/{test_post.id}/', data, content_type='application/json'
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -772,9 +751,7 @@ def test_partial_update_post(client, test_post):
 
     data = {'title': 'Patched Title'}
     response = client.patch(
-        f'/api/posts/{test_post.id}/',
-        data,
-        content_type='application/json'
+        f'/api/posts/{test_post.id}/', data, content_type='application/json'
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -811,8 +788,12 @@ def test_filter_by_author(client, test_user):
 @pytest.mark.django_db
 def test_search_posts(client, test_user):
     """Test searching posts."""
-    Post.objects.create(title='Django Tutorial', content='Learn Django', author=test_user)
-    Post.objects.create(title='Python Guide', content='Learn Python', author=test_user)
+    Post.objects.create(
+        title='Django Tutorial', content='Learn Django', author=test_user
+    )
+    Post.objects.create(
+        title='Python Guide', content='Learn Python', author=test_user
+    )
 
     response = client.get('/api/posts/?search=Django')
 
@@ -824,10 +805,13 @@ def test_search_posts(client, test_user):
 
 # ✅ GOOD: Parametrized API testing
 @pytest.mark.django_db
-@pytest.mark.parametrize('endpoint,method,expected_status', [
-    ('/api/posts/', 'get', status.HTTP_200_OK),
-    ('/api/posts/', 'post', status.HTTP_401_UNAUTHORIZED),
-])
+@pytest.mark.parametrize(
+    'endpoint,method,expected_status',
+    [
+        ('/api/posts/', 'get', status.HTTP_200_OK),
+        ('/api/posts/', 'post', status.HTTP_401_UNAUTHORIZED),
+    ],
+)
 def test_api_endpoints(client, endpoint, method, expected_status):
     """Test various API endpoints."""
     response = getattr(client, method)(endpoint)
@@ -844,22 +828,17 @@ def test_api_endpoints(client, endpoint, method, expected_status):
 # fixtures/test_data.json
 [
     {
-        "model": "auth.user",
-        "pk": 1,
-        "fields": {
-            "username": "testuser",
-            "email": "test@example.com"
-        }
+        'model': 'auth.user',
+        'pk': 1,
+        'fields': {'username': 'testuser', 'email': 'test@example.com'},
     },
     {
-        "model": "blog.post",
-        "pk": 1,
-        "fields": {
-            "title": "Test Post",
-            "author": 1
-        }
-    }
+        'model': 'blog.post',
+        'pk': 1,
+        'fields': {'title': 'Test Post', 'author': 1},
+    },
 ]
+
 
 # Using fixtures
 class PostTest(TestCase):
@@ -881,6 +860,7 @@ pip install factory-boy
 import factory
 from factory.django import DjangoModelFactory
 
+
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
@@ -889,6 +869,7 @@ class UserFactory(DjangoModelFactory):
     email = factory.LazyAttribute(lambda obj: f'{obj.username}@example.com')
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
+
 
 class PostFactory(DjangoModelFactory):
     class Meta:
@@ -899,6 +880,7 @@ class PostFactory(DjangoModelFactory):
     author = factory.SubFactory(UserFactory)
     is_published = True
 
+
 class CommentFactory(DjangoModelFactory):
     class Meta:
         model = Comment
@@ -906,6 +888,7 @@ class CommentFactory(DjangoModelFactory):
     post = factory.SubFactory(PostFactory)
     author = factory.SubFactory(UserFactory)
     content = factory.Faker('paragraph')
+
 
 # Usage in tests
 class PostTest(TestCase):
@@ -931,15 +914,18 @@ class PostTest(TestCase):
 import pytest
 from tests.factories import UserFactory, PostFactory
 
+
 @pytest.fixture
 def user():
     """Create a test user using factory."""
     return UserFactory()
 
+
 @pytest.fixture
 def post(user):
     """Create a test post using factory."""
     return PostFactory(author=user)
+
 
 @pytest.fixture
 def published_posts(user):
@@ -977,25 +963,21 @@ def test_custom_values():
 ```python
 from unittest.mock import patch, Mock
 
+
 # ✅ GOOD: Mock external API calls
 class PaymentTest(TestCase):
     @patch('myapp.payment.stripe.Charge.create')
     def test_process_payment(self, mock_charge):
         """Test payment processing."""
         # Configure mock
-        mock_charge.return_value = Mock(
-            id='ch_123',
-            status='succeeded'
-        )
+        mock_charge.return_value = Mock(id='ch_123', status='succeeded')
 
         # Call function that uses Stripe
         result = process_payment(amount=1000, token='tok_123')
 
         # Verify mock was called
         mock_charge.assert_called_once_with(
-            amount=1000,
-            currency='usd',
-            source='tok_123'
+            amount=1000, currency='usd', source='tok_123'
         )
 
         # Verify result
@@ -1006,15 +988,12 @@ class PaymentTest(TestCase):
     def test_user_registration_sends_email(self, mock_send_email):
         """Test registration sends welcome email."""
         user = User.objects.create_user(
-            username='test',
-            email='test@example.com',
-            password='pass'
+            username='test', email='test@example.com', password='pass'
         )
 
         # Verify email task was called
         mock_send_email.assert_called_once_with(
-            user_id=user.id,
-            template='welcome'
+            user_id=user.id, template='welcome'
         )
 ```
 
@@ -1024,25 +1003,21 @@ class PaymentTest(TestCase):
 import pytest
 from unittest.mock import patch, Mock
 
+
 # ✅ GOOD: Using pytest with mocks
 @pytest.mark.django_db
 @patch('myapp.payment.stripe.Charge.create')
 def test_process_payment(mock_charge):
     """Test payment processing."""
     # Configure mock
-    mock_charge.return_value = Mock(
-        id='ch_123',
-        status='succeeded'
-    )
+    mock_charge.return_value = Mock(id='ch_123', status='succeeded')
 
     # Call function that uses Stripe
     result = process_payment(amount=1000, token='tok_123')
 
     # Verify mock was called
     mock_charge.assert_called_once_with(
-        amount=1000,
-        currency='usd',
-        source='tok_123'
+        amount=1000, currency='usd', source='tok_123'
     )
 
     # Verify result
@@ -1055,16 +1030,11 @@ def test_process_payment(mock_charge):
 def test_user_registration_sends_email(mock_send_email):
     """Test registration sends welcome email."""
     user = User.objects.create_user(
-        username='test',
-        email='test@example.com',
-        password='pass'
+        username='test', email='test@example.com', password='pass'
     )
 
     # Verify email task was called
-    mock_send_email.assert_called_once_with(
-        user_id=user.id,
-        template='welcome'
-    )
+    mock_send_email.assert_called_once_with(user_id=user.id, template='welcome')
 
 
 # ✅ GOOD: Using pytest-mock plugin
@@ -1075,10 +1045,7 @@ def test_with_mocker(mocker, db):
 
     send_notification(phone='+1234567890', message='Test')
 
-    mock_send.assert_called_once_with(
-        phone='+1234567890',
-        message='Test'
-    )
+    mock_send.assert_called_once_with(phone='+1234567890', message='Test')
 ```
 
 ---
@@ -1088,13 +1055,11 @@ def test_with_mocker(mocker, db):
 ```python
 from django.test import TestCase
 
+
 class PostFormTest(TestCase):
     def test_valid_form(self):
         """Test form with valid data."""
-        data = {
-            'title': 'Test Post',
-            'content': 'Test content'
-        }
+        data = {'title': 'Test Post', 'content': 'Test content'}
         form = PostForm(data=data)
         self.assertTrue(form.is_valid())
 
@@ -1107,10 +1072,7 @@ class PostFormTest(TestCase):
 
     def test_invalid_form_title_too_long(self):
         """Test form with title exceeding max length."""
-        data = {
-            'title': 'x' * 201,
-            'content': 'Test content'
-        }
+        data = {'title': 'x' * 201, 'content': 'Test content'}
         form = PostForm(data=data)
         self.assertFalse(form.is_valid())
         self.assertIn('title', form.errors)
@@ -1121,12 +1083,10 @@ class PostFormTest(TestCase):
 ```python
 import pytest
 
+
 def test_valid_form():
     """Test form with valid data."""
-    data = {
-        'title': 'Test Post',
-        'content': 'Test content'
-    }
+    data = {'title': 'Test Post', 'content': 'Test content'}
     form = PostForm(data=data)
     assert form.is_valid()
 
@@ -1141,22 +1101,22 @@ def test_invalid_form_missing_title():
 
 def test_invalid_form_title_too_long():
     """Test form with title exceeding max length."""
-    data = {
-        'title': 'x' * 201,
-        'content': 'Test content'
-    }
+    data = {'title': 'x' * 201, 'content': 'Test content'}
     form = PostForm(data=data)
     assert not form.is_valid()
     assert 'title' in form.errors
 
 
 # ✅ GOOD: Parametrized form testing
-@pytest.mark.parametrize('title,content,is_valid', [
-    ('Valid', 'Valid content', True),
-    ('', 'Valid content', False),  # Missing title
-    ('Valid', '', False),  # Missing content
-    ('x' * 201, 'Valid', False),  # Title too long
-])
+@pytest.mark.parametrize(
+    'title,content,is_valid',
+    [
+        ('Valid', 'Valid content', True),
+        ('', 'Valid content', False),  # Missing title
+        ('Valid', '', False),  # Missing content
+        ('x' * 201, 'Valid', False),  # Title too long
+    ],
+)
 def test_post_form_validation(title, content, is_valid):
     """Test various form validation scenarios."""
     form = PostForm(data={'title': title, 'content': content})
@@ -1227,6 +1187,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 import time
 
+
 class PerformanceTest(TestCase):
     def test_query_count(self):
         """Test number of queries."""
@@ -1251,6 +1212,7 @@ class PerformanceTest(TestCase):
 ```python
 import pytest
 import time
+
 
 @pytest.mark.django_db
 def test_query_count(django_assert_num_queries):
@@ -1280,7 +1242,9 @@ def test_no_n_plus_one(django_assert_num_queries):
 
     # Should execute constant queries regardless of post count
     with django_assert_num_queries(3):
-        posts = Post.objects.select_related('author').prefetch_related('comments')
+        posts = Post.objects.select_related('author').prefetch_related(
+            'comments'
+        )
         for post in posts:
             # Access related objects
             _ = post.author.username
@@ -1298,11 +1262,14 @@ def test_no_n_plus_one(django_assert_num_queries):
 import pytest
 from tests.factories import UserFactory, PostFactory
 
+
 @pytest.fixture
 def api_client():
     """DRF API client."""
     from rest_framework.test import APIClient
+
     return APIClient()
+
 
 @pytest.fixture
 def authenticated_client(api_client, user):
@@ -1310,10 +1277,12 @@ def authenticated_client(api_client, user):
     api_client.force_authenticate(user=user)
     return api_client
 
+
 @pytest.fixture
 def user(db):
     """Create test user."""
     return UserFactory()
+
 
 @pytest.fixture
 def admin_user(db):
@@ -1357,9 +1326,7 @@ def test_with_custom_setting(settings):
     """Test with modified settings."""
     settings.DEBUG = False
     settings.CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
-        }
+        'default': {'BACKEND': 'django.core.cache.backends.dummy.DummyCache'}
     }
     # Test behavior with these settings
 
@@ -1380,6 +1347,7 @@ def test_email_sending(mailoutbox):
 import pytest
 from io import StringIO
 from django.core.management import call_command
+
 
 @pytest.mark.django_db
 def test_management_command():
@@ -1402,6 +1370,7 @@ def test_command_with_error():
 
 ```python
 import pytest
+
 
 @pytest.mark.django_db
 @pytest.mark.asyncio
@@ -1477,6 +1446,7 @@ pytest  # Runs both TestCase classes and pytest functions
 ```python
 from django.test import TestCase
 
+
 class MyTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test')
@@ -1489,9 +1459,11 @@ class MyTest(TestCase):
 ```python
 import pytest
 
+
 @pytest.fixture
 def user(db):
     return User.objects.create_user(username='test')
+
 
 def test_something(user):
     assert user.username == 'test'

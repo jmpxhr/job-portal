@@ -14,8 +14,7 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            {#  TODO: link to home page  #}
-            <a href="">Home</a>
+            <a href="{% url 'dashboard:home' %}">Home</a>
           </li>
           <li class="breadcrumb-item active">Jobs</li>
         </ol>
@@ -30,65 +29,93 @@
         <div class="col-lg-3 mb-4">
           <div class="filter-card">
             <h5 class="fw-bold mb-3">Filters</h5>
-            <!-- Search -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Search</label>
-              <input type="text" class="form-control" placeholder="Job title or keyword" />
-            </div>
-            <!-- Location -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Location</label>
-              <input type="text" class="form-control" placeholder="City or remote" />
-            </div>
-            <!-- Job Type -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Job Type</label>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="fulltime" />
-                <label class="form-check-label" for="fulltime">Full-time</label>
+            <form method="get"
+                  hx-get="{% url 'jobs:jobs-list' %}"
+                  hx-target="#job-list-container"
+                  hx-push-url="true"
+                  id="job-filter-form">
+              <!-- Search -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold" for="id_q">Search</label>
+                <input type="text"
+                       name="q"
+                       id="id_q"
+                       class="form-control"
+                       placeholder="Job title or keyword"
+                       value="{{ search_query }}" />
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="parttime" />
-                <label class="form-check-label" for="parttime">Part-time</label>
+              <!-- Location -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold" for="id_location">Location</label>
+                <input type="text"
+                       name="location"
+                       id="id_location"
+                       class="form-control"
+                       placeholder="City or remote"
+                       value="{{ location_query }}" />
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="internship" />
-                <label class="form-check-label" for="internship">Internship</label>
+              <!-- Employment Type -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Employment Type</label>
+                {% for value, label in employment_type_choices %}
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="employment_type"
+                           id="employment_type_{{ value }}"
+                           value="{{ value }}"
+                           {% if value|stringformat:"s" in current_employment_types %}checked{% endif %} />
+                    <label class="form-check-label" for="employment_type_{{ value }}">{{ label }}</label>
+                  </div>
+                {% endfor %}
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="remote" />
-                <label class="form-check-label" for="remote">Remote</label>
+              <!-- Work Format -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Work Format</label>
+                {% for value, label in work_format_choices %}
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="work_format"
+                           id="work_format_{{ value }}"
+                           value="{{ value }}"
+                           {% if value|stringformat:"s" in current_work_formats %}checked{% endif %} />
+                    <label class="form-check-label" for="work_format_{{ value }}">{{ label }}</label>
+                  </div>
+                {% endfor %}
               </div>
-            </div>
-            <!-- Experience Level -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Experience</label>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="noexp" />
-                <label class="form-check-label" for="noexp">No experience</label>
+              <!-- Experience Level -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Experience</label>
+                {% for value, label in experience_level_choices %}
+                  <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="experience_level"
+                           id="experience_level_{{ value }}"
+                           value="{{ value }}"
+                           {% if value|stringformat:"s" in current_experience_levels %}checked{% endif %} />
+                    <label class="form-check-label" for="experience_level_{{ value }}">{{ label }}</label>
+                  </div>
+                {% endfor %}
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="entry" />
-                <label class="form-check-label" for="entry">Entry level</label>
+              <!-- Salary From -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold" for="id_salary_from">Salary From, $</label>
+                <input type="number"
+                       name="salary_from"
+                       id="id_salary_from"
+                       class="form-control"
+                       placeholder="e.g. 1000"
+                       value="{{ current_salary_from }}" />
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="student" />
-                <label class="form-check-label" for="student">Student friendly</label>
-              </div>
-            </div>
-            <!-- Salary Range -->
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Salary Range</label>
-              <select class="form-select">
-                <option>Any salary</option>
-                <option>Up to $500</option>
-                <option>$500 - $1000</option>
-                <option>$1000 - $1500</option>
-                <option>$1500+</option>
-              </select>
-            </div>
-            <button class="btn btn-primary w-100">Apply Filters</button>
-            <button class="btn btn-link w-100 mt-2">Clear All</button>
+              <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+              <a href="{% url 'jobs:jobs-list' %}"
+                 class="btn btn-link w-100 mt-2"
+                 hx-get="{% url 'jobs:jobs-list' %}"
+                 hx-target="#job-list-container"
+                 hx-push-url="true">Clear All</a>
+            </form>
           </div>
         </div>
         <!-- Jobs List -->
@@ -96,171 +123,22 @@
           <!-- Sort and Results Count -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <p class="mb-0">
-              Showing <strong>1-10</strong> of <strong>156</strong> jobs
+              Showing <strong>{{ page_obj.start_index|default:0 }}-{{ page_obj.end_index|default:0 }}</strong> of <strong>{{ paginator.count|default:0 }}</strong> jobs
             </p>
             <div class="d-flex align-items-center">
-              <label class="me-2">Sort by:</label>
-              <select class="form-select" style="width: auto;">
-                <option>Most recent</option>
-                <option>Salary: High to Low</option>
-                <option>Salary: Low to High</option>
+              <label class="me-2" for="id_sort">Sort by:</label>
+              <select class="form-select"
+                      style="width: auto"
+                      name="sort"
+                      id="id_sort"
+                      form="job-filter-form">
+                {% for value, label in sort_choices %}
+                  <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
               </select>
             </div>
           </div>
-          <!-- Job Card 1 -->
-          <div class="job-card">
-            <div class="row">
-              <div class="col-md-2 col-3">
-                <div class="company-logo-small mx-auto">
-                  <i class="bi bi-google"></i>
-                </div>
-              </div>
-              <div class="col-md-10 col-9">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h4 class="fw-bold mb-1">Junior Frontend Developer</h4>
-                    <p class="text-primary mb-2">Google</p>
-                  </div>
-                  <span class="job-type-badge badge-fulltime">Full-time</span>
-                </div>
-                <div class="row mt-2">
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-geo-alt me-1"></i>Minsk, Remote</small>
-                  </div>
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-cash me-1"></i>$800 - $1200/month</small>
-                  </div>
-                  <div class="col-md-4">
-                    <small><i class="bi bi-clock me-1"></i>Posted 2 days ago</small>
-                  </div>
-                </div>
-                <p class="mt-2 text-muted">
-                  We are looking for a passionate Junior Frontend Developer to join our team. Perfect opportunity for students and recent graduates...
-                </p>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                  <div>
-                    <span class="badge bg-light text-dark me-1">HTML</span>
-                    <span class="badge bg-light text-dark me-1">CSS</span>
-                    <span class="badge bg-light text-dark me-1">JavaScript</span>
-                    <span class="badge bg-light text-dark">React</span>
-                  </div>
-                  {#  TODO: link to job detail page  #}
-                  <a href="" class="btn btn-primary btn-sm">View Details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Job Card 2 -->
-          <div class="job-card">
-            <div class="row">
-              <div class="col-md-2 col-3">
-                <div class="company-logo-small mx-auto">
-                  <i class="bi bi-microsoft"></i>
-                </div>
-              </div>
-              <div class="col-md-10 col-9">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h4 class="fw-bold mb-1">Marketing Intern</h4>
-                    <p class="text-primary mb-2">Microsoft</p>
-                  </div>
-                  <span class="job-type-badge badge-internship">Internship</span>
-                </div>
-                <div class="row mt-2">
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-geo-alt me-1"></i>Warsaw, Hybrid</small>
-                  </div>
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-cash me-1"></i>$500 - $700/month</small>
-                  </div>
-                  <div class="col-md-4">
-                    <small><i class="bi bi-clock me-1"></i>Posted 3 days ago</small>
-                  </div>
-                </div>
-                <p class="mt-2 text-muted">
-                  Great opportunity for marketing students to gain practical experience in a global company. Flexible hours available...
-                </p>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                  <div>
-                    <span class="badge bg-light text-dark me-1">Digital Marketing</span>
-                    <span class="badge bg-light text-dark me-1">Social Media</span>
-                    <span class="badge bg-light text-dark">Analytics</span>
-                  </div>
-                  {#  TODO: link to job detail page  #}
-                  <a href="" class="btn btn-primary btn-sm">View Details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Job Card 3 -->
-          <div class="job-card">
-            <div class="row">
-              <div class="col-md-2 col-3">
-                <div class="company-logo-small mx-auto">
-                  <i class="bi bi-amazon"></i>
-                </div>
-              </div>
-              <div class="col-md-10 col-9">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h4 class="fw-bold mb-1">Data Analyst (Entry Level)</h4>
-                    <p class="text-primary mb-2">Amazon</p>
-                  </div>
-                  <span class="job-type-badge badge-fulltime">Full-time</span>
-                </div>
-                <div class="row mt-2">
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-geo-alt me-1"></i>Berlin, On-site</small>
-                  </div>
-                  <div class="col-md-4 col-6">
-                    <small><i class="bi bi-cash me-1"></i>$900 - $1300/month</small>
-                  </div>
-                  <div class="col-md-4">
-                    <small><i class="bi bi-clock me-1"></i>Posted 5 days ago</small>
-                  </div>
-                </div>
-                <p class="mt-2 text-muted">
-                  Start your career in data analysis! No experience required - we provide training. Perfect for math/statistics students...
-                </p>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                  <div>
-                    <span class="badge bg-light text-dark me-1">SQL</span>
-                    <span class="badge bg-light text-dark me-1">Excel</span>
-                    <span class="badge bg-light text-dark me-1">Python</span>
-                    <span class="badge bg-light text-dark">Statistics</span>
-                  </div>
-                  {#  TODO: link to job detail page  #}
-                  <a href="" class="btn btn-primary btn-sm">View Details</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Pagination -->
-          <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-              </li>
-              <li class="page-item active">
-                <span class="page-link">1</span>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#">2</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#">3</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#">4</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#">5</a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-          </nav>
+          <div id="job-list-container">{% include 'jobs/partials/jobs-list-partial.html' %}</div>
         </div>
       </div>
     </div>

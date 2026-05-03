@@ -25,10 +25,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 
+
 # ✅ GOOD: Simple, explicit view
 def blog_list(request):
     posts = Post.objects.filter(is_published=True).order_by('-created_at')
     return render(request, 'blog/list.html', {'posts': posts})
+
 
 # ✅ GOOD: Handle form submission
 def create_post(request):
@@ -44,6 +46,7 @@ def create_post(request):
 
     return render(request, 'blog/create.html', {'form': form})
 
+
 # ✅ GOOD: Protected view
 @login_required
 def user_dashboard(request):
@@ -56,13 +59,15 @@ def user_dashboard(request):
 ```python
 from django.views.decorators.http import require_http_methods, require_POST
 
+
 # ✅ GOOD: Restrict to specific methods
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 def contact_form(request):
     if request.method == 'POST':
         # Handle form submission
         ...
     return render(request, 'contact.html')
+
 
 # ✅ GOOD: POST-only view
 @require_POST
@@ -70,6 +75,7 @@ def delete_post(request, pk):
     post = get_object_or_404(Post, pk=pk, author=request.user)
     post.delete()
     return redirect('blog_list')
+
 
 # ❌ BAD: No method restriction
 def delete_post(request, pk):
@@ -84,9 +90,16 @@ def delete_post(request, pk):
 ### Generic Class-Based Views
 
 ```python
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+
 
 # ✅ GOOD: Simple list view
 class PostListView(ListView):
@@ -98,6 +111,7 @@ class PostListView(ListView):
     def get_queryset(self):
         return Post.objects.filter(is_published=True).select_related('author')
 
+
 # ✅ GOOD: Detail view with related objects
 class PostDetailView(DetailView):
     model = Post
@@ -105,7 +119,10 @@ class PostDetailView(DetailView):
     context_object_name = 'post'
 
     def get_queryset(self):
-        return Post.objects.select_related('author').prefetch_related('comments')
+        return Post.objects.select_related('author').prefetch_related(
+            'comments'
+        )
+
 
 # ✅ GOOD: Create view with form validation
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -118,6 +135,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
 # ✅ GOOD: Update view with permission check
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
@@ -127,6 +145,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         # Only allow editing own posts
         return Post.objects.filter(author=self.request.user)
+
 
 # ✅ GOOD: Delete view
 class PostDeleteView(LoginRequiredMixin, DeleteView):
@@ -142,6 +161,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 ```python
 from django.views import View
 
+
 # ✅ GOOD: Handle multiple methods
 class PostTogglePublishView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -150,8 +170,9 @@ class PostTogglePublishView(LoginRequiredMixin, View):
         post.save()
         return JsonResponse({
             'success': True,
-            'is_published': post.is_published
+            'is_published': post.is_published,
         })
+
 
 # ✅ GOOD: API-like view
 class PostAPIView(View):
@@ -178,7 +199,12 @@ Mixins add reusable functionality to CBVs.
 ### Built-in Mixins
 
 ```python
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin,
+)
+
 
 # ✅ GOOD: Require login
 class UserDashboardView(LoginRequiredMixin, ListView):
@@ -188,11 +214,13 @@ class UserDashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
 
+
 # ✅ GOOD: Require specific permission
 class PostCreateView(PermissionRequiredMixin, CreateView):
     model = Post
     permission_required = 'blog.add_post'
     # Redirects to login if permission denied
+
 
 # ✅ GOOD: Custom permission check
 class PostUpdateView(UserPassesTestMixin, UpdateView):
@@ -215,11 +243,13 @@ class PageTitleMixin:
         context['page_title'] = self.page_title
         return context
 
+
 # ✅ GOOD: Mixin for filtering by author
 class FilterByAuthorMixin:
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(author=self.request.user)
+
 
 # Usage
 class MyPostsView(FilterByAuthorMixin, PageTitleMixin, ListView):
@@ -245,12 +275,21 @@ urlpatterns = [
     path('', views.PostListView.as_view(), name='post_list'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/create/', views.PostCreateView.as_view(), name='post_create'),
-    path('post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post_edit'),
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
-
+    path(
+        'post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post_edit'
+    ),
+    path(
+        'post/<int:pk>/delete/',
+        views.PostDeleteView.as_view(),
+        name='post_delete',
+    ),
     # ✅ GOOD: Use path converters
     path('post/<slug:slug>/', views.post_detail_by_slug, name='post_by_slug'),
-    path('category/<str:category>/', views.posts_by_category, name='posts_by_category'),
+    path(
+        'category/<str:category>/',
+        views.posts_by_category,
+        name='posts_by_category',
+    ),
     path('archive/<int:year>/<int:month>/', views.archive, name='archive'),
 ]
 ```
@@ -275,8 +314,10 @@ class YearConverter:
     def to_url(self, value):
         return f'{value:04d}'
 
+
 # Register it
 from django.urls import register_converter
+
 register_converter(YearConverter, 'year')
 
 # Use it
@@ -304,13 +345,16 @@ urlpatterns = [
 from django.urls import reverse
 from django.shortcuts import redirect
 
+
 # ✅ GOOD: Use reverse() in views
 def my_view(request):
     return redirect(reverse('blog:post_list'))
 
+
 # ✅ GOOD: With arguments
 def after_create(request, post):
     return redirect(reverse('blog:post_detail', kwargs={'pk': post.pk}))
+
 
 # ✅ GOOD: In templates
 # <a href="{% url 'blog:post_detail' pk=post.pk %}">View Post</a>
@@ -334,6 +378,7 @@ def blog_list(request):
         'page_title': 'Blog Posts',
     }
     return render(request, 'blog/list.html', context)
+
 
 # Class-based view
 class PostListView(ListView):
@@ -378,13 +423,20 @@ TEMPLATES = [
 ### Response Types
 
 ```python
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
+from django.http import (
+    HttpResponse,
+    JsonResponse,
+    HttpResponseRedirect,
+    Http404,
+)
 from django.shortcuts import render, redirect
+
 
 # ✅ GOOD: HTML response
 def blog_list(request):
     posts = Post.objects.all()
     return render(request, 'blog/list.html', {'posts': posts})
+
 
 # ✅ GOOD: JSON response
 def post_api(request, pk):
@@ -395,18 +447,21 @@ def post_api(request, pk):
         'content': post.content,
     })
 
+
 # ✅ GOOD: Redirect
 def old_url(request):
     return redirect('new_url_name')
+
 
 # ✅ GOOD: 404 error
 def post_detail(request, pk):
     try:
         post = Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        raise Http404("Post not found")
+        raise Http404('Post not found')
 
     return render(request, 'blog/detail.html', {'post': post})
+
 
 # ✅ BETTER: Use get_object_or_404
 def post_detail(request, pk):
@@ -419,10 +474,12 @@ def post_detail(request, pk):
 ```python
 from django.http import HttpResponse
 
+
 # 201 Created
 def create_post(request):
     post = Post.objects.create(...)
     return HttpResponse('Created', status=201)
+
 
 # 204 No Content
 def delete_post(request, pk):
@@ -430,14 +487,17 @@ def delete_post(request, pk):
     post.delete()
     return HttpResponse(status=204)
 
+
 # 400 Bad Request
 def api_view(request):
     if not request.POST.get('required_field'):
         return JsonResponse({'error': 'Missing field'}, status=400)
     ...
 
+
 # 403 Forbidden
 from django.http import HttpResponseForbidden
+
 
 def delete_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -455,8 +515,10 @@ def delete_post(request, pk):
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
+
 def custom_500(request):
     return render(request, '500.html', status=500)
+
 
 # urls.py
 handler404 = 'blog.views.custom_404'
@@ -471,6 +533,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 # ✅ GOOD: Handle specific exceptions
 def process_payment(request):
     try:
@@ -481,7 +544,7 @@ def process_payment(request):
     except PermissionDenied:
         return JsonResponse({'error': 'Forbidden'}, status=403)
     except Exception as e:
-        logger.exception("Payment processing failed")
+        logger.exception('Payment processing failed')
         return JsonResponse({'error': 'Server error'}, status=500)
 ```
 
@@ -529,6 +592,7 @@ class CustomHeaderMiddleware:
         response['X-Custom-Header'] = 'value'
         return response
 
+
 # Block requests from specific IPs
 class IPBlockMiddleware:
     def __init__(self, get_response):
@@ -551,11 +615,12 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.cache import cache_page
 from django.contrib.auth.decorators import login_required, permission_required
 
+
 # ✅ GOOD: Combine decorators
 @login_required
 @require_POST
-def delete_post(request, pk):
-    ...
+def delete_post(request, pk): ...
+
 
 # ✅ GOOD: Cache view for 5 minutes
 @cache_page(60 * 5)
@@ -563,16 +628,17 @@ def blog_list(request):
     posts = Post.objects.all()
     return render(request, 'blog/list.html', {'posts': posts})
 
+
 # ✅ GOOD: Require permission
 @permission_required('blog.add_post')
-def create_post(request):
-    ...
+def create_post(request): ...
 ```
 
 ### Custom Decorators
 
 ```python
 from functools import wraps
+
 
 # ✅ GOOD: Custom decorator for AJAX-only views
 def ajax_required(view_func):
@@ -581,7 +647,9 @@ def ajax_required(view_func):
         if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return HttpResponseBadRequest('AJAX required')
         return view_func(request, *args, **kwargs)
+
     return wrapper
+
 
 # Usage
 @ajax_required

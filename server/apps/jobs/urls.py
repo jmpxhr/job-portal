@@ -1,15 +1,16 @@
 from django.urls import path
-from django.views.generic import TemplateView
+
+from server.apps.jobs import views
 
 urlpatterns = [
     path(
         '',
-        TemplateView.as_view(template_name='jobs/jobs-list.html'),
-        name='jobs_list',
+        views.JobListView.as_view(),
+        name='jobs-list',
     ),
     path(
-        '<int:job_id>',
-        TemplateView.as_view(template_name='jobs/jobs-detail.html'),
-        name='jobs_detail',
+        '<int:pk>/',
+        views.JobDetailView.as_view(),
+        name='jobs-detail',
     ),
 ]

@@ -16,7 +16,6 @@ dependencies = [
   "pillow>=12.2.0",
   "python-decouple>=3.8,<4.0",
   "structlog>=25.4,<26.0",
-  "punq>=0.7,<1.0",
   "djangorestframework>=3.17.1",
 ]
 
@@ -46,6 +45,7 @@ preview = true
 fix = true
 target-version = "py313"
 line-length = 80
+extend-exclude = ["**/migrations/*.py"]
 
 [tool.ruff.format]
 quote-style = "single"
@@ -162,4 +162,4 @@ warn_untyped_fields = true
 
 [tool.djlint]
 profile = "django"
-ignore = "T002,H030,H021,H031,H006,H005"
+ignore = "T002,H030,H021,H031,H006,H005,H023"

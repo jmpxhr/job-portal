@@ -56,7 +56,9 @@ class StudentProgram(TimeStampModelMixin):
     )
     title = models.CharField(_('program title'), max_length=200)
     description = models.TextField(
-        _('description'), blank=True, default='',
+        _('description'),
+        blank=True,
+        default='',
     )
     status = EnumField(
         ProgramStatusEnum,
@@ -116,7 +118,10 @@ class Company(models.Model):
         blank=True,
     )
     phone = models.CharField(
-        _('phone number'), max_length=30, blank=True, default='',
+        _('phone number'),
+        max_length=30,
+        blank=True,
+        default='',
     )
     headquarters = models.CharField(
         _('headquarters'),
@@ -125,13 +130,20 @@ class Company(models.Model):
         default='',
     )
     linkedin_url = models.URLField(
-        _('LinkedIn URL'), blank=True, default='',
+        _('LinkedIn URL'),
+        blank=True,
+        default='',
     )
     telegram_url = models.URLField(
-        _('Telegram URL'), blank=True, default='',
+        _('Telegram URL'),
+        blank=True,
+        default='',
     )
     hr_contact_name = models.CharField(
-        _('HR contact name'), max_length=150, blank=True, default='',
+        _('HR contact name'),
+        max_length=150,
+        blank=True,
+        default='',
     )
     hr_contact_position = models.CharField(
         _('HR contact position'),
@@ -140,10 +152,14 @@ class Company(models.Model):
         default='',
     )
     hr_contact_email = models.EmailField(
-        _('HR contact email'), blank=True, default='',
+        _('HR contact email'),
+        blank=True,
+        default='',
     )
     benefits = models.ManyToManyField(
-        Benefit, blank=True, related_name='companies',
+        Benefit,
+        blank=True,
+        related_name='companies',
     )
 
     @override

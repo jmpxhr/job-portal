@@ -84,7 +84,7 @@ from django.db.models import Prefetch
 users = User.objects.prefetch_related(
     Prefetch(
         'posts',
-        queryset=Post.objects.filter(is_published=True).order_by('-created_at')
+        queryset=Post.objects.filter(is_published=True).order_by('-created_at'),
     )
 ).all()
 ```
@@ -94,9 +94,7 @@ users = User.objects.prefetch_related(
 ```python
 # Get users with their posts and each post's comments
 users = User.objects.prefetch_related(
-    'posts',
-    'posts__comments',
-    'posts__comments__author'
+    'posts', 'posts__comments', 'posts__comments__author'
 ).all()
 ```
 
@@ -119,14 +117,13 @@ class UserManager(models.Manager):
         return self.select_related('profile').prefetch_related(
             'groups',
             'user_permissions',
-            Prefetch(
-                'posts',
-                queryset=Post.objects.filter(is_published=True)
-            )
+            Prefetch('posts', queryset=Post.objects.filter(is_published=True)),
         )
+
 
 class User(AbstractUser):
     objects = UserManager()
+
 
 # Usage
 active_users = User.objects.active().with_profile()
@@ -205,7 +202,7 @@ from django.db.models import Count, Avg, Max, Min, Sum
 stats = User.objects.aggregate(
     total=Count('id'),
     avg_posts=Avg('posts__count'),
-    max_created=Max('created_at')
+    max_created=Max('created_at'),
 )
 # {'total': 100, 'avg_posts': 5.2, 'max_created': datetime(...)}
 ```
@@ -220,11 +217,13 @@ from django.db.models import Count, Q
 # Add post count to each user
 users = User.objects.annotate(
     total_posts=Count('posts'),
-    published_posts=Count('posts', filter=Q(posts__is_published=True))
+    published_posts=Count('posts', filter=Q(posts__is_published=True)),
 )
 
 for user in users:
-    print(f"{user.email}: {user.total_posts} total, {user.published_posts} published")
+    print(
+        f'{user.email}: {user.total_posts} total, {user.published_posts} published'
+    )
 ```
 
 ## Bulk Operations
@@ -236,13 +235,10 @@ Create multiple objects in one query:
 ```python
 # ❌ BAD: N queries
 for i in range(1000):
-    User.objects.create(email=f"user{i}@example.com")
+    User.objects.create(email=f'user{i}@example.com')
 
 # ✅ GOOD: 1 query
-users = [
-    User(email=f"user{i}@example.com")
-    for i in range(1000)
-]
+users = [User(email=f'user{i}@example.com') for i in range(1000)]
 User.objects.bulk_create(users, batch_size=500)
 ```
 
@@ -326,9 +322,9 @@ active_users = User.objects.filter(is_active=True).annotate(
 )
 
 # ❌ BAD: Annotate then filter (processes all rows first)
-active_users = User.objects.annotate(
-    post_count=Count('posts')
-).filter(is_active=True)
+active_users = User.objects.annotate(post_count=Count('posts')).filter(
+    is_active=True
+)
 ```
 
 ### 2. Use iterator() for Large QuerySets
@@ -353,9 +349,7 @@ recent_users = verified_users.filter(created_at__gte=last_week)
 
 # ✅ GOOD: Single query
 recent_users = User.objects.filter(
-    is_active=True,
-    email_verified=True,
-    created_at__gte=last_week
+    is_active=True, email_verified=True, created_at__gte=last_week
 )
 ```
 
@@ -366,12 +360,14 @@ Use transactions for operations that must succeed or fail together:
 ```python
 from django.db import transaction
 
+
 # Atomic decorator
 @transaction.atomic
 def create_user_with_profile(data):
     user = User.objects.create(**data['user'])
     Profile.objects.create(user=user, **data['profile'])
     return user
+
 
 # Atomic context manager
 def transfer_credits(from_user, to_user, amount):
@@ -382,6 +378,7 @@ def transfer_credits(from_user, to_user, amount):
         to_user.credits += amount
         to_user.save()
 
+
 # Rollback on error
 try:
     with transaction.atomic():
@@ -389,7 +386,7 @@ try:
         send_welcome_email(email)  # If this fails, user creation is rolled back
 except Exception:
     # Transaction automatically rolled back
-    logger.exception("Failed to create user")
+    logger.exception('Failed to create user')
 ```
 
 ## Raw SQL (When Necessary)
@@ -398,18 +395,17 @@ Sometimes the ORM can't express complex queries efficiently:
 
 ```python
 # Use raw SQL as a last resort
-users = User.objects.raw('''
+users = User.objects.raw("""
     SELECT u.*, COUNT(p.id) as post_count
     FROM users u
     LEFT JOIN posts p ON u.id = p.user_id
     GROUP BY u.id
     HAVING COUNT(p.id) > 10
-''')
+""")
 
 # ALWAYS use parameters to prevent SQL injection
 users = User.objects.raw(
-    'SELECT * FROM users WHERE created_at > %s',
-    [start_date]
+    'SELECT * FROM users WHERE created_at > %s', [start_date]
 )
 ```
 
@@ -423,6 +419,7 @@ print(queryset.query)  # Print SQL
 
 # Or in shell
 from django.db import connection
+
 print(connection.queries)  # All queries executed
 ```
 

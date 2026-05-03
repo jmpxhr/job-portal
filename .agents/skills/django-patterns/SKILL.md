@@ -159,8 +159,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
 class User(AbstractUser):
     """Custom user model extending AbstractUser."""
+
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True)
     birth_date = models.DateField(null=True, blank=True)
@@ -178,24 +180,22 @@ class User(AbstractUser):
         return self.email
 
     def get_full_name(self):
-        return f"{self.first_name} {self.last_name}".strip()
+        return f'{self.first_name} {self.last_name}'.strip()
+
 
 class Product(models.Model):
     """Product model with proper field configuration."""
+
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, max_length=250)
     description = models.TextField(blank=True)
     price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)]
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     category = models.ForeignKey(
-        'Category',
-        on_delete=models.CASCADE,
-        related_name='products'
+        'Category', on_delete=models.CASCADE, related_name='products'
     )
     tags = models.ManyToManyField('Tag', blank=True, related_name='products')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -211,8 +211,7 @@ class Product(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=models.Q(price__gte=0),
-                name='price_non_negative'
+                check=models.Q(price__gte=0), name='price_non_negative'
             )
         ]
 
@@ -229,6 +228,7 @@ class Product(models.Model):
 
 ```python
 from django.db import models
+
 
 class ProductQuerySet(models.QuerySet):
     """Custom QuerySet for Product model."""
@@ -252,14 +252,16 @@ class ProductQuerySet(models.QuerySet):
     def search(self, query):
         """Search products by name or description."""
         return self.filter(
-            models.Q(name__icontains=query) |
-            models.Q(description__icontains=query)
+            models.Q(name__icontains=query)
+            | models.Q(description__icontains=query)
         )
+
 
 class Product(models.Model):
     # ... fields ...
 
     objects = ProductQuerySet.as_manager()  # Use custom QuerySet
+
 
 # Usage
 Product.objects.active().with_category().in_stock()
@@ -289,6 +291,7 @@ class ProductManager(models.Manager):
         """Bulk update stock for multiple products."""
         return self.filter(id__in=product_ids).update(stock=quantity)
 
+
 # In model
 class Product(models.Model):
     # ... fields ...
@@ -304,19 +307,29 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import Product, User
 
+
 class ProductSerializer(serializers.ModelSerializer):
     """Serializer for Product model."""
 
-    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_name = serializers.CharField(
+        source='category.name', read_only=True
+    )
     average_rating = serializers.FloatField(read_only=True)
     discount_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'slug', 'description', 'price',
-            'discount_price', 'stock', 'category_name',
-            'average_rating', 'created_at'
+            'id',
+            'name',
+            'slug',
+            'description',
+            'price',
+            'discount_price',
+            'stock',
+            'category_name',
+            'average_rating',
+            'created_at',
         ]
         read_only_fields = ['id', 'slug', 'created_at']
 
@@ -329,8 +342,9 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate_price(self, value):
         """Ensure price is non-negative."""
         if value < 0:
-            raise serializers.ValidationError("Price cannot be negative.")
+            raise serializers.ValidationError('Price cannot be negative.')
         return value
+
 
 class ProductCreateSerializer(serializers.ModelSerializer):
     """Serializer for creating products."""
@@ -343,9 +357,10 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         """Custom validation for multiple fields."""
         if data['price'] > 10000 and data['stock'] > 100:
             raise serializers.ValidationError(
-                "Cannot have high-value products with large stock."
+                'Cannot have high-value products with large stock.'
             )
         return data
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for user registration."""
@@ -354,9 +369,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         write_only=True,
         required=True,
         validators=[validate_password],
-        style={'input_type': 'password'}
+        style={'input_type': 'password'},
     )
-    password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password_confirm = serializers.CharField(
+        write_only=True, style={'input_type': 'password'}
+    )
 
     class Meta:
         model = User
@@ -366,7 +383,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         """Validate passwords match."""
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({
-                "password_confirm": "Password fields didn't match."
+                'password_confirm': "Password fields didn't match."
             })
         return data
 
@@ -394,12 +411,19 @@ from .permissions import IsOwnerOrReadOnly
 from .filters import ProductFilter
 from .services import ProductService
 
+
 class ProductViewSet(viewsets.ModelViewSet):
     """ViewSet for Product model."""
 
-    queryset = Product.objects.select_related('category').prefetch_related('tags')
+    queryset = Product.objects.select_related('category').prefetch_related(
+        'tags'
+    )
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_class = ProductFilter
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at', 'name']
@@ -446,6 +470,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
@@ -457,18 +482,15 @@ def add_to_cart(request):
         product = Product.objects.get(id=product_id)
     except Product.DoesNotExist:
         return Response(
-            {'error': 'Product not found'},
-            status=status.HTTP_404_NOT_FOUND
+            {'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND
         )
 
     cart, _ = Cart.objects.get_or_create(user=request.user)
-    CartItem.objects.create(
-        cart=cart,
-        product=product,
-        quantity=quantity
-    )
+    CartItem.objects.create(cart=cart, product=product, quantity=quantity)
 
-    return Response({'message': 'Added to cart'}, status=status.HTTP_201_CREATED)
+    return Response(
+        {'message': 'Added to cart'}, status=status.HTTP_201_CREATED
+    )
 ```
 
 ## Service Layer Pattern
@@ -479,6 +501,7 @@ from typing import Optional
 from django.db import transaction
 from .models import Order, OrderItem
 
+
 class OrderService:
     """Service layer for order-related business logic."""
 
@@ -486,17 +509,14 @@ class OrderService:
     @transaction.atomic
     def create_order(user, cart: Cart) -> Order:
         """Create order from cart."""
-        order = Order.objects.create(
-            user=user,
-            total_price=cart.total_price
-        )
+        order = Order.objects.create(user=user, total_price=cart.total_price)
 
         for item in cart.items.all():
             OrderItem.objects.create(
                 order=order,
                 product=item.product,
                 quantity=item.quantity,
-                price=item.product.price
+                price=item.product.price,
             )
 
         # Clear cart
@@ -509,8 +529,7 @@ class OrderService:
         """Process payment for order."""
         # Integration with payment gateway
         payment = PaymentGateway.charge(
-            amount=order.total_price,
-            token=payment_data['token']
+            amount=order.total_price, token=payment_data['token']
         )
 
         if payment.success:
@@ -537,6 +556,7 @@ class OrderService:
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 
+
 @method_decorator(cache_page(60 * 15), name='dispatch')  # 15 minutes
 class ProductListView(generic.ListView):
     model = Product
@@ -558,6 +578,7 @@ class ProductListView(generic.ListView):
 ```python
 from django.core.cache import cache
 
+
 def get_featured_products():
     """Get featured products with caching."""
     cache_key = 'featured_products'
@@ -575,14 +596,18 @@ def get_featured_products():
 ```python
 from django.core.cache import cache
 
+
 def get_popular_categories():
     cache_key = 'popular_categories'
     categories = cache.get(cache_key)
 
     if categories is None:
-        categories = list(Category.objects.annotate(
-            product_count=Count('products')
-        ).filter(product_count__gt=10).order_by('-product_count')[:20])
+        categories = list(
+            Category.objects
+            .annotate(product_count=Count('products'))
+            .filter(product_count__gt=10)
+            .order_by('-product_count')[:20]
+        )
         cache.set(cache_key, categories, timeout=60 * 60)  # 1 hour
 
     return categories
@@ -601,19 +626,23 @@ from .models import Profile
 
 User = get_user_model()
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     """Create profile when user is created."""
     if created:
         Profile.objects.create(user=instance)
 
+
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     """Save profile when user is saved."""
     instance.profile.save()
 
+
 # apps/users/apps.py
 from django.apps import AppConfig
+
 
 class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -633,6 +662,7 @@ class UsersConfig(AppConfig):
 import time
 from django.utils.deprecation import MiddlewareMixin
 
+
 class ActiveUserMiddleware(MiddlewareMixin):
     """Middleware to track active users."""
 
@@ -642,6 +672,7 @@ class ActiveUserMiddleware(MiddlewareMixin):
             # Update last active time
             request.user.last_active = timezone.now()
             request.user.save(update_fields=['last_active'])
+
 
 class RequestLoggingMiddleware(MiddlewareMixin):
     """Middleware for logging requests."""
@@ -654,7 +685,9 @@ class RequestLoggingMiddleware(MiddlewareMixin):
         """Log request duration."""
         if hasattr(request, 'start_time'):
             duration = time.time() - request.start_time
-            logger.info(f'{request.method} {request.path} - {response.status_code} - {duration:.3f}s')
+            logger.info(
+                f'{request.method} {request.path} - {response.status_code} - {duration:.3f}s'
+            )
         return response
 ```
 
@@ -702,8 +735,7 @@ class Product(models.Model):
 ```python
 # Bulk create
 Product.objects.bulk_create([
-    Product(name=f'Product {i}', price=10.00)
-    for i in range(1000)
+    Product(name=f'Product {i}', price=10.00) for i in range(1000)
 ])
 
 # Bulk update
