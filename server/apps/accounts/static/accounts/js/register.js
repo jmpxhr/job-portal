@@ -1,4 +1,4 @@
-// let selectedUserType = 'jobseeker'
+let selectedUserType = 'jobseeker'
 
 function selectUserType(type) {
   // selectedUserType = type

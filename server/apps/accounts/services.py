@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from django.contrib.auth import authenticate, get_user_model, login
 from django.http import HttpRequest
 
+from server.apps.accounts import tasks
 from server.apps.accounts.exceptions import (
     InvalidCredentialsError,
     UnverifiedAccountError,
@@ -45,3 +46,14 @@ class AuthService:
         login(request, user)
         if not remember:
             request.session.set_expiry(0)
+
+    @staticmethod
+    def send_verification_email(
+        request: HttpRequest,
+        user: 'UserType',
+    ) -> None:
+        code = user.generate_verification_code()
+
+        request.session['registration_user_pk'] = user.pk
+
+        tasks.send_verification_email.enqueue(user.pk, code)

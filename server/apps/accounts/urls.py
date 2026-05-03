@@ -5,18 +5,8 @@ from server.apps.accounts import views
 urlpatterns = [
     path(
         'register/',
-        views.RegisterView.as_view(),
+        views.GenericRegisterView.as_view(),
         name='register',
-    ),
-    path(
-        'register/form/',
-        views.RegisterFormView.as_view(),
-        name='register_form',
-    ),
-    path(
-        'register/submit/',
-        views.RegisterSubmitView.as_view(),
-        name='register_submit',
     ),
     path(
         'register/verify/',

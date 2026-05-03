@@ -1,5 +1,5 @@
 REG_PAGE = 'accounts/register.html'
-EMPLOYER_REG_FORM = 'accounts/partials/forms/employer.html'
+EMPLOYER_REG_FORM = 'accounts/partials/forms/company.html'
 STUDENT_REG_FORM = 'accounts/partials/forms/student.html'
 VERIFY_FORM = 'accounts/partials/verify.html'
 

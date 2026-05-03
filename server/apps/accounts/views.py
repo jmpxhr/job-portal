@@ -9,7 +9,7 @@ from django.http import (
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView
 
 from server.apps.accounts import const, forms
 from server.apps.accounts.exceptions import (
@@ -27,73 +27,43 @@ from server.apps.accounts.tasks import (
     send_password_reset_email,
     send_verification_email,
 )
+from server.common.types import HtmxRequest
+
+type RegistrationFormType = (
+    type[CompanyRegistrationForm] | type[JobSeekerRegistrationForm]
+)
 
 if TYPE_CHECKING:
     from django.forms import forms as django_forms
 
 
-class RegisterView(TemplateView):
-    template_name = const.REG_PAGE
+class GenericRegisterView(View):
+    def get(self, request: HtmxRequest) -> HttpResponse:
+        if request.htmx:
+            user_type = request.GET.get('user_type', 'jobseeker')
+            form = self._get_form(user_type)
+            form_url = self._get_template_name(user_type)
+            return render(
+                request,
+                template_name=form_url,
+                context={
+                    'form': form,
+                },
+            )
+        return render(request, const.REG_PAGE)
 
-
-class RegisterFormView(View):
-    def get_form_class(
-        self,
-        user_type: str,
-    ) -> 'type[django_forms.Form]':
-        if user_type == 'company':
-            return forms.CompanyRegistrationForm
-        return forms.JobSeekerRegistrationForm
-
-    def get_template_name(self, user_type: str) -> str:
-        if user_type == 'company':
-            return const.EMPLOYER_REG_FORM
-        return const.STUDENT_REG_FORM
-
-    def get_context_data(self, form: 'django_forms.Form') -> dict[str, Any]:
-        return {'form': form}
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        user_type = request.POST.get('user_type', 'jobseeker')
-        form_class = self.get_form_class(user_type)
-        form = form_class()
-        template_name = self.get_template_name(user_type)
-        context = self.get_context_data(form)
-
-        return render(request, template_name, context)
-
-
-class RegisterSubmitView(View):
-    def get_form_class(
-        self,
-        user_type: str,
-    ) -> type[CompanyRegistrationForm] | type[JobSeekerRegistrationForm]:
-        if user_type == 'company':
-            return forms.CompanyRegistrationForm
-        return forms.JobSeekerRegistrationForm
-
-    def get_template_name(self, user_type: str) -> str:
-        if user_type == 'company':
-            return const.EMPLOYER_REG_FORM
-        return const.STUDENT_REG_FORM
-
-    def post(self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HtmxRequest) -> HttpResponse:
         user_type = request.POST.get('user_type', 'jobseeker')
 
-        form_class = self.get_form_class(user_type)
+        form_class = self._get_form(user_type)
         form = form_class(request.POST)
 
         if not form.is_valid():
-            template = self.get_template_name(user_type)
+            template = self._get_template_name(user_type)
             return render(request, template, {'form': form})
 
         account = form.save()
-        code = account.user.generate_verification_code()
-
-        request.session['registration_user_pk'] = account.user.pk
-        request.session['registration_user_type'] = user_type
-
-        send_verification_email.enqueue(account.user.pk, code)
+        AuthService.send_verification_email(request, account.user)
 
         return render(
             request,
@@ -103,6 +73,23 @@ class RegisterSubmitView(View):
                 'resend_message': None,
             },
         )
+
+    def _get_template_name(self, user_type: str) -> str:
+        form_template_map = {
+            'jobseeker': const.STUDENT_REG_FORM,
+            'company': const.EMPLOYER_REG_FORM,
+        }
+        return form_template_map.get(user_type, const.STUDENT_REG_FORM)
+
+    def _get_form(
+        self,
+        user_type: str,
+    ) -> RegistrationFormType:
+        match user_type:
+            case 'company':
+                return CompanyRegistrationForm
+            case _:
+                return JobSeekerRegistrationForm
 
 
 class VerifyCodeView(FormView):  # type: ignore[type-arg]
@@ -162,13 +149,9 @@ class VerifyCodeView(FormView):  # type: ignore[type-arg]
                 'registration_user_pk',
                 None,
             )
-            self.request.session.pop(
-                'registration_user_type',
-                None,
-            )
 
             response = HttpResponse(status=200)
-            response['HX-Redirect'] = '/accounts/login/'
+            response['HX-Redirect'] = reverse('accounts:login')
             return response
 
         return self.form_invalid(form)

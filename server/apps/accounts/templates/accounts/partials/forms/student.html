@@ -13,7 +13,7 @@
     <small>Verification</small>
   </div>
 </div>
-<form hx-post="{% url 'accounts:register_submit' %}"
+<form hx-post="{% url 'accounts:register' %}"
       hx-target="#form-container"
       hx-swap="innerHTML">
   {% csrf_token %}

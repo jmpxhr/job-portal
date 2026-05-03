@@ -103,6 +103,7 @@ ignore = [
   "TRY003",  # long exception messages from `tryceratops`
   "ERA001",  # Found commented-out code,
   "RUF012",  # Mutable default value for class attribute
+  "S101",    # Use of `assert` detected
 ]
 
 # Plugin configs:
@@ -159,6 +160,5 @@ warn_required_dynamic_aliases = true
 warn_untyped_fields = true
 
 [tool.djlint]
-profile="django"
-ignore="T002,H030,H021,H031,H006,H005"
-
+profile = "django"
+ignore = "T002,H030,H021,H031,H006,H005"
