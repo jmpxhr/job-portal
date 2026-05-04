@@ -13,6 +13,7 @@ class SkillAdmin(admin.ModelAdmin[Skill]):
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin[Job]):
     list_display = (
+        'id',
         'title',
         'company',
         'experience_level_label',

@@ -119,4 +119,19 @@ urlpatterns = [
         views.ChangePasswordView.as_view(),
         name='settings-password',
     ),
+    path(
+        'company/dashboard/',
+        views.EmployerDashboardView.as_view(),
+        name='employer-dashboard',
+    ),
+    path(
+        'company/post-vacancy/',
+        views.PostVacancyView.as_view(),
+        name='post-vacancy',
+    ),
+    path(
+        'company/vacancies/<int:pk>/edit/',
+        views.EditVacancyView.as_view(),
+        name='edit-vacancy',
+    ),
 ]

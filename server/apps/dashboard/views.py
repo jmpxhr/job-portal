@@ -4,8 +4,13 @@ from typing import Any, override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import TemplateView
 from weasyprint import HTML
@@ -15,11 +20,16 @@ from server.apps.accounts.models import (
     Experience,
     JobSeeker,
     Language,
+    Recruiter,
+    User,
 )
+from server.apps.company.models import Company
+from server.apps.dashboard import const
 from server.apps.dashboard.forms import (
     ChangePasswordForm,
     EducationForm,
     ExperienceForm,
+    JobPostForm,
     JobSeekerProfileForm,
     LanguageForm,
     PrivacySettingsForm,
@@ -697,10 +707,12 @@ class SkillAddView(LoginRequiredMixin, View):
         form = SkillAddForm(request.POST)
         if form.is_valid():
             for skill_name in form.cleaned_data['names']:
-                skill, _ = Skill.objects.get_or_create(
-                    name=skill_name,
-                    defaults={'slug': skill_name.lower().replace(' ', '-')},
-                )
+                skill = Skill.objects.filter(name__iexact=skill_name).first()
+                if skill is None:
+                    skill = Skill.objects.create(
+                        name=skill_name,
+                        slug=skill_name.lower().replace(' ', '-'),
+                    )
                 jobseeker.skills.add(skill)
             context = _skill_list_context(jobseeker)
             response = render(request, self.list_template, context)
@@ -790,4 +802,104 @@ class ChangePasswordView(LoginRequiredMixin, View):
             return render(request, self.template_name, context)
 
         context = {'password_form': form}
+        return render(request, self.template_name, context)
+
+
+class EmployerDashboardView(LoginRequiredMixin, View):
+    template_name = 'dashboard/company/employer-dashboard.html'
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+        context = {'company': company}
+        return render(request, self.template_name, context)
+
+
+class PostVacancyView(LoginRequiredMixin, View):
+    template_name = const.POST_VACANCY
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+        form = JobPostForm()
+        context = {'form': form, 'company': company}
+        return render(request, self.template_name, context)
+
+    def post(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+        form = JobPostForm(request.POST)
+        is_draft = 'save_draft' in request.POST
+        if form.is_valid():
+            form.save(company=company, is_draft=is_draft)
+            return redirect('dashboard:employer-dashboard')
+        context = {'form': form, 'company': company}
+        return render(request, self.template_name, context)
+
+
+class EditVacancyView(LoginRequiredMixin, View):
+    template_name = const.EDIT_VACANCY
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(self, request: AuthenticatedHttpRequest, pk: int) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+        job = get_object_or_404(Job, pk=pk, company=company)
+        form = JobPostForm(instance=job)
+        context = {'form': form, 'company': company, 'job': job}
+        return render(request, self.template_name, context)
+
+    def post(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponse | HttpResponseRedirect:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+        job = get_object_or_404(Job, pk=pk, company=company)
+
+        if 'delete' in request.POST:
+            job.delete()
+            return redirect('dashboard:post-vacancy')
+
+        action = request.POST.get('action', 'publish')
+        is_draft = action == 'save_draft'
+        job_status = request.POST.get('job_status', 'active')
+        if job_status == 'draft':
+            is_draft = True
+
+        form = JobPostForm(request.POST, instance=job)
+        if form.is_valid():
+            job = form.save(company=company, is_draft=is_draft)
+            form = JobPostForm(instance=job)
+            context = {
+                'form': form,
+                'company': company,
+                'job': job,
+                'success': True,
+            }
+            return render(request, self.template_name, context)
+        context = {'form': form, 'company': company, 'job': job}
         return render(request, self.template_name, context)

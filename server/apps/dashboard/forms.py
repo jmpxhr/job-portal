@@ -10,6 +10,8 @@ from server.apps.accounts.models import (
     Language,
     User,
 )
+from server.apps.company.models import Company
+from server.apps.jobs.models import Job, Skill
 
 
 class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
@@ -307,3 +309,94 @@ class ChangePasswordForm(forms.Form):
         ):
             self.add_error('confirm_password', 'Passwords do not match.')
         return cleaned_data
+
+
+class JobPostForm(forms.ModelForm[Job]):
+    skills_text = forms.CharField(
+        max_length=500,
+        required=False,
+        widget=forms.HiddenInput(),
+    )
+
+    class Meta:
+        model = Job
+        fields = [
+            'title',
+            'description',
+            'employment_type',
+            'experience_level',
+            'work_format',
+            'schedule',
+            'salary_min',
+            'salary_max',
+            'location',
+            'is_student_friendly',
+        ]
+        widgets = {
+            'title': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'e.g., Junior Frontend Developer',
+                },
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 10,
+                    'placeholder': 'Write job description here...',
+                },
+            ),
+            'employment_type': forms.Select(attrs={'class': 'form-select'}),
+            'experience_level': forms.Select(attrs={'class': 'form-select'}),
+            'work_format': forms.Select(attrs={'class': 'form-select'}),
+            'schedule': forms.Select(attrs={'class': 'form-select'}),
+            'salary_min': forms.NumberInput(
+                attrs={'class': 'form-control', 'placeholder': 'From'},
+            ),
+            'salary_max': forms.NumberInput(
+                attrs={'class': 'form-control', 'placeholder': 'To'},
+            ),
+            'location': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'City',
+                },
+            ),
+            'is_student_friendly': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'},
+            ),
+        }
+
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['skills_text'].initial = ', '.join(
+                skill.name for skill in self.instance.skills.all()
+            )
+
+    @override
+    def save(self, company: Company, is_draft: bool = False) -> Job:  # type: ignore[override]
+        job = super().save(commit=False)
+        job.company = company
+        job.is_active = not is_draft
+        job.save()
+
+        skills_text = self.cleaned_data.get('skills_text', '')
+        if skills_text:
+            skill_names = [
+                s.strip() for s in skills_text.split(',') if s.strip()
+            ]
+            skills = []
+            for name in skill_names:
+                skill = Skill.objects.filter(name__iexact=name).first()
+                if skill is None:
+                    skill = Skill.objects.create(
+                        name=name,
+                        slug=name.lower().replace(' ', '-'),
+                    )
+                skills.append(skill)
+            job.skills.set(skills)
+        else:
+            job.skills.clear()
+
+        return job

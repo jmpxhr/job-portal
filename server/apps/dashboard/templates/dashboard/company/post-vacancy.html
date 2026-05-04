@@ -1,7 +1,7 @@
 {% extends 'container.html' %}
 {% load static %}
 {% block title %}
-  Saved Jobs | StartJob
+  Post a New Job | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -25,7 +25,10 @@
       <div class="row">
         <!-- Main Form -->
         <div class="col-lg-8">
-          <form id="jobPostForm">
+          <form id="jobPostForm"
+                method="post"
+                action="{% url 'dashboard:post-vacancy' %}">
+            {% csrf_token %}
             <!-- Basic Information -->
             <div class="form-section">
               <h5 class="section-title">
@@ -33,59 +36,81 @@
                 Information
               </h5>
               <div class="mb-3">
-                <label class="form-label required">Job Title</label>
-                <input type="text"
-                       class="form-control"
-                       placeholder="e.g., Junior Frontend Developer"
-                       value="Junior Frontend Developer">
+                <label class="form-label required"
+                       for="{{ form.title.id_for_label }}">Job Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
               </div>
               <div class="row g-3 mb-3">
                 <div class="col-md-6">
-                  <label class="form-label required">Employment Type</label>
-                  <select class="form-select">
-                    <option>Full-time</option>
-                    <option>Part-time</option>
-                    <option>Internship</option>
-                    <option>Contract</option>
-                    <option>Temporary</option>
-                  </select>
+                  <label class="form-label required"
+                         for="{{ form.employment_type.id_for_label }}">Employment Type</label>
+                  {{ form.employment_type }}
+                  {% if form.employment_type.errors %}
+                    <div class="invalid-feedback d-block">
+                      {% for error in form.employment_type.errors %}{{ error }}{% endfor %}
+                    </div>
+                  {% endif %}
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label required">Experience Level</label>
-                  <select class="form-select">
-                    <option>Entry Level (0-1 year)</option>
-                    <option>Junior (1-2 years)</option>
-                    <option>Mid Level (2-4 years)</option>
-                    <option>Internship</option>
-                    <option>No experience required</option>
-                  </select>
+                  <label class="form-label required"
+                         for="{{ form.experience_level.id_for_label }}">Experience Level</label>
+                  {{ form.experience_level }}
+                  {% if form.experience_level.errors %}
+                    <div class="invalid-feedback d-block">
+                      {% for error in form.experience_level.errors %}{{ error }}{% endfor %}
+                    </div>
+                  {% endif %}
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label">Work Location</label>
                 <div class="row g-3">
+                  <div class="col-md-6">{{ form.location }}</div>
+                  <div class="col-md-6">{{ form.work_format }}</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="row g-3 mb-3">
                   <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="City" value="Minsk">
+                    <label class="form-label"
+                           for="{{ form.schedule.id_for_label }}">Schedule</label>
+                    {{ form.schedule }}
                   </div>
-                  <div class="col-md-6">
-                    <select class="form-select">
-                      <option>On-site</option>
-                      <option>Remote</option>
-                      <option>Hybrid</option>
-                    </select>
+                  <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check">
+                      {{ form.is_student_friendly }}
+                      <label class="form-check-label"
+                             for="{{ form.is_student_friendly.id_for_label }}">
+                        Student-friendly position
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-                <label class="form-label required">Salary Range (per month)</label>
-                <div class="salary-input-group">
-                  <input type="text" class="form-control" placeholder="From" value="$800">
-                  <input type="text" class="form-control" placeholder="To" value="$1200">
-                  <select class="form-select" style="width: 120px;">
-                    <option>USD</option>
-                    <option>EUR</option>
-                    <option>BYN</option>
-                  </select>
+                <label class="form-label">Salary Range (per month)</label>
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    {{ form.salary_min }}
+                    {% if form.salary_min.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.salary_min.errors %}{{ error }}{% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form.salary_max }}
+                    {% if form.salary_max.errors %}
+                      <div class="invalid-feedback d-block">
+                        {% for error in form.salary_max.errors %}{{ error }}{% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
                 </div>
                 <small class="text-muted">Leave empty if negotiable</small>
               </div>
@@ -96,89 +121,38 @@
                 <i class="bi bi-file-text text-primary me-2"></i>Job Description
               </h5>
               <div class="mb-3">
-                <label class="form-label required">Job Description</label>
-                <div id="editor-container">
-                  <p>
-                    We are looking for a passionate Junior Frontend Developer to join our team. This
-                    is an excellent opportunity for students and recent graduates who want to start
-                    their career.
-                  </p>
-                  <p>
-                    <strong>Responsibilities:</strong>
-                  </p>
-                  <ul>
-                    <li>Develop and maintain user interfaces</li>
-                    <li>Collaborate with design team</li>
-                    <li>Write clean, maintainable code</li>
-                  </ul>
-                  <p>
-                    <strong>Requirements:</strong>
-                  </p>
-                  <ul>
-                    <li>Basic knowledge of HTML, CSS, JavaScript</li>
-                    <li>Understanding of responsive design</li>
-                    <li>Eagerness to learn</li>
-                  </ul>
-                </div>
+                <label class="form-label required"
+                       for="{{ form.description.id_for_label }}">Job Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                  <div class="invalid-feedback d-block">
+                    {% for error in form.description.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
               </div>
               <div class="mb-3">
-                <label class="form-label">Required Skills (comma separated)</label>
-                <input type="text"
-                       class="form-control"
-                       placeholder="e.g., HTML, CSS, JavaScript, React"
-                       value="HTML, CSS, JavaScript, React">
-              </div>
-            </div>
-            <!-- Student-Friendly Options -->
-            <div class="form-section">
-              <h5 class="section-title">
-                <i class="bi bi-mortarboard text-primary me-2"></i>Student-Friendly Options
-              </h5>
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flexibleHours" checked>
-                    <label class="form-check-label" for="flexibleHours">Flexible working hours</label>
-                  </div>
+                <label class="form-label">Required Skills</label>
+                <div class="input-group mb-2">
+                  <input type="text"
+                         class="form-control"
+                         id="skill-input"
+                         placeholder="Type a skill and press Enter or comma to add..."
+                         list="skill-suggestions"
+                         autocomplete="off">
+                  <button type="button" class="btn btn-outline-primary" id="skill-add-btn">Add</button>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="mentorship" checked>
-                    <label class="form-check-label" for="mentorship">Mentorship program</label>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="training">
-                    <label class="form-check-label" for="training">Training provided</label>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="parttime">
-                    <label class="form-check-label" for="parttime">Part-time available</label>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="remote">
-                    <label class="form-check-label" for="remote">Remote work possible</label>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="nothird">
-                    <label class="form-check-label" for="nothird">No experience required</label>
-                  </div>
-                </div>
+                <datalist id="skill-suggestions"></datalist>
+                <div id="skill-tags" class="d-flex flex-wrap gap-2 mb-2"></div>
+                {{ form.skills_text }}
+                <small class="text-muted">Type a skill name and press Enter, comma, or click Add.</small>
               </div>
             </div>
             <!-- Form Actions -->
             <div class="d-flex gap-3 mt-4">
-              <button type="submit" class="btn-publish" onclick="publishJob(event)">
+              <button type="submit" class="btn-publish" name="publish">
                 <i class="bi bi-check-circle"></i> Publish Job
               </button>
-              <button type="button" class="btn-save-draft" onclick="saveDraft()">
+              <button type="submit" class="btn-save-draft" name="save_draft">
                 <i class="bi bi-save"></i> Save as Draft
               </button>
             </div>
@@ -196,31 +170,40 @@
                      style="width: 40px;
                             height: 40px;
                             font-size: 20px">
-                  <i class="bi bi-building"></i>
+                  {% if company.logo %}
+                    <img src="{{ company.logo.url }}"
+                         alt="{{ company.name }}"
+                         style="width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 8px" />
+                  {% else %}
+                    <i class="bi bi-building"></i>
+                  {% endif %}
                 </div>
                 <div>
-                  <h6 class="fw-bold mb-0">TechStart Inc.</h6>
-                  <small class="text-muted">IT Services</small>
+                  <h6 class="fw-bold mb-0">{{ company.name|default:"Your Company" }}</h6>
+                  <small class="text-muted">{{ company.industry.name|default:"Technology" }}</small>
                 </div>
               </div>
-              <h6 class="fw-bold" id="previewTitle">Junior Frontend Developer</h6>
+              <h6 class="fw-bold" id="previewTitle">Job Title</h6>
               <div class="d-flex flex-wrap gap-2 mb-2">
-                <span class="badge bg-primary">Full-time</span>
-                <span class="badge bg-success">Entry Level</span>
-                <span class="badge bg-info">Remote</span>
+                <span class="badge bg-primary">Employment Type</span>
+                <span class="badge bg-success">Experience Level</span>
+                <span class="badge bg-info">Work Format</span>
               </div>
               <p class="small text-muted mb-2">
-                <i class="bi bi-geo-alt"></i> Minsk, Remote
+                <i class="bi bi-geo-alt"></i> Location
                 <br>
-                <i class="bi bi-cash"></i> $800 - $1200/month
+                <i class="bi bi-cash"></i> Salary
               </p>
               <hr>
               <h6 class="fw-bold mb-2">Tips for better results:</h6>
               <ul class="small text-muted">
-                <li class="mb-2">✓ Add specific requirements for students</li>
-                <li class="mb-2">✓ Mention if you offer flexible hours</li>
-                <li class="mb-2">✓ Include salary range to get more applications</li>
-                <li class="mb-2">✓ Specify if no experience is required</li>
+                <li class="mb-2">&#10003; Add specific requirements for students</li>
+                <li class="mb-2">&#10003; Mention if you offer flexible hours</li>
+                <li class="mb-2">&#10003; Include salary range to get more applications</li>
+                <li class="mb-2">&#10003; Specify if no experience is required</li>
               </ul>
             </div>
           </div>
@@ -230,36 +213,96 @@
   </section>
 {% endblock content %}
 {% block javascript %}
-  <!-- Quill Rich Text Editor -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <script>
-        // Initialize Quill editor
-        var quill = new Quill('#editor-container', {
-            theme: 'snow',
-            placeholder: 'Write job description here...',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['clean']
-                ]
-            }
+    (function() {
+      var input = document.getElementById('skill-input');
+      var addBtn = document.getElementById('skill-add-btn');
+      var tagsContainer = document.getElementById('skill-tags');
+      var hiddenInput = document.getElementById('id_skills_text');
+      var datalist = document.getElementById('skill-suggestions');
+      var debounceTimer;
+      var skills = [];
+
+      // Pre-populate from existing hidden input value
+      if (hiddenInput.value) {
+        hiddenInput.value.split(',').forEach(function(name) {
+          name = name.trim();
+          if (name) addSkill(name);
         });
+      }
 
-        // Preview update
-        document.querySelector('input[placeholder="e.g., Junior Frontend Developer"]').addEventListener('input', function (e) {
-            document.getElementById('previewTitle').textContent = e.target.value || 'Job Title';
+      function updateHiddenInput() {
+        hiddenInput.value = skills.join(',');
+      }
+
+      function addSkill(name) {
+        name = name.trim();
+        if (!name) return;
+        if (skills.map(function(s) { return s.toLowerCase(); }).indexOf(name.toLowerCase()) !== -1) return;
+        skills.push(name);
+        var tag = document.createElement('span');
+        tag.className = 'badge bg-primary d-inline-flex align-items-center gap-1 px-2 py-1';
+        tag.setAttribute('data-skill', name);
+        tag.innerHTML = name + ' <span style="cursor:pointer;font-size:0.85em;" class="skill-remove">&times;</span>';
+        tagsContainer.appendChild(tag);
+        updateHiddenInput();
+        input.value = '';
+      }
+
+      function removeSkill(name) {
+        name = name.trim();
+        skills = skills.filter(function(s) { return s.toLowerCase() !== name.toLowerCase(); });
+        var tags = tagsContainer.querySelectorAll('[data-skill]');
+        tags.forEach(function(tag) {
+          if (tag.getAttribute('data-skill').toLowerCase() === name.toLowerCase()) {
+            tag.remove();
+          }
         });
+        updateHiddenInput();
+      }
 
-        function publishJob(event) {
-            event.preventDefault();
-            // In real app, save to database
-            alert('Job posted successfully!');
-            window.location.href = 'manage-vacancies.html';
+      tagsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('skill-remove')) {
+          var tag = e.target.parentElement;
+          removeSkill(tag.getAttribute('data-skill'));
         }
+      });
 
-        function saveDraft() {
-            alert('Job saved as draft');
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          addSkill(input.value);
         }
+      });
+
+      addBtn.addEventListener('click', function() {
+        addSkill(input.value);
+      });
+
+      input.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        var query = this.value.trim();
+        if (query.length < 2) {
+          datalist.innerHTML = '';
+          return;
+        }
+        debounceTimer = setTimeout(function() {
+          fetch('{% url "dashboard:skill-search" %}?q=' + encodeURIComponent(query))
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+              datalist.innerHTML = '';
+              data.forEach(function(item) {
+                var option = document.createElement('option');
+                option.value = item.name;
+                datalist.appendChild(option);
+              });
+            });
+        }, 300);
+      });
+
+      document.querySelector('input[name="title"]').addEventListener('input', function(e) {
+        document.getElementById('previewTitle').textContent = e.target.value || 'Job Title';
+      });
+    })();
   </script>
 {% endblock javascript %}
