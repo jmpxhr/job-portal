@@ -237,3 +237,45 @@ class Education(TimeStampModelMixin):
         ordering = ['-year_of_graduation']
         verbose_name = _('education')
         verbose_name_plural = _('education')
+
+
+class Experience(TimeStampModelMixin):
+    jobseeker: models.ForeignKey['JobSeeker'] = models.ForeignKey(
+        JobSeeker,
+        on_delete=models.CASCADE,
+        related_name='experience',
+        verbose_name=_('job seeker'),
+    )
+    position = models.CharField(
+        _('position'),
+        max_length=200,
+    )
+    company_name = models.CharField(
+        _('company name'),
+        max_length=200,
+    )
+    start_date = models.DateField(_('start date'))
+    end_date = models.DateField(
+        _('end date'),
+        blank=True,
+        null=True,
+    )
+    description = models.TextField(
+        _('description'),
+        blank=True,
+        default='',
+    )
+
+    @override
+    def __str__(self) -> str:
+        return f'{self.position} at {self.company_name}'
+
+    @property
+    def is_current(self) -> bool:
+        return self.end_date is None
+
+    class Meta(TypedModelMeta):
+        db_table = 'experience'
+        ordering = ['-start_date']
+        verbose_name = _('experience')
+        verbose_name_plural = _('experience')

@@ -9,8 +9,12 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
-from server.apps.accounts.models import Education, JobSeeker
-from server.apps.dashboard.forms import EducationForm, JobSeekerProfileForm
+from server.apps.accounts.models import Education, Experience, JobSeeker
+from server.apps.dashboard.forms import (
+    EducationForm,
+    ExperienceForm,
+    JobSeekerProfileForm,
+)
 from server.apps.jobs.models import Job, JobApplication, SavedJob
 from server.common.types import (
     AuthenticatedHtmxRequest,
@@ -249,6 +253,7 @@ class CandidateProfileView(LoginRequiredMixin, View):
             ).count(),
         }
         context.update(_education_list_context(jobseeker))
+        context.update(_experience_list_context(jobseeker))
         return render(request, self.template_name, context)
 
 
@@ -382,4 +387,89 @@ class EducationDeleteView(LoginRequiredMixin, View):
         context = _education_list_context(jobseeker)
         response = render(request, self.list_template, context)
         response['HX-Trigger'] = 'educationSaved'
+        return response
+
+
+def _experience_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
+    return {
+        'experience_entries': Experience.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('-start_date'),
+    }
+
+
+class ExperienceCreateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/experience-form.html'
+    list_template = 'dashboard/jobseeker/partials/experience-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = ExperienceForm()
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = ExperienceForm(request.POST)
+        if form.is_valid():
+            experience = form.save(commit=False)
+            experience.jobseeker = jobseeker
+            experience.save()
+            context = _experience_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'experienceSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class ExperienceUpdateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/experience-form.html'
+    list_template = 'dashboard/jobseeker/partials/experience-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        experience = get_object_or_404(Experience, pk=pk, jobseeker=jobseeker)
+        form = ExperienceForm(instance=experience)
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        experience = get_object_or_404(Experience, pk=pk, jobseeker=jobseeker)
+        form = ExperienceForm(request.POST, instance=experience)
+        if form.is_valid():
+            form.save()
+            context = _experience_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'experienceSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class ExperienceDeleteView(LoginRequiredMixin, View):
+    list_template = 'dashboard/jobseeker/partials/experience-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def delete(
+        self,
+        request: AuthenticatedHtmxRequest,
+        pk: int,
+    ) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        experience = get_object_or_404(Experience, pk=pk, jobseeker=jobseeker)
+        experience.delete()
+        context = _experience_list_context(jobseeker)
+        response = render(request, self.list_template, context)
+        response['HX-Trigger'] = 'experienceSaved'
         return response

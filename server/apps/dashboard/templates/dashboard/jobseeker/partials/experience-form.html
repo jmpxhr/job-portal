@@ -1,0 +1,50 @@
+{% load static %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">{{ form.instance.pk|yesno:"Edit,Add" }} Experience</h4>
+  <button class="btn btn-outline-secondary btn-sm"
+          hx-get="{% url 'dashboard:candidate-profile' %}"
+          hx-target="#experience-content"
+          hx-swap="innerHTML">Cancel</button>
+</div>
+<form hx-post="{% if form.instance.pk %}{% url 'dashboard:experience-update' form.instance.pk %}{% else %}{% url 'dashboard:experience-create' %}{% endif %}"
+      hx-target="#experience-content"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.position.id_for_label }}">{{ form.position.label }}</label>
+    {{ form.position }}
+    {% for error in form.position.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.company_name.id_for_label }}">{{ form.company_name.label }}</label>
+    {{ form.company_name }}
+    {% for error in form.company_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label fw-bold" for="{{ form.start_date.id_for_label }}">{{ form.start_date.label }}</label>
+      {{ form.start_date }}
+      {% for error in form.start_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="col-md-6">
+      <label class="form-label fw-bold" for="{{ form.end_date.id_for_label }}">{{ form.end_date.label }}</label>
+      {{ form.end_date }}
+      {% for error in form.end_date.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+    {{ form.description }}
+    {% for error in form.description.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="bi bi-check-lg"></i> Save
+    </button>
+    <button type="button"
+            class="btn btn-outline-secondary btn-sm"
+            hx-get="{% url 'dashboard:candidate-profile' %}"
+            hx-target="#experience-content"
+            hx-swap="innerHTML">Cancel</button>
+  </div>
+</form>

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, override
+from typing import Any, override
 
 from django.contrib.auth import logout
 from django.http import (

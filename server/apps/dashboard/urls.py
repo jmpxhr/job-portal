@@ -49,4 +49,19 @@ urlpatterns = [
         views.EducationDeleteView.as_view(),
         name='education-delete',
     ),
+    path(
+        'jobseeker/profile/experience/create/',
+        views.ExperienceCreateView.as_view(),
+        name='experience-create',
+    ),
+    path(
+        'jobseeker/profile/experience/<int:pk>/update/',
+        views.ExperienceUpdateView.as_view(),
+        name='experience-update',
+    ),
+    path(
+        'jobseeker/profile/experience/<int:pk>/delete/',
+        views.ExperienceDeleteView.as_view(),
+        name='experience-delete',
+    ),
 ]

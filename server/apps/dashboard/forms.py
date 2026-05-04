@@ -2,7 +2,7 @@ from typing import override
 
 from django import forms
 
-from server.apps.accounts.models import Education, JobSeeker
+from server.apps.accounts.models import Education, Experience, JobSeeker
 
 
 class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
@@ -117,4 +117,58 @@ class EducationForm(forms.ModelForm[Education]):
             'faculty': 'Faculty',
             'specialization': 'Specialization',
             'year_of_graduation': 'Year of Graduation',
+        }
+
+
+class ExperienceForm(forms.ModelForm[Experience]):
+    class Meta:
+        model = Experience
+        fields = (
+            'position',
+            'company_name',
+            'start_date',
+            'end_date',
+            'description',
+        )
+        widgets = {
+            'position': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'e.g. Frontend Developer Intern',
+                },
+            ),
+            'company_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'e.g. TechStart Inc.',
+                },
+            ),
+            'start_date': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date',
+                },
+            ),
+            'end_date': forms.DateInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date',
+                },
+            ),
+            'description': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': (
+                        'Describe your responsibilities and achievements...'
+                    ),
+                },
+            ),
+        }
+        labels = {
+            'position': 'Position',
+            'company_name': 'Company',
+            'start_date': 'Start Date',
+            'end_date': 'End Date (leave empty if current)',
+            'description': 'Description',
         }
