@@ -30,6 +30,10 @@ class JobFilter(django_filters.FilterSet):
         method='filter_salary_from',
         label='Salary From',
     )
+    company = django_filters.NumberFilter(
+        field_name='company__id',
+        label='Company',
+    )
     sort = django_filters.CharFilter(
         method='filter_sort',
         label='Sort by',

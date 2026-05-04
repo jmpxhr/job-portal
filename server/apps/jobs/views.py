@@ -55,6 +55,7 @@ class JobListView(ListView[Job]):
         )
         context['search_query'] = self.request.GET.get('q', '')
         context['location_query'] = self.request.GET.get('location', '')
+        context['current_company'] = self.request.GET.get('company', '')
         return context
 
     @override

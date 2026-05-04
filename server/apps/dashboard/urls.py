@@ -64,4 +64,29 @@ urlpatterns = [
         views.ExperienceDeleteView.as_view(),
         name='experience-delete',
     ),
+    path(
+        'jobseeker/profile/skills/add/',
+        views.SkillAddView.as_view(),
+        name='skill-add',
+    ),
+    path(
+        'jobseeker/profile/skills/<int:pk>/remove/',
+        views.SkillRemoveView.as_view(),
+        name='skill-remove',
+    ),
+    path(
+        'jobseeker/profile/skills/search/',
+        views.SkillSearchView.as_view(),
+        name='skill-search',
+    ),
+    path(
+        'jobseeker/settings/privacy/',
+        views.PrivacySettingsView.as_view(),
+        name='settings-privacy',
+    ),
+    path(
+        'jobseeker/settings/password/',
+        views.ChangePasswordView.as_view(),
+        name='settings-password',
+    ),
 ]

@@ -4,6 +4,7 @@
   <button class="btn btn-outline-secondary btn-sm"
           hx-get="{% url 'dashboard:candidate-profile' %}"
           hx-target="#experience-content"
+          hx-select="#experience-content"
           hx-swap="innerHTML">Cancel</button>
 </div>
 <form hx-post="{% if form.instance.pk %}{% url 'dashboard:experience-update' form.instance.pk %}{% else %}{% url 'dashboard:experience-create' %}{% endif %}"
@@ -45,6 +46,7 @@
             class="btn btn-outline-secondary btn-sm"
             hx-get="{% url 'dashboard:candidate-profile' %}"
             hx-target="#experience-content"
+            hx-select="#experience-content"
             hx-swap="innerHTML">Cancel</button>
   </div>
 </form>

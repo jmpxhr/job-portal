@@ -1,8 +1,9 @@
 from typing import override
 
 from django import forms
+from django.contrib.auth.password_validation import validate_password
 
-from server.apps.accounts.models import Education, Experience, JobSeeker
+from server.apps.accounts.models import Education, Experience, JobSeeker, User
 
 
 class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
@@ -172,3 +173,87 @@ class ExperienceForm(forms.ModelForm[Experience]):
             'end_date': 'End Date (leave empty if current)',
             'description': 'Description',
         }
+
+
+class SkillAddForm(forms.Form):
+    names = forms.CharField(
+        required=True,
+        widget=forms.HiddenInput(),
+    )
+
+    def clean_names(self) -> list[str]:
+        raw = self.cleaned_data.get('names', '')
+        names = [name.strip() for name in raw.split(',') if name.strip()]
+        if not names:
+            raise forms.ValidationError('Please enter at least one skill.')
+        for name in names:
+            if len(name) > 100:
+                raise forms.ValidationError(
+                    f'Skill "{name[:20]}..." is too long (max 100 characters).',
+                )
+        return names
+
+
+class PrivacySettingsForm(forms.ModelForm[JobSeeker]):
+    class Meta:
+        model = JobSeeker
+        fields = ('profile_visible', 'resume_public')
+        widgets = {
+            'profile_visible': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'},
+            ),
+            'resume_public': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'},
+            ),
+        }
+        labels = {
+            'profile_visible': 'Profile visible to employers',
+            'resume_public': 'Resume public',
+        }
+
+
+class ChangePasswordForm(forms.Form):
+    current_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': 'Current password'},
+        ),
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': 'New password'},
+        ),
+        validators=[validate_password],
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Confirm new password',
+            },
+        ),
+    )
+
+    def __init__(self, *args, user: User | None = None, **kwargs) -> None:  # type: ignore[no-untyped-def]
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_current_password(self) -> str:
+        current_password: str = self.cleaned_data.get('current_password', '')
+        if self.user and not self.user.check_password(current_password):
+            raise forms.ValidationError('Current password is incorrect.')
+        return current_password
+
+    @override
+    def clean(self) -> dict[str, str] | None:
+        cleaned_data = super().clean()
+        if cleaned_data is None:
+            return None
+        new_password = cleaned_data.get('new_password')
+        confirm_password = cleaned_data.get('confirm_password')
+        if (
+            new_password
+            and confirm_password
+            and new_password != confirm_password
+        ):
+            self.add_error('confirm_password', 'Passwords do not match.')
+        return cleaned_data

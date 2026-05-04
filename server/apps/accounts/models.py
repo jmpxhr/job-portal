@@ -119,7 +119,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('users')
 
 
-class JobSeeker(models.Model):
+class JobSeeker(TimeStampModelMixin):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -153,6 +153,20 @@ class JobSeeker(models.Model):
         upload_to='jobseeker/avatars/',
         blank=True,
         default='',
+    )
+    skills = models.ManyToManyField(
+        'jobs.Skill',
+        blank=True,
+        related_name='jobseekers',
+        verbose_name=_('skills'),
+    )
+    profile_visible = models.BooleanField(
+        _('profile visible'),
+        default=True,
+    )
+    resume_public = models.BooleanField(
+        _('resume public'),
+        default=True,
     )
 
     @override

@@ -176,7 +176,7 @@ class Company(models.Model):
 
     @property
     def open_jobs_count(self) -> int:
-        return 0
+        return self.jobs.filter(is_active=True).count()  # pyrefly: ignore
 
     @property
     def display_size(self) -> str:

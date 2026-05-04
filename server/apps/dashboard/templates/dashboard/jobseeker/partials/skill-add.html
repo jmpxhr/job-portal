@@ -1,0 +1,126 @@
+{% load static %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">Add Skills</h4>
+  <button class="btn btn-outline-secondary btn-sm"
+          hx-get="{% url 'dashboard:candidate-profile' %}"
+          hx-target="#skills-content"
+          hx-select="#skills-content"
+          hx-swap="innerHTML">Cancel</button>
+</div>
+<form hx-post="{% url 'dashboard:skill-add' %}"
+      hx-target="#skills-content"
+      hx-swap="innerHTML"
+      id="skill-add-form">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label fw-bold">Skill Names</label>
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             id="skill-input"
+             placeholder="Type a skill and press Enter or comma to add..."
+             list="skill-suggestions"
+             autocomplete="off">
+      <button type="button" class="btn btn-outline-primary" id="skill-add-btn">Add</button>
+    </div>
+    <datalist id="skill-suggestions"></datalist>
+    <div id="skill-tags" class="d-flex flex-wrap gap-2 mt-2"></div>
+    <input type="hidden" name="names" id="skill-names-input">
+    {% for error in form.names.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    <small class="text-muted">Type a skill name and press Enter, comma, or click Add. Add multiple skills before submitting.</small>
+  </div>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary btn-sm" id="skill-submit-btn" disabled>
+      <i class="bi bi-check-lg"></i> Save Skills
+    </button>
+    <button type="button"
+            class="btn btn-outline-secondary btn-sm"
+            hx-get="{% url 'dashboard:candidate-profile' %}"
+            hx-target="#skills-content"
+            hx-select="#skills-content"
+            hx-swap="innerHTML">Cancel</button>
+  </div>
+</form>
+<script>
+  (function() {
+    var input = document.getElementById('skill-input');
+    var addBtn = document.getElementById('skill-add-btn');
+    var tagsContainer = document.getElementById('skill-tags');
+    var hiddenInput = document.getElementById('skill-names-input');
+    var submitBtn = document.getElementById('skill-submit-btn');
+    var datalist = document.getElementById('skill-suggestions');
+    var debounceTimer;
+    var skills = [];
+
+    function updateHiddenInput() {
+      hiddenInput.value = skills.join(',');
+      submitBtn.disabled = skills.length === 0;
+    }
+
+    function addSkill(name) {
+      name = name.trim();
+      if (!name) return;
+      if (skills.map(function(s) { return s.toLowerCase(); }).indexOf(name.toLowerCase()) !== -1) return;
+
+      skills.push(name);
+      var tag = document.createElement('span');
+      tag.className = 'badge bg-primary d-inline-flex align-items-center gap-1 px-2 py-1';
+      tag.setAttribute('data-skill', name);
+      tag.innerHTML = name + ' <span style="cursor:pointer;font-size:0.85em;" class="skill-remove">&times;</span>';
+      tagsContainer.appendChild(tag);
+      updateHiddenInput();
+      input.value = '';
+    }
+
+    function removeSkill(name) {
+      name = name.trim();
+      skills = skills.filter(function(s) { return s.toLowerCase() !== name.toLowerCase(); });
+      var tags = tagsContainer.querySelectorAll('[data-skill]');
+      tags.forEach(function(tag) {
+        if (tag.getAttribute('data-skill').toLowerCase() === name.toLowerCase()) {
+          tag.remove();
+        }
+      });
+      updateHiddenInput();
+    }
+
+    tagsContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('skill-remove')) {
+        var tag = e.target.parentElement;
+        removeSkill(tag.getAttribute('data-skill'));
+      }
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addSkill(input.value);
+      }
+    });
+
+    addBtn.addEventListener('click', function() {
+      addSkill(input.value);
+    });
+
+    input.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      var query = this.value.trim();
+      if (query.length < 2) {
+        datalist.innerHTML = '';
+        return;
+      }
+      debounceTimer = setTimeout(function() {
+        fetch('{% url "dashboard:skill-search" %}?q=' + encodeURIComponent(query))
+          .then(function(response) { return response.json(); })
+          .then(function(data) {
+            datalist.innerHTML = '';
+            data.forEach(function(item) {
+              var option = document.createElement('option');
+              option.value = item.name;
+              datalist.appendChild(option);
+            });
+          });
+      }, 300);
+    });
+  })();
+</script>

@@ -2,6 +2,7 @@ import string
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
@@ -12,6 +13,7 @@ from server.apps.company.services import (
     CompanyService,
     StudentProgramService,
 )
+from server.apps.jobs.models import Job
 from server.common.types import HtmxRequest
 
 
@@ -19,10 +21,18 @@ class CompanyListView(View):
     def get(self, request: HtmxRequest) -> HttpResponse:
         company_filter = filters.CompanyFilter(
             request.GET,
-            queryset=Company.objects.select_related(
+            queryset=Company.objects
+            .select_related(
                 'industry',
                 'recruiter__user',
-            ).prefetch_related('benefits'),
+            )
+            .prefetch_related('benefits')
+            .annotate(
+                _open_jobs_count=Count(
+                    'jobs',
+                    filter=Q(jobs__is_active=True),
+                ),
+            ),
         )
 
         paginator = Paginator(company_filter.qs, 12)
@@ -57,10 +67,18 @@ class CompanyListView(View):
 class CompanyDetailView(View):
     def get(self, request: HttpRequest, pk: int) -> HttpResponse:
         company = get_object_or_404(
-            Company.objects.select_related(
+            Company.objects
+            .select_related(
                 'industry',
                 'recruiter__user',
-            ).prefetch_related('benefits', 'student_programs'),
+            )
+            .prefetch_related('benefits', 'student_programs')
+            .annotate(
+                _open_jobs_count=Count(
+                    'jobs',
+                    filter=Q(jobs__is_active=True),
+                ),
+            ),
             pk=pk,
         )
         can_edit = CompanyService.can_edit(
@@ -68,9 +86,20 @@ class CompanyDetailView(View):
             request.user,  # pyrefly: ignore
         )
 
+        open_jobs = (
+            Job.objects
+            .filter(company=company, is_active=True)
+            .select_related('company')
+            .prefetch_related('skills')
+            .annotate(applicants_count=Count('applications'))
+            .order_by('-posted_at')
+        )
+
         context = {
             'company': company,
             'can_edit': can_edit,
+            'open_jobs': open_jobs,
+            'employment_type_choices': Job.EmploymentTypeEnum.choices,
         }
         return render(request, const.COMPANY_DETAIL, context)
 
@@ -110,12 +139,21 @@ class CompanyEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             company.refresh_from_db()
+            open_jobs = (
+                Job.objects
+                .filter(company=company, is_active=True)
+                .select_related('company')
+                .prefetch_related('skills')
+                .order_by('-posted_at')
+            )
             return render(
                 request,
                 const.COMPANY_VIEW_PARTIAL,
                 {
                     'company': company,
                     'can_edit': True,
+                    'open_jobs': open_jobs,
+                    'employment_type_choices': Job.EmploymentTypeEnum.choices,
                 },
             )
 

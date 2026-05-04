@@ -1,0 +1,24 @@
+<h5 class="fw-bold mb-3">Privacy</h5>
+{% if success %}
+  <div class="alert alert-success border-0 bg-light mb-3">
+    <i class="bi bi-check-circle-fill me-2 text-success"></i>Privacy settings saved.
+  </div>
+{% endif %}
+<form hx-post="{% url 'dashboard:settings-privacy' %}"
+      hx-target="#settings-privacy"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <div class="form-check form-switch mb-2">
+    {{ form.profile_visible }}
+    <label class="form-check-label" for="{{ form.profile_visible.id_for_label }}">{{ form.profile_visible.label }}</label>
+  </div>
+  {% for error in form.profile_visible.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  <div class="form-check form-switch mb-2">
+    {{ form.resume_public }}
+    <label class="form-check-label" for="{{ form.resume_public.id_for_label }}">{{ form.resume_public.label }}</label>
+  </div>
+  {% for error in form.resume_public.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  <button type="submit" class="btn btn-primary btn-sm mt-3">
+    <i class="bi bi-check-lg"></i> Save Privacy Settings
+  </button>
+</form>

@@ -4,18 +4,21 @@ from typing import Any, override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
 from server.apps.accounts.models import Education, Experience, JobSeeker
 from server.apps.dashboard.forms import (
+    ChangePasswordForm,
     EducationForm,
     ExperienceForm,
     JobSeekerProfileForm,
+    PrivacySettingsForm,
+    SkillAddForm,
 )
-from server.apps.jobs.models import Job, JobApplication, SavedJob
+from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
 from server.common.types import (
     AuthenticatedHtmxRequest,
     AuthenticatedHttpRequest,
@@ -238,7 +241,7 @@ class CandidateProfileView(LoginRequiredMixin, View):
             jobseeker=jobseeker,
             job__is_active=True,
         )
-        context = {
+        context: dict[str, Any] = {
             'jobseeker': jobseeker,
             'total_applications': base_qs.count(),
             'saved_jobs_count': SavedJob.objects.filter(
@@ -254,6 +257,10 @@ class CandidateProfileView(LoginRequiredMixin, View):
         }
         context.update(_education_list_context(jobseeker))
         context.update(_experience_list_context(jobseeker))
+        context.update(_skill_list_context(jobseeker))
+        context['form'] = PrivacySettingsForm(instance=jobseeker)
+        context['password_form'] = ChangePasswordForm(user=request.user)
+
         return render(request, self.template_name, context)
 
 
@@ -473,3 +480,122 @@ class ExperienceDeleteView(LoginRequiredMixin, View):
         response = render(request, self.list_template, context)
         response['HX-Trigger'] = 'experienceSaved'
         return response
+
+
+def _skill_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
+    return {
+        'skills': jobseeker.skills.all().order_by('name'),
+    }
+
+
+class SkillAddView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/skill-add.html'
+    list_template = 'dashboard/jobseeker/partials/skill-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = SkillAddForm()
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = SkillAddForm(request.POST)
+        if form.is_valid():
+            for skill_name in form.cleaned_data['names']:
+                skill, _ = Skill.objects.get_or_create(
+                    name=skill_name,
+                    defaults={'slug': skill_name.lower().replace(' ', '-')},
+                )
+                jobseeker.skills.add(skill)
+            context = _skill_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'skillSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class SkillRemoveView(LoginRequiredMixin, View):
+    list_template = 'dashboard/jobseeker/partials/skill-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def delete(
+        self,
+        request: AuthenticatedHtmxRequest,
+        pk: int,
+    ) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        skill = get_object_or_404(Skill, pk=pk)
+        jobseeker.skills.remove(skill)
+        context = _skill_list_context(jobseeker)
+        response = render(request, self.list_template, context)
+        response['HX-Trigger'] = 'skillSaved'
+        return response
+
+
+class SkillSearchView(LoginRequiredMixin, View):
+    def get(self, request: AuthenticatedHtmxRequest) -> JsonResponse:
+        query = request.GET.get('q', '').strip()
+        if not query:
+            return JsonResponse([], safe=False)
+        skills = (
+            Skill.objects
+            .filter(name__icontains=query)
+            .values('id', 'name')
+            .order_by('name')[:10]
+        )
+        return JsonResponse(list(skills), safe=False)
+
+
+class PrivacySettingsView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/partials/settings-privacy.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = PrivacySettingsForm(instance=jobseeker)
+        context = {'form': form, 'jobseeker': jobseeker}
+        return render(request, self.template_name, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = PrivacySettingsForm(request.POST, instance=jobseeker)
+        if form.is_valid():
+            form.save()
+            form = PrivacySettingsForm(instance=jobseeker)
+            context = {'form': form, 'jobseeker': jobseeker, 'success': True}
+            return render(request, self.template_name, context)
+
+        context = {'form': form, 'jobseeker': jobseeker}
+        return render(request, self.template_name, context)
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/partials/settings-password.html'
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = ChangePasswordForm(user=request.user)
+        context = {'password_form': form}
+        return render(request, self.template_name, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = ChangePasswordForm(request.POST, user=request.user)
+        if form.is_valid():
+            request.user.set_password(form.cleaned_data['new_password'])
+            request.user.save(update_fields=['password'])
+            context = {
+                'password_form': ChangePasswordForm(user=request.user),
+                'success': True,
+            }
+            return render(request, self.template_name, context)
+
+        context = {'password_form': form}
+        return render(request, self.template_name, context)

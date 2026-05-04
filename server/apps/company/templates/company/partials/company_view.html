@@ -123,17 +123,63 @@
   </div>
   <div class="tab-pane fade" id="jobs" role="tabpanel">
     <div class="info-card">
-      <h4 class="fw-bold mb-3">Open Positions ({{ company.open_jobs_count }})</h4>
-      {% if company.open_jobs_count > 0 %}
-        <p class="text-muted">
-          This company has {{ company.open_jobs_count }} open position{{ company.open_jobs_count|pluralize }}.
-          Browse jobs below.
-        </p>
-      {% else %}
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <h4 class="fw-bold mb-0">Open Positions ({{ company.open_jobs_count }})</h4>
+        <div class="d-flex gap-2 mt-2 mt-sm-0">
+          <select class="form-select" style="width: auto;" id="jobTypeFilter">
+            <option value="">All Types</option>
+            {% for value, label in employment_type_choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% if can_edit %}
+            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Post New Job</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% for job in open_jobs|slice:":3" %}
+        <div class="job-mini-card" data-employment-type="{{ job.employment_type }}">
+          <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div>
+              <h5 class="fw-bold mb-1">{{ job.title }}</h5>
+              <p class="text-muted mb-2">{{ job.employment_type_label }} • {{ job.experience_level_label }}</p>
+              <div class="d-flex flex-wrap gap-3 mb-2">
+                <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:"Remote" }}</small>
+                <small><i class="bi bi-cash me-1"></i>{{ job.salary_display }}</small>
+              </div>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+              {% if job.is_student_friendly %}
+                <span class="student-friendly-badge">Student-friendly</span>
+              {% endif %}
+              {% if can_edit %}
+                <div class="job-action-buttons">
+                  <button class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="mt-2">
+            {% for skill in job.skills.all %}
+              <span class="badge bg-light text-dark me-1">{{ skill.name }}</span>
+            {% endfor %}
+            <small class="text-muted ms-2"><i class="bi bi-people"></i> {{ job.applicants_count }} applicant{{ job.applicants_count|pluralize }}</small>
+            <a href="{% url 'jobs:jobs-detail' job.pk %}" class="btn btn-link btn-sm p-0 ms-3">View Details</a>
+          </div>
+        </div>
+      {% empty %}
         <div class="text-center py-4">
           <i class="bi bi-briefcase fs-1 text-muted"></i>
           <h5 class="mt-3">No open positions yet</h5>
           <p class="text-muted">Check back later for new opportunities.</p>
+        </div>
+      {% endfor %}
+
+      {% if company.open_jobs_count > 3 %}
+        <div class="text-center mt-4">
+          <a href="{% url 'jobs:jobs-list' %}?company={{ company.pk }}" class="btn btn-outline-primary">View All {{ company.open_jobs_count }} Jobs <i class="bi bi-arrow-right"></i></a>
         </div>
       {% endif %}
     </div>
@@ -142,3 +188,15 @@
     <div id="student-programs-content">{% include 'company/partials/student_program_list.html' %}</div>
   </div>
 </div>
+<script>
+  document.getElementById('jobTypeFilter')?.addEventListener('change', function() {
+    const type = this.value;
+    document.querySelectorAll('#jobs .job-mini-card').forEach(card => {
+      if (!type || card.dataset.employmentType === type) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script>
