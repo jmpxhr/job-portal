@@ -4,14 +4,14 @@ from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
 
 
 @admin.register(Skill)
-class SkillAdmin(admin.ModelAdmin):
+class SkillAdmin(admin.ModelAdmin[Skill]):
     list_display = ('name', 'slug')
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
 
 
 @admin.register(Job)
-class JobAdmin(admin.ModelAdmin):
+class JobAdmin(admin.ModelAdmin[Job]):
     list_display = (
         'title',
         'company',
@@ -35,7 +35,7 @@ class JobAdmin(admin.ModelAdmin):
 
 
 @admin.register(JobApplication)
-class JobApplicationAdmin(admin.ModelAdmin):
+class JobApplicationAdmin(admin.ModelAdmin[JobApplication]):
     list_display = ('job', 'jobseeker', 'status', 'applied_at')
     list_filter = ('status', 'applied_at')
     search_fields = ('job__title', 'jobseeker__user__email')
@@ -43,7 +43,7 @@ class JobApplicationAdmin(admin.ModelAdmin):
 
 
 @admin.register(SavedJob)
-class SavedJobAdmin(admin.ModelAdmin):
+class SavedJobAdmin(admin.ModelAdmin[SavedJob]):
     list_display = ('job', 'jobseeker', 'saved_at')
     search_fields = ('job__title', 'jobseeker__user__email')
     list_select_related = ('job', 'jobseeker__user')

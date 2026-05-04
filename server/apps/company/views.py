@@ -63,7 +63,7 @@ class CompanyDetailView(View):
             ).prefetch_related('benefits', 'student_programs'),
             pk=pk,
         )
-        can_edit = CompanyService.can_edit(  # pyrefly: ignore
+        can_edit = CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         )
@@ -79,7 +79,7 @@ class CompanyEditView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, pk: int) -> HttpResponse:
         company = get_object_or_404(Company, pk=pk)
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -95,7 +95,7 @@ class CompanyEditView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest, pk: int) -> HttpResponse:
         company = get_object_or_404(Company, pk=pk)
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -130,7 +130,7 @@ class StudentProgramCreateView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, pk: int) -> HttpResponse:
         company = get_object_or_404(Company, pk=pk)
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -146,7 +146,7 @@ class StudentProgramCreateView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest, pk: int) -> HttpResponse:
         company = get_object_or_404(Company, pk=pk)
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -193,7 +193,7 @@ class StudentProgramUpdateView(LoginRequiredMixin, View):
             company=company,
         )
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -220,7 +220,7 @@ class StudentProgramUpdateView(LoginRequiredMixin, View):
             company=company,
         )
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -269,7 +269,7 @@ class StudentProgramDeleteView(LoginRequiredMixin, View):
             company=company,
         )
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):
@@ -298,7 +298,7 @@ class StudentProgramDeleteView(LoginRequiredMixin, View):
             company=company,
         )
 
-        if not CompanyService.can_edit(  # pyrefly: ignore
+        if not CompanyService.can_edit(
             company,
             request.user,  # pyrefly: ignore
         ):

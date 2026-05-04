@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+from server.apps.accounts.forms import UserChangeForm, UserCreationForm
 from server.apps.accounts.models import (
     JobSeeker,
     Recruiter,
@@ -8,7 +10,9 @@ from server.apps.accounts.models import (
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin[User]):
+class UserAdmin(BaseUserAdmin[User]):
+    form = UserChangeForm
+    add_form = UserCreationForm
     list_display = (
         'id',
         'email',
@@ -20,6 +24,43 @@ class UserAdmin(admin.ModelAdmin[User]):
     )
     list_filter = ('is_active', 'account_type')
     search_fields = ('email', 'first_name', 'last_name')
+    ordering = ('id',)
+    add_fieldsets = (
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': (
+                    'email',
+                    'account_type',
+                    'is_active',
+                    'password1',
+                    'password2',
+                ),
+            },
+        ),
+    )
+
+    fieldsets = (
+        ('Credentials', {'fields': ('email', 'password')}),
+        (
+            'Personal info',
+            {'fields': ('first_name', 'last_name', 'account_type')},
+        ),
+        (
+            'Permissions',
+            {
+                'fields': (
+                    'is_active',
+                    'is_staff',
+                    'is_superuser',
+                    'groups',
+                    'user_permissions',
+                ),
+            },
+        ),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
 
 
 @admin.register(JobSeeker)

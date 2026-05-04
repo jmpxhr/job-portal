@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
@@ -10,15 +10,16 @@ from django.views.generic import DetailView, ListView
 from server.apps.accounts.models import JobSeeker, User
 from server.apps.jobs import const, filters
 from server.apps.jobs.models import Job, SavedJob
-from server.common.types import HtmxRequest
+from server.common.types import AuthenticatedHttpRequest
 
 
-class JobListView(ListView):
+class JobListView(ListView[Job]):
     model = Job
     template_name = const.JOBS_LIST
     context_object_name = 'jobs'
     paginate_by = 10
 
+    @override
     def get_queryset(self) -> Any:
         queryset = (
             Job.objects
@@ -29,6 +30,7 @@ class JobListView(ListView):
         self.job_filter = filters.JobFilter(self.request.GET, queryset=queryset)
         return self.job_filter.qs
 
+    @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['filter'] = self.job_filter
@@ -55,6 +57,7 @@ class JobListView(ListView):
         context['location_query'] = self.request.GET.get('location', '')
         return context
 
+    @override
     def render_to_response(
         self,
         context: dict[str, Any],
@@ -69,11 +72,12 @@ class JobListView(ListView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class JobDetailView(DetailView):
+class JobDetailView(DetailView[Job]):
     model = Job
     template_name = const.JOB_DETAIL
     context_object_name = 'job'
 
+    @override
     def get_queryset(self) -> Any:
         return (
             Job.objects
@@ -82,6 +86,7 @@ class JobDetailView(DetailView):
             .prefetch_related('skills')
         )
 
+    @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         job = self.object
@@ -108,7 +113,7 @@ class JobDetailView(DetailView):
         is_saved = False
         if (
             self.request.user.is_authenticated
-            and self.request.user.account_type == User.AccountTypeEnum.JOBSEEKER
+            and self.request.user.account_type == User.AccountTypeEnum.JOBSEEKER  # pyrefly: ignore
         ):
             is_saved = SavedJob.objects.filter(
                 job=job,
@@ -119,12 +124,12 @@ class JobDetailView(DetailView):
 
 
 class SavedJobToggleView(LoginRequiredMixin, View):
-    def post(self, request: HtmxRequest, pk: int) -> HttpResponse:
+    def post(self, request: AuthenticatedHttpRequest, pk: int) -> HttpResponse:
         job = get_object_or_404(Job, pk=pk, is_active=True)
         try:
             jobseeker = JobSeeker.objects.get(user=request.user)
         except JobSeeker.DoesNotExist:
-            raise Http404
+            raise Http404 from None
 
         saved = SavedJob.objects.filter(job=job, jobseeker=jobseeker).first()
         if saved:

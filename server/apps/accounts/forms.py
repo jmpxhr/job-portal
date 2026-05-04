@@ -1,6 +1,7 @@
 from typing import override
 
 from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -312,3 +313,50 @@ class PasswordResetForm(forms.Form):
                 except ValidationError as e:
                     self.add_error('new_password', e)
         return cleaned_data
+
+
+class UserCreationForm(forms.ModelForm[User]):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Password confirmation',
+        widget=forms.PasswordInput,
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'account_type',
+            'is_active',
+        )
+
+    def clean_password2(self) -> str:
+        # Check that the two password entries match
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return str(password2)
+
+    @override
+    def save(self, commit: bool = True) -> User:
+        # Save the provided password in hashed format
+        user: User = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
+
+
+class UserChangeForm(forms.ModelForm[User]):
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def clean_password(self) -> str:
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return str(self.initial['password'])

@@ -9,7 +9,7 @@ from server.apps.company.models import (
 )
 
 
-class CompanyUpdateForm(forms.ModelForm):  # type: ignore[type-arg]
+class CompanyUpdateForm(forms.ModelForm[Company]):
     benefits = forms.ModelMultipleChoiceField(
         queryset=Benefit.objects.all(),
         required=False,
@@ -120,10 +120,10 @@ class CompanyUpdateForm(forms.ModelForm):  # type: ignore[type-arg]
             instance.save()
             self.save_m2m()
 
-        return instance  # type: ignore[no-any-return]
+        return instance
 
 
-class StudentProgramForm(forms.ModelForm):  # type: ignore[type-arg]
+class StudentProgramForm(forms.ModelForm[StudentProgram]):
     class Meta:
         model = StudentProgram
         fields = ['title', 'description', 'status', 'url']

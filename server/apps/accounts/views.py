@@ -34,9 +34,6 @@ type RegistrationFormType = (
     type[CompanyRegistrationForm] | type[JobSeekerRegistrationForm]
 )
 
-if TYPE_CHECKING:
-    from django.forms import forms as django_forms
-
 
 class GenericRegisterView(View):
     def get(self, request: HtmxRequest) -> HttpResponse:
@@ -93,7 +90,7 @@ class GenericRegisterView(View):
                 return JobSeekerRegistrationForm
 
 
-class VerifyCodeView(FormView):  # type: ignore[type-arg]
+class VerifyCodeView(FormView[forms.VerificationForm]):
     form_class = forms.VerificationForm
     template_name = const.VERIFY_FORM
 
@@ -131,7 +128,7 @@ class VerifyCodeView(FormView):  # type: ignore[type-arg]
         return context
 
     @override
-    def form_valid(self, form: type['django_forms.Form']) -> HttpResponse:
+    def form_valid(self, form: forms.VerificationForm) -> HttpResponse:
         code = form.cleaned_data['otp']
 
         if code == self.user.email_verification_code:
@@ -158,7 +155,7 @@ class VerifyCodeView(FormView):  # type: ignore[type-arg]
         return self.form_invalid(form)
 
     @override
-    def form_invalid(self, form: type['django_forms.Form']) -> HttpResponse:
+    def form_invalid(self, form: forms.VerificationForm) -> HttpResponse:
         context = self.get_context_data(
             form=form,
             error='Invalid verification code. Please try again.',

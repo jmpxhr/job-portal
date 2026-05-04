@@ -22,7 +22,8 @@ class Skill(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def save(self, *args, **kwargs) -> None:
+    @override
+    def save(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
         if not self.slug:
             self.slug = self.name.lower().replace(' ', '-')
         super().save(*args, **kwargs)
@@ -166,11 +167,46 @@ class JobApplication(TimeStampModelMixin):
         verbose_name=_('job seeker'),
     )
     status = EnumField(StatusEnum, default=StatusEnum.PENDING)
+    resume = models.FileField(
+        _('resume'),
+        upload_to='applications/resumes/',
+        blank=True,
+    )
+    cover_letter = models.TextField(
+        _('cover letter'),
+        blank=True,
+        default='',
+    )
+    employer_feedback = models.TextField(
+        _('employer feedback'),
+        blank=True,
+        default='',
+    )
     applied_at = models.DateTimeField(_('applied at'), auto_now_add=True)
 
     @override
     def __str__(self) -> str:
         return f'Application by {self.jobseeker} for {self.job}'
+
+    @property
+    def status_label(self) -> str:
+        labels = {
+            self.StatusEnum.PENDING: 'Pending',
+            self.StatusEnum.REVIEWED: 'In Review',
+            self.StatusEnum.ACCEPTED: 'Accepted',
+            self.StatusEnum.REJECTED: 'Not Selected',
+        }
+        return labels.get(self.status, 'Unknown')
+
+    @property
+    def status_css_class(self) -> str:
+        classes = {
+            self.StatusEnum.PENDING: 'status-pending',
+            self.StatusEnum.REVIEWED: 'status-review',
+            self.StatusEnum.ACCEPTED: 'status-accepted',
+            self.StatusEnum.REJECTED: 'status-rejected',
+        }
+        return classes.get(self.status, 'status-pending')
 
     class Meta(TypedModelMeta):
         db_table = 'job_applications'

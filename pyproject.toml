@@ -142,7 +142,7 @@ strict = true
 strict_bytes = true
 warn_unreachable = true
 
-plugins = ["mypy_django_plugin.main", "pydantic.mypy", "mypy_drf_plugin.main"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 [[tool.mypy.overrides]]
 module = "server.apps.*.migrations.*"

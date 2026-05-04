@@ -14,4 +14,14 @@ urlpatterns = [
         views.SavedJobsView.as_view(),
         name='saved-jobs',
     ),
+    path(
+        'jobseeker/my-applications/',
+        views.MyApplicationsView.as_view(),
+        name='my-applications',
+    ),
+    path(
+        'jobseeker/my-applications/<int:pk>/',
+        views.ApplicationDetailView.as_view(),
+        name='application-detail',
+    ),
 ]
