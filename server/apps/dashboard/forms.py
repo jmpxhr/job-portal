@@ -3,7 +3,13 @@ from typing import override
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 
-from server.apps.accounts.models import Education, Experience, JobSeeker, Language, User
+from server.apps.accounts.models import (
+    Education,
+    Experience,
+    JobSeeker,
+    Language,
+    User,
+)
 
 
 class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
@@ -191,6 +197,31 @@ class ExperienceForm(forms.ModelForm[Experience]):
             'start_date': 'Start Date',
             'end_date': 'End Date (leave empty if current)',
             'description': 'Description',
+        }
+
+
+class ResumeForm(forms.ModelForm[JobSeeker]):
+    class Meta:
+        model = JobSeeker
+        fields = ('resume_objective', 'resume_file')
+        widgets = {
+            'resume_objective': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': (
+                        'Briefly describe your career goals and '
+                        + 'what you bring to the table...'
+                    ),
+                },
+            ),
+            'resume_file': forms.FileInput(
+                attrs={'class': 'form-control'},
+            ),
+        }
+        labels = {
+            'resume_objective': 'Career Objective',
+            'resume_file': 'Upload Resume File',
         }
 
 

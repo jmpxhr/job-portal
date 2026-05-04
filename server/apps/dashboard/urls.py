@@ -35,6 +35,21 @@ urlpatterns = [
         name='edit-profile',
     ),
     path(
+        'jobseeker/profile/resume/edit/',
+        views.ResumeEditView.as_view(),
+        name='resume-edit',
+    ),
+    path(
+        'jobseeker/profile/resume/pdf/',
+        views.ResumePDFView.as_view(),
+        name='resume-pdf',
+    ),
+    path(
+        'jobseeker/profile/resume/file-download/',
+        views.ResumeFileDownloadView.as_view(),
+        name='resume-file-download',
+    ),
+    path(
         'jobseeker/profile/education/create/',
         views.EducationCreateView.as_view(),
         name='education-create',

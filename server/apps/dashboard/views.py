@@ -8,8 +8,14 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
+from weasyprint import HTML
 
-from server.apps.accounts.models import Education, Experience, JobSeeker, Language
+from server.apps.accounts.models import (
+    Education,
+    Experience,
+    JobSeeker,
+    Language,
+)
 from server.apps.dashboard.forms import (
     ChangePasswordForm,
     EducationForm,
@@ -17,6 +23,7 @@ from server.apps.dashboard.forms import (
     JobSeekerProfileForm,
     LanguageForm,
     PrivacySettingsForm,
+    ResumeForm,
     SkillAddForm,
 )
 from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
@@ -260,6 +267,7 @@ class CandidateProfileView(LoginRequiredMixin, View):
         context.update(_experience_list_context(jobseeker))
         context.update(_skill_list_context(jobseeker))
         context.update(_language_list_context(jobseeker))
+        context.update(_resume_context(jobseeker))
         context['form'] = PrivacySettingsForm(instance=jobseeker)
         context['password_form'] = ChangePasswordForm(user=request.user)
 
@@ -572,6 +580,103 @@ class LanguageDeleteView(LoginRequiredMixin, View):
         context = _language_list_context(jobseeker)
         response = render(request, self.list_template, context)
         response['HX-Trigger'] = 'languageSaved'
+        return response
+
+
+def _resume_context(jobseeker: JobSeeker) -> dict[str, Any]:
+    return {
+        'education_entries': Education.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('-year_of_graduation'),
+        'experience_entries': Experience.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('-start_date'),
+        'skills': jobseeker.skills.all().order_by('name'),
+        'language_entries': Language.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('name'),
+    }
+
+
+class ResumeEditView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/resume-form.html'
+    content_template = 'dashboard/jobseeker/partials/resume-content.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = ResumeForm(instance=jobseeker)
+        context = {'form': form, 'jobseeker': jobseeker}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        clear_file = request.POST.get('clear_resume_file') == '1'
+        form = ResumeForm(request.POST, request.FILES, instance=jobseeker)
+        if form.is_valid():
+            if clear_file and jobseeker.resume_file:
+                jobseeker.resume_file.delete(save=False)
+            form.save()
+            context = {'jobseeker': jobseeker}
+            context.update(_resume_context(jobseeker))
+            response = render(request, self.content_template, context)
+            response['HX-Trigger'] = 'resumeSaved'
+            return response
+
+        return render(
+            request,
+            self.form_template,
+            {
+                'form': form,
+                'jobseeker': jobseeker,
+            },
+        )
+
+
+class ResumePDFView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/resume-pdf.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        context: dict[str, Any] = {
+            'jobseeker': jobseeker,
+        }
+        context.update(_resume_context(jobseeker))
+        html_string = render(
+            request,
+            self.template_name,
+            context,
+        ).content.decode('utf-8')
+        pdf_file = HTML(string=html_string).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        filename = (
+            f'{jobseeker.user.get_full_name().replace(" ", "_")}_Resume.pdf'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+
+class ResumeFileDownloadView(LoginRequiredMixin, View):
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        if not jobseeker.resume_file:
+            raise Http404
+        response = HttpResponse(
+            jobseeker.resume_file.open('rb').read(),
+            content_type='application/octet-stream',
+        )
+        response['Content-Disposition'] = (
+            'attachment; '
+            + f'filename="{jobseeker.resume_file.name.split("/")[-1]}"'  # type: ignore[union-attr]
+        )
         return response
 
 

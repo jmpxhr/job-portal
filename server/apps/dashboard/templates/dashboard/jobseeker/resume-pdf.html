@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ jobseeker.user.get_full_name|default:jobseeker.user.email }} - Resume</title>
+    <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #333;
+    }
+    .header {
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #2c3e50;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 22pt;
+      color: #2c3e50;
+    }
+    .header .title {
+      font-size: 12pt;
+      color: #666;
+      margin-top: 2px;
+    }
+    .contact-info {
+      font-size: 9pt;
+      color: #555;
+      margin-top: 6px;
+    }
+    .contact-info span {
+      margin-right: 16px;
+    }
+    .section {
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #2c3e50;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .section p {
+      margin: 4px 0;
+      font-size: 10pt;
+      color: #555;
+    }
+    .entry {
+      margin-bottom: 10px;
+    }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+    }
+    .entry-header strong {
+      font-size: 11pt;
+    }
+    .entry-header .date {
+      font-size: 9pt;
+      color: #888;
+    }
+    .entry .subtitle {
+      font-size: 10pt;
+      color: #555;
+      margin: 2px 0;
+    }
+    .entry .description {
+      font-size: 9pt;
+      color: #666;
+    }
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .skill-tag {
+      background: #e8f0fe;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 9pt;
+    }
+    .language-entry {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10pt;
+      margin-bottom: 2px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>{{ jobseeker.user.get_full_name|default:jobseeker.user.email }}</h1>
+      {% if jobseeker.title %}<div class="title">{{ jobseeker.title }}</div>{% endif %}
+      <div class="contact-info">
+        {% if jobseeker.user.email %}<span>{{ jobseeker.user.email }}</span>{% endif %}
+        {% if jobseeker.phone %}<span>{{ jobseeker.phone }}</span>{% endif %}
+        {% if jobseeker.location %}<span>{{ jobseeker.location }}</span>{% endif %}
+      </div>
+    </div>
+    {% if jobseeker.resume_objective %}
+      <div class="section">
+        <div class="section-title">Objective</div>
+        <p>{{ jobseeker.resume_objective }}</p>
+      </div>
+    {% endif %}
+    {% if jobseeker.about %}
+      <div class="section">
+        <div class="section-title">About</div>
+        <p>{{ jobseeker.about }}</p>
+      </div>
+    {% endif %}
+    {% if education_entries %}
+      <div class="section">
+        <div class="section-title">Education</div>
+        {% for edu in education_entries %}
+          <div class="entry">
+            <div class="entry-header">
+              <strong>{{ edu.institution_name }}</strong>
+              {% if edu.year_of_graduation %}<span class="date">{{ edu.year_of_graduation }}</span>{% endif %}
+            </div>
+            <div class="subtitle">
+              {{ edu.get_level_label }}
+              {% if edu.faculty %}&mdash; {{ edu.faculty }}{% endif %}
+              {% if edu.specialization %}, {{ edu.specialization }}{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if experience_entries %}
+      <div class="section">
+        <div class="section-title">Experience</div>
+        {% for exp in experience_entries %}
+          <div class="entry">
+            <div class="entry-header">
+              <strong>{{ exp.position }}</strong>
+              <span class="date">{{ exp.start_date|date:"M Y" }} &mdash;
+                {% if exp.is_current %}
+                  Present
+                {% else %}
+                  {{ exp.end_date|date:"M Y" }}
+                {% endif %}
+              </span>
+            </div>
+            <div class="subtitle">{{ exp.company_name }}</div>
+            {% if exp.description %}<div class="description">{{ exp.description }}</div>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if skills %}
+      <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills-list">
+          {% for skill in skills %}<span class="skill-tag">{{ skill.name }}</span>{% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if language_entries %}
+      <div class="section">
+        <div class="section-title">Languages</div>
+        {% for lang in language_entries %}
+          <div class="language-entry">
+            <span>{{ lang.name }}</span>
+            <span>{{ lang.get_proficiency_label }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </body>
+</html>
