@@ -1,0 +1,35 @@
+{% load static %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">{{ form.instance.pk|yesno:"Edit,Add" }} Language</h4>
+  <button class="btn btn-outline-secondary btn-sm"
+          hx-get="{% url 'dashboard:candidate-profile' %}"
+          hx-target="#language-content"
+          hx-select="#language-content"
+          hx-swap="innerHTML">Cancel</button>
+</div>
+<form hx-post="{% if form.instance.pk %}{% url 'dashboard:language-update' form.instance.pk %}{% else %}{% url 'dashboard:language-create' %}{% endif %}"
+      hx-target="#language-content"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+    {{ form.name }}
+    {% for error in form.name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.proficiency.id_for_label }}">{{ form.proficiency.label }}</label>
+    {{ form.proficiency }}
+    {% for error in form.proficiency.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="bi bi-check-lg"></i> Save
+    </button>
+    <button type="button"
+            class="btn btn-outline-secondary btn-sm"
+            hx-get="{% url 'dashboard:candidate-profile' %}"
+            hx-target="#language-content"
+            hx-select="#language-content"
+            hx-swap="innerHTML">Cancel</button>
+  </div>
+</form>

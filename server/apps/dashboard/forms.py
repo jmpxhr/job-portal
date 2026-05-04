@@ -3,7 +3,7 @@ from typing import override
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 
-from server.apps.accounts.models import Education, Experience, JobSeeker, User
+from server.apps.accounts.models import Education, Experience, JobSeeker, Language, User
 
 
 class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
@@ -118,6 +118,25 @@ class EducationForm(forms.ModelForm[Education]):
             'faculty': 'Faculty',
             'specialization': 'Specialization',
             'year_of_graduation': 'Year of Graduation',
+        }
+
+
+class LanguageForm(forms.ModelForm[Language]):
+    class Meta:
+        model = Language
+        fields = ('name', 'proficiency')
+        widgets = {
+            'name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'e.g. English',
+                },
+            ),
+            'proficiency': forms.Select(attrs={'class': 'form-select'}),
+        }
+        labels = {
+            'name': 'Language',
+            'proficiency': 'Proficiency Level',
         }
 
 

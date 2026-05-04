@@ -6,6 +6,7 @@ from server.apps.accounts.models import (
     Education,
     Experience,
     JobSeeker,
+    Language,
     Recruiter,
     User,
 )
@@ -102,3 +103,15 @@ class ExperienceAdmin(admin.ModelAdmin[Experience]):
     )
     list_filter = ('company_name',)
     search_fields = ('position', 'company_name')
+
+
+@admin.register(Language)
+class LanguageAdmin(admin.ModelAdmin[Language]):
+    list_display = (
+        'id',
+        'jobseeker',
+        'name',
+        'proficiency',
+    )
+    list_filter = ('proficiency',)
+    search_fields = ('name',)

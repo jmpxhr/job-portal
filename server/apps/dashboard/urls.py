@@ -80,6 +80,21 @@ urlpatterns = [
         name='skill-search',
     ),
     path(
+        'jobseeker/profile/language/create/',
+        views.LanguageCreateView.as_view(),
+        name='language-create',
+    ),
+    path(
+        'jobseeker/profile/language/<int:pk>/update/',
+        views.LanguageUpdateView.as_view(),
+        name='language-update',
+    ),
+    path(
+        'jobseeker/profile/language/<int:pk>/delete/',
+        views.LanguageDeleteView.as_view(),
+        name='language-delete',
+    ),
+    path(
         'jobseeker/settings/privacy/',
         views.PrivacySettingsView.as_view(),
         name='settings-privacy',

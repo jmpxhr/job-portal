@@ -17,6 +17,7 @@ dependencies = [
   "python-decouple>=3.8,<4.0",
   "structlog>=25.4,<26.0",
   "djangorestframework>=3.17.1",
+  "weasyprint>=68.1",
 ]
 
 [dependency-groups]

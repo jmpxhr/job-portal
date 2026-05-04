@@ -9,12 +9,13 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
-from server.apps.accounts.models import Education, Experience, JobSeeker
+from server.apps.accounts.models import Education, Experience, JobSeeker, Language
 from server.apps.dashboard.forms import (
     ChangePasswordForm,
     EducationForm,
     ExperienceForm,
     JobSeekerProfileForm,
+    LanguageForm,
     PrivacySettingsForm,
     SkillAddForm,
 )
@@ -258,6 +259,7 @@ class CandidateProfileView(LoginRequiredMixin, View):
         context.update(_education_list_context(jobseeker))
         context.update(_experience_list_context(jobseeker))
         context.update(_skill_list_context(jobseeker))
+        context.update(_language_list_context(jobseeker))
         context['form'] = PrivacySettingsForm(instance=jobseeker)
         context['password_form'] = ChangePasswordForm(user=request.user)
 
@@ -486,6 +488,91 @@ def _skill_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
     return {
         'skills': jobseeker.skills.all().order_by('name'),
     }
+
+
+def _language_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
+    return {
+        'language_entries': Language.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('name'),
+    }
+
+
+class LanguageCreateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/language-form.html'
+    list_template = 'dashboard/jobseeker/partials/language-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = LanguageForm()
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = LanguageForm(request.POST)
+        if form.is_valid():
+            language = form.save(commit=False)
+            language.jobseeker = jobseeker
+            language.save()
+            context = _language_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'languageSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class LanguageUpdateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/language-form.html'
+    list_template = 'dashboard/jobseeker/partials/language-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        language = get_object_or_404(Language, pk=pk, jobseeker=jobseeker)
+        form = LanguageForm(instance=language)
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        language = get_object_or_404(Language, pk=pk, jobseeker=jobseeker)
+        form = LanguageForm(request.POST, instance=language)
+        if form.is_valid():
+            form.save()
+            context = _language_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'languageSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class LanguageDeleteView(LoginRequiredMixin, View):
+    list_template = 'dashboard/jobseeker/partials/language-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def delete(
+        self,
+        request: AuthenticatedHtmxRequest,
+        pk: int,
+    ) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        language = get_object_or_404(Language, pk=pk, jobseeker=jobseeker)
+        language.delete()
+        context = _language_list_context(jobseeker)
+        response = render(request, self.list_template, context)
+        response['HX-Trigger'] = 'languageSaved'
+        return response
 
 
 class SkillAddView(LoginRequiredMixin, View):

@@ -253,6 +253,42 @@ class Education(TimeStampModelMixin):
         verbose_name_plural = _('education')
 
 
+class Language(TimeStampModelMixin):
+    class LanguageLevelEnum(models.IntegerChoices):
+        BASIC = 0, _('Basic')
+        INTERMEDIATE = 1, _('Intermediate')
+        FLUENT = 2, _('Fluent')
+        NATIVE = 3, _('Native')
+
+    jobseeker: models.ForeignKey['JobSeeker'] = models.ForeignKey(
+        JobSeeker,
+        on_delete=models.CASCADE,
+        related_name='languages',
+        verbose_name=_('job seeker'),
+    )
+    name = models.CharField(
+        _('language'),
+        max_length=100,
+    )
+    proficiency = EnumField(
+        LanguageLevelEnum,
+        default=LanguageLevelEnum.INTERMEDIATE,
+    )
+
+    @override
+    def __str__(self) -> str:
+        return f'{self.name} ({self.get_proficiency_label()})'
+
+    def get_proficiency_label(self) -> str:
+        return str(self.LanguageLevelEnum(self.proficiency).label)
+
+    class Meta(TypedModelMeta):
+        db_table = 'languages'
+        ordering = ['name']
+        verbose_name = _('language')
+        verbose_name_plural = _('languages')
+
+
 class Experience(TimeStampModelMixin):
     jobseeker: models.ForeignKey['JobSeeker'] = models.ForeignKey(
         JobSeeker,
