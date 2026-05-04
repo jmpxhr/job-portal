@@ -18,4 +18,9 @@ urlpatterns = [
         views.SavedJobToggleView.as_view(),
         name='jobs-save-toggle',
     ),
+    path(
+        '<int:pk>/apply/',
+        views.ApplyForJobView.as_view(),
+        name='jobs-apply',
+    ),
 ]

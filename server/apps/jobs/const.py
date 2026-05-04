@@ -1,3 +1,5 @@
 JOBS_LIST = 'jobs/jobs-list.html'
 JOB_DETAIL = 'jobs/job-details.html'
 JOBS_LIST_PARTIAL = 'jobs/partials/jobs-list-partial.html'
+JOB_APPLY_FORM_PARTIAL = 'jobs/partials/apply-form-partial.html'
+JOB_APPLY_SUCCESS_PARTIAL = 'jobs/partials/apply-success-partial.html'

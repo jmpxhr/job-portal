@@ -60,14 +60,15 @@
           {% if user.account_type == 1 %}
             <!-- Action Buttons -->
             <div class="d-flex gap-2 mb-4">
-              <button class="btn btn-primary btn-lg flex-grow-1">
-                <i class="bi bi-send me-2"></i>Apply Now
-              </button>
-              {% include "jobs/partials/save-button-partial.html" with is_saved=is_saved %}
+              {% include "jobs/partials/apply-button-partial.html" with has_applied=has_applied job=job %}
+              {% include "jobs/partials/save-button-partial.html" with is_saved=is_saved job=job %}
               <button class="btn btn-outline-secondary btn-lg">
                 <i class="bi bi-share"></i>
               </button>
             </div>
+            {% if not has_applied %}
+              {% include "jobs/partials/apply-modal-partial.html" with job=job form=apply_form has_resume=has_resume %}
+            {% endif %}
           {% endif %}
           <!-- Job Description -->
           <div class="info-card mb-4">

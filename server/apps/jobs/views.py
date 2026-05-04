@@ -9,7 +9,8 @@ from django.views.generic import DetailView, ListView
 
 from server.apps.accounts.models import JobSeeker, User
 from server.apps.jobs import const, filters
-from server.apps.jobs.models import Job, SavedJob
+from server.apps.jobs.forms import JobApplicationForm
+from server.apps.jobs.models import Job, JobApplication, SavedJob
 from server.common.types import AuthenticatedHttpRequest
 
 
@@ -112,15 +113,34 @@ class JobDetailView(DetailView[Job]):
         context['similar_jobs'] = similar_jobs
 
         is_saved = False
+        has_applied = False
+        has_resume = False
+        apply_form = None
+
         if (
             self.request.user.is_authenticated
             and self.request.user.account_type == User.AccountTypeEnum.JOBSEEKER  # pyrefly: ignore
         ):
-            is_saved = SavedJob.objects.filter(
-                job=job,
-                jobseeker__user=self.request.user,
-            ).exists()
+            try:
+                jobseeker = JobSeeker.objects.get(user=self.request.user)
+                is_saved = SavedJob.objects.filter(
+                    job=job,
+                    jobseeker=jobseeker,
+                ).exists()
+                has_applied = JobApplication.objects.filter(
+                    job=job,
+                    jobseeker=jobseeker,
+                ).exists()
+                has_resume = bool(jobseeker.resume_file)
+                if not has_applied:
+                    apply_form = JobApplicationForm()
+            except JobSeeker.DoesNotExist:
+                pass
+
         context['is_saved'] = is_saved
+        context['has_applied'] = has_applied
+        context['has_resume'] = has_resume
+        context['apply_form'] = apply_form
         return context
 
 
@@ -147,5 +167,60 @@ class SavedJobToggleView(LoginRequiredMixin, View):
         return render(
             request,
             'jobs/partials/save-button-partial.html',
+            context,
+        )
+
+
+class ApplyForJobView(LoginRequiredMixin, View):
+    def post(self, request: AuthenticatedHttpRequest, pk: int) -> HttpResponse:
+        job = get_object_or_404(Job, pk=pk, is_active=True)
+        try:
+            jobseeker = JobSeeker.objects.get(user=request.user)
+        except JobSeeker.DoesNotExist:
+            raise Http404 from None
+
+        if JobApplication.objects.filter(job=job, jobseeker=jobseeker).exists():
+            context = {'job': job, 'has_applied': True}
+            return render(
+                request,
+                const.JOB_APPLY_SUCCESS_PARTIAL,
+                context,
+            )
+
+        form = JobApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            cover_letter = form.cleaned_data['cover_letter']
+            resume_file = form.cleaned_data.get('resume_file')
+
+            application = JobApplication(
+                job=job,
+                jobseeker=jobseeker,
+                cover_letter=cover_letter,
+            )
+            if resume_file:
+                application.resume = resume_file
+                application.save()
+                resume_file.seek(0)
+                jobseeker.resume_file = resume_file
+                jobseeker.save(update_fields=['resume_file'])
+            else:
+                application.save()
+
+            context = {'job': job, 'has_applied': True}
+            return render(
+                request,
+                const.JOB_APPLY_SUCCESS_PARTIAL,
+                context,
+            )
+
+        context = {
+            'job': job,
+            'form': form,
+            'has_applied': False,
+            'has_resume': bool(jobseeker.resume_file),
+        }
+        return render(
+            request,
+            const.JOB_APPLY_FORM_PARTIAL,
             context,
         )

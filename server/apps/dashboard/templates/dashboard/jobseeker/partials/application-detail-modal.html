@@ -1,4 +1,5 @@
 {% load static %}
+{% load  tags %}
 <!-- Job Information -->
 <div class="job-info-section mb-4">
   <h6 class="fw-bold mb-3">Job Information</h6>
@@ -104,7 +105,7 @@
         <div class="document-item p-3 border rounded-3 d-flex align-items-center">
           <i class="bi bi-file-pdf-fill text-danger fs-3 me-3"></i>
           <div class="flex-grow-1">
-            <p class="fw-bold mb-0">{{ application.resume.name }}</p>
+            <p class="fw-bold mb-0">{{ application.resume.name|filename }}</p>
             <small class="text-muted">Uploaded {{ application.applied_at|date:"M d, Y" }}</small>
           </div>
           <a href="{{ application.resume.url }}"
