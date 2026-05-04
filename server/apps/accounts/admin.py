@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from server.apps.accounts.forms import UserChangeForm, UserCreationForm
 from server.apps.accounts.models import (
+    Education,
     JobSeeker,
     Recruiter,
     User,
@@ -73,3 +74,10 @@ class JobSeekerAdmin(admin.ModelAdmin[JobSeeker]):
 class RecruiterAdmin(admin.ModelAdmin[JobSeeker]):
     list_display = ('id', 'user')
     search_fields = ('user__email',)
+
+
+@admin.register(Education)
+class EducationAdmin(admin.ModelAdmin[Education]):
+    list_display = ('id', 'jobseeker', 'institution_name', 'level', 'year_of_graduation')
+    list_filter = ('level',)
+    search_fields = ('institution_name', 'faculty', 'specialization')

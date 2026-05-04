@@ -24,4 +24,29 @@ urlpatterns = [
         views.ApplicationDetailView.as_view(),
         name='application-detail',
     ),
+    path(
+        'jobseeker/profile/',
+        views.CandidateProfileView.as_view(),
+        name='candidate-profile',
+    ),
+    path(
+        'jobseeker/profile/edit/',
+        views.EditProfileView.as_view(),
+        name='edit-profile',
+    ),
+    path(
+        'jobseeker/profile/education/create/',
+        views.EducationCreateView.as_view(),
+        name='education-create',
+    ),
+    path(
+        'jobseeker/profile/education/<int:pk>/update/',
+        views.EducationUpdateView.as_view(),
+        name='education-update',
+    ),
+    path(
+        'jobseeker/profile/education/<int:pk>/delete/',
+        views.EducationDeleteView.as_view(),
+        name='education-delete',
+    ),
 ]

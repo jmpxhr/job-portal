@@ -9,9 +9,14 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
-from server.apps.accounts.models import JobSeeker
+from server.apps.accounts.models import Education, JobSeeker
+from server.apps.dashboard.forms import EducationForm, JobSeekerProfileForm
 from server.apps.jobs.models import Job, JobApplication, SavedJob
-from server.common.types import AuthenticatedHttpRequest, HtmxRequest
+from server.common.types import (
+    AuthenticatedHtmxRequest,
+    AuthenticatedHttpRequest,
+    HtmxRequest,
+)
 
 
 class HomePageView(TemplateView):
@@ -215,3 +220,166 @@ class ApplicationDetailView(LoginRequiredMixin, View):
             'application': application,
         }
         return render(request, self.template_name, context)
+
+
+class CandidateProfileView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/profile.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        base_qs = JobApplication.objects.filter(
+            jobseeker=jobseeker,
+            job__is_active=True,
+        )
+        context = {
+            'jobseeker': jobseeker,
+            'total_applications': base_qs.count(),
+            'saved_jobs_count': SavedJob.objects.filter(
+                jobseeker=jobseeker,
+                job__is_active=True,
+            ).count(),
+            'reviewed_count': base_qs.filter(
+                status=JobApplication.StatusEnum.REVIEWED,
+            ).count(),
+            'accepted_count': base_qs.filter(
+                status=JobApplication.StatusEnum.ACCEPTED,
+            ).count(),
+        }
+        context.update(_education_list_context(jobseeker))
+        return render(request, self.template_name, context)
+
+
+class EditProfileView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/edit-profile.html'
+    overview_template = 'dashboard/jobseeker/partials/profile-overview.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = JobSeekerProfileForm(instance=jobseeker)
+        context = {'form': form, 'jobseeker': jobseeker}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = JobSeekerProfileForm(
+            request.POST,
+            request.FILES,
+            instance=jobseeker,
+        )
+        if form.is_valid():
+            form.save()
+            base_qs = JobApplication.objects.filter(
+                jobseeker=jobseeker,
+                job__is_active=True,
+            )
+            context = {
+                'jobseeker': jobseeker,
+                'total_applications': base_qs.count(),
+                'saved_jobs_count': SavedJob.objects.filter(
+                    jobseeker=jobseeker,
+                    job__is_active=True,
+                ).count(),
+                'reviewed_count': base_qs.filter(
+                    status=JobApplication.StatusEnum.REVIEWED,
+                ).count(),
+                'accepted_count': base_qs.filter(
+                    status=JobApplication.StatusEnum.ACCEPTED,
+                ).count(),
+            }
+            response = render(request, self.overview_template, context)
+            response['HX-Trigger'] = 'profileSaved'
+            return response
+
+        context = {'form': form, 'jobseeker': jobseeker}
+        return render(request, self.form_template, context)
+
+
+def _education_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
+    return {
+        'education_entries': Education.objects.filter(
+            jobseeker=jobseeker,
+        ).order_by('-year_of_graduation'),
+    }
+
+
+class EducationCreateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/education-form.html'
+    list_template = 'dashboard/jobseeker/partials/education-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        form = EducationForm()
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = EducationForm(request.POST)
+        if form.is_valid():
+            education = form.save(commit=False)
+            education.jobseeker = jobseeker
+            education.save()
+            context = _education_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'educationSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class EducationUpdateView(LoginRequiredMixin, View):
+    form_template = 'dashboard/jobseeker/partials/education-form.html'
+    list_template = 'dashboard/jobseeker/partials/education-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        education = get_object_or_404(Education, pk=pk, jobseeker=jobseeker)
+        form = EducationForm(instance=education)
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+    def post(self, request: AuthenticatedHtmxRequest, pk: int) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        education = get_object_or_404(Education, pk=pk, jobseeker=jobseeker)
+        form = EducationForm(request.POST, instance=education)
+        if form.is_valid():
+            form.save()
+            context = _education_list_context(jobseeker)
+            response = render(request, self.list_template, context)
+            response['HX-Trigger'] = 'educationSaved'
+            return response
+
+        context = {'form': form}
+        return render(request, self.form_template, context)
+
+
+class EducationDeleteView(LoginRequiredMixin, View):
+    list_template = 'dashboard/jobseeker/partials/education-list.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def delete(
+        self,
+        request: AuthenticatedHtmxRequest,
+        pk: int,
+    ) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        education = get_object_or_404(Education, pk=pk, jobseeker=jobseeker)
+        education.delete()
+        context = _education_list_context(jobseeker)
+        response = render(request, self.list_template, context)
+        response['HX-Trigger'] = 'educationSaved'
+        return response

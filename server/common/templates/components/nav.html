@@ -39,8 +39,8 @@
             <ul class="dropdown-menu dropdown-menu-end">
               {% if user.account_type == 1 %}
                 <li>
-                  {#  TODO: url for candidate-profile  #}
-                  <a class="dropdown-item active" href="">My Profile</a>
+                  <a class="dropdown-item active"
+                     href="{% url 'dashboard:candidate-profile' %}">My Profile</a>
                 </li>
                 <li>
                   {#  TODO: url for resume-builder  #}

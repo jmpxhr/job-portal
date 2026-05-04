@@ -1,0 +1,50 @@
+{% load static %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">{{ form.instance.pk|yesno:"Edit,Add" }} Education</h4>
+  <button class="btn btn-outline-secondary btn-sm"
+          hx-get="{% url 'dashboard:candidate-profile' %}"
+          hx-target="#education-content"
+          hx-swap="innerHTML">Cancel</button>
+</div>
+<form hx-post="{% if form.instance.pk %}{% url 'dashboard:education-update' form.instance.pk %}{% else %}{% url 'dashboard:education-create' %}{% endif %}"
+      hx-target="#education-content"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
+    {{ form.level }}
+    {% for error in form.level.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.institution_name.id_for_label }}">{{ form.institution_name.label }}</label>
+    {{ form.institution_name }}
+    {% for error in form.institution_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label fw-bold" for="{{ form.faculty.id_for_label }}">{{ form.faculty.label }}</label>
+      {{ form.faculty }}
+      {% for error in form.faculty.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+    <div class="col-md-6">
+      <label class="form-label fw-bold" for="{{ form.specialization.id_for_label }}">{{ form.specialization.label }}</label>
+      {{ form.specialization }}
+      {% for error in form.specialization.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.year_of_graduation.id_for_label }}">{{ form.year_of_graduation.label }}</label>
+    {{ form.year_of_graduation }}
+    {% for error in form.year_of_graduation.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="bi bi-check-lg"></i> Save
+    </button>
+    <button type="button"
+            class="btn btn-outline-secondary btn-sm"
+            hx-get="{% url 'dashboard:candidate-profile' %}"
+            hx-target="#education-content"
+            hx-swap="innerHTML">Cancel</button>
+  </div>
+</form>

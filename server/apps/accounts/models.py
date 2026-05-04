@@ -12,6 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from django_enum import EnumField
 from django_stubs_ext.db.models import TypedModelMeta
 
+from server.common.models import TimeStampModelMixin
+
 
 class UserManager(BaseUserManager['User']):
     def create_user(
@@ -123,6 +125,35 @@ class JobSeeker(models.Model):
         on_delete=models.CASCADE,
         related_name='jobseeker',
     )
+    title = models.CharField(
+        _('title'),
+        max_length=150,
+        blank=True,
+        default='',
+    )
+    phone = models.CharField(
+        _('phone'),
+        max_length=30,
+        blank=True,
+        default='',
+    )
+    location = models.CharField(
+        _('location'),
+        max_length=150,
+        blank=True,
+        default='',
+    )
+    about = models.TextField(
+        _('about'),
+        blank=True,
+        default='',
+    )
+    avatar = models.ImageField(
+        _('avatar'),
+        upload_to='jobseeker/avatars/',
+        blank=True,
+        default='',
+    )
 
     @override
     def __str__(self) -> str:
@@ -149,3 +180,60 @@ class Recruiter(models.Model):
         db_table = 'recruiters'
         verbose_name = _('recruiter')
         verbose_name_plural = _('recruiters')
+
+
+class Education(TimeStampModelMixin):
+    class EducationLevelEnum(models.IntegerChoices):
+        AVERAGE = 0, _('Average')
+        SECONDARY_SPECIAL = 1, _('Secondary special')
+        UNFINISHED_HIGHER = 2, _('Unfinished higher education')
+        HIGHER = 3, _('Higher')
+        BACHELOR = 4, _('Bachelor')
+        MASTER = 5, _('Master')
+        CANDIDATE_OF_SCIENCES = 6, _('Candidate of Sciences')
+        DOCTOR_OF_SCIENCE = 7, _('Doctor of Science')
+
+    jobseeker: models.ForeignKey['JobSeeker'] = models.ForeignKey(
+        JobSeeker,
+        on_delete=models.CASCADE,
+        related_name='education',
+        verbose_name=_('job seeker'),
+    )
+    level = EnumField(
+        EducationLevelEnum,
+        default=EducationLevelEnum.AVERAGE,
+    )
+    institution_name = models.CharField(
+        _('institution name'),
+        max_length=200,
+    )
+    faculty = models.CharField(
+        _('faculty'),
+        max_length=200,
+        blank=True,
+        default='',
+    )
+    specialization = models.CharField(
+        _('specialization'),
+        max_length=200,
+        blank=True,
+        default='',
+    )
+    year_of_graduation = models.PositiveIntegerField(
+        _('year of graduation'),
+        blank=True,
+        null=True,
+    )
+
+    @override
+    def __str__(self) -> str:
+        return f'{self.institution_name} ({self.get_level_label()})'
+
+    def get_level_label(self) -> str:
+        return str(self.EducationLevelEnum(self.level).label)
+
+    class Meta(TypedModelMeta):
+        db_table = 'education'
+        ordering = ['-year_of_graduation']
+        verbose_name = _('education')
+        verbose_name_plural = _('education')
