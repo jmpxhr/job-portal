@@ -1,9 +1,10 @@
+import contextlib
 from http import HTTPStatus
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import QuerySet
+from django.db.models import Count, Q, QuerySet, Sum
 from django.http import (
     Http404,
     HttpResponse,
@@ -903,3 +904,138 @@ class EditVacancyView(LoginRequiredMixin, View):
             return render(request, self.template_name, context)
         context = {'form': form, 'company': company, 'job': job}
         return render(request, self.template_name, context)
+
+
+class ManageVacanciesView(LoginRequiredMixin, View):
+    template_name = const.MANAGE_VACANCIES
+    paginate_by = 5
+
+    STATUS_CHOICES: list[tuple[str, str]] = [
+        ('', 'All Statuses'),
+        ('active', 'Active'),
+        ('draft', 'Draft'),
+    ]
+
+    EMPLOYMENT_TYPE_CHOICES: list[tuple[str, str]] = [
+        ('', 'All Types'),
+        ('0', 'Full-time'),
+        ('1', 'Part-time'),
+        ('2', 'Internship'),
+    ]
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get_queryset(self, company: Company) -> QuerySet[Job]:
+        return (
+            Job.objects
+            .filter(company=company)
+            .annotate(applications_count=Count('applications'))
+            .order_by('-posted_at')
+        )
+
+    def apply_filters(
+        self,
+        qs: QuerySet[Job],
+        status: str,
+        employment_type: str,
+        q: str,
+    ) -> QuerySet[Job]:
+        if status == 'active':
+            qs = qs.filter(is_active=True)
+        elif status == 'draft':
+            qs = qs.filter(is_active=False)
+
+        if employment_type:
+            with contextlib.suppress(ValueError):
+                qs = qs.filter(employment_type=int(employment_type))
+
+        if q:
+            qs = qs.filter(
+                Q(title__icontains=q) | Q(description__icontains=q),
+            )
+
+        return qs
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        status_filter = request.GET.get('status', '')
+        employment_type_filter = request.GET.get('employment_type', '')
+        q_filter = request.GET.get('q', '').strip()
+
+        base_qs = (
+            Job.objects
+            .filter(company=company)
+            .annotate(applications_count=Count('applications'))
+        )
+
+        active_count = base_qs.filter(is_active=True).count()
+        draft_count = base_qs.filter(is_active=False).count()
+        total_applicants_result = base_qs.aggregate(
+            total=Sum('applications_count'),
+        )
+        total_applicants = total_applicants_result['total'] or 0
+
+        filtered_qs = self.apply_filters(
+            base_qs,
+            status_filter,
+            employment_type_filter,
+            q_filter,
+        )
+
+        paginator = Paginator(filtered_qs, self.paginate_by)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        context = {
+            'page_obj': page_obj,
+            'company': company,
+            'stats': {
+                'active_count': active_count,
+                'draft_count': draft_count,
+                'total_applicants': total_applicants,
+            },
+            'current_status': status_filter,
+            'current_employment_type': employment_type_filter,
+            'current_q': q_filter,
+            'status_choices': self.STATUS_CHOICES,
+            'employment_type_choices': self.EMPLOYMENT_TYPE_CHOICES,
+        }
+
+        if request.htmx:
+            return render(
+                request,
+                self.template_name + '#vacancy_list',
+                context,
+            )
+
+        return render(request, self.template_name, context)
+
+
+class ToggleVacancyStatusView(LoginRequiredMixin, View):
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def post(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponseRedirect:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        job = get_object_or_404(Job, pk=pk, company=company)
+        job.is_active = not job.is_active
+        job.save(update_fields=['is_active'])
+
+        return redirect('dashboard:manage-vacancies')

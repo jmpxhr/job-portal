@@ -1,7 +1,7 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Q
+from django.db.models import Count, Q, QuerySet
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import View
@@ -11,7 +11,7 @@ from server.apps.accounts.models import JobSeeker, User
 from server.apps.jobs import const, filters
 from server.apps.jobs.forms import JobApplicationForm
 from server.apps.jobs.models import Job, JobApplication, SavedJob
-from server.common.types import AuthenticatedHttpRequest
+from server.common.types import AuthenticatedHttpRequest, HtmxRequest
 
 
 class JobListView(ListView[Job]):
@@ -19,9 +19,10 @@ class JobListView(ListView[Job]):
     template_name = const.JOBS_LIST
     context_object_name = 'jobs'
     paginate_by = 10
+    request: HtmxRequest  # pyrefly: ignore
 
     @override
-    def get_queryset(self) -> Any:
+    def get_queryset(self) -> QuerySet[Job]:
         queryset = (
             Job.objects
             .filter(is_active=True)
@@ -65,7 +66,7 @@ class JobListView(ListView[Job]):
         context: dict[str, Any],
         **response_kwargs: Any,
     ) -> HttpResponse:
-        if getattr(self.request, 'htmx', False):
+        if self.request.htmx:
             return render(
                 self.request,
                 const.JOBS_LIST_PARTIAL,

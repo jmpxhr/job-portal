@@ -134,4 +134,14 @@ urlpatterns = [
         views.EditVacancyView.as_view(),
         name='edit-vacancy',
     ),
+    path(
+        'company/manage-vacancies/',
+        views.ManageVacanciesView.as_view(),
+        name='manage-vacancies',
+    ),
+    path(
+        'company/vacancies/<int:pk>/toggle/',
+        views.ToggleVacancyStatusView.as_view(),
+        name='toggle-vacancy',
+    ),
 ]
