@@ -15,6 +15,8 @@
     <!-- Bootstrap icons -->
     <link rel="stylesheet"
           href="{% static 'vendor/css/bootstrap-icons.min.css' %}" />
+    <!-- Chat css -->
+    <link rel="stylesheet" href="{% static 'chat/css/chat.css' %}" />
     {% htmx_script %}
     {% block head %}
     {% endblock head %}
@@ -24,6 +26,280 @@
     {% endblock body %}
     {% block javascript %}
     {% endblock javascript %}
+    <!-- Chat Modal -->
+    {% if user.is_authenticated %}
+      <div class="modal fade"
+           id="chatModal"
+           tabindex="-1"
+           aria-labelledby="chatModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header py-2">
+              <h6 class="modal-title fw-bold" id="chatModalLabel">
+                <i class="bi bi-chat-dots"></i> Messages
+              </h6>
+              <button type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0" id="chat-modal-body">
+              <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
     <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
+    {% if user.is_authenticated %}
+      <script>
+        (function() {
+          var chatSocket = null;
+          var currentRoomPk = null;
+          var currentView = 'list'; // 'list' or 'room'
+
+          function updateBadge(count) {
+            var badge = document.getElementById('unread-messages-badge');
+            if (badge) {
+              badge.textContent = count;
+              if (count > 0) {
+                badge.classList.remove('d-none');
+              } else {
+                badge.classList.add('d-none');
+              }
+            }
+          }
+
+          function fetchUnreadCount() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/chat/unread-count/', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                updateBadge(data.unread_count);
+              }
+            };
+            xhr.send();
+          }
+
+          // Poll unread count every 15 seconds as fallback
+          setInterval(fetchUnreadCount, 15000);
+
+          // Fetch on page load to ensure badge is current
+          fetchUnreadCount();
+
+          // Notification WebSocket
+          var wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+          var notifUrl = wsProtocol + '://' + window.location.host + '/ws/notifications/';
+          var notifSocket = null;
+          var notifReconnectDelay = 1000;
+
+          function connectNotifications() {
+            notifSocket = new WebSocket(notifUrl);
+
+            notifSocket.onmessage = function(e) {
+              var data = JSON.parse(e.data);
+              if (data.type === 'notification_update') {
+                updateBadge(data.unread_count);
+                if (currentView === 'list') {
+                  loadChatList();
+                }
+              }
+            };
+
+            notifSocket.onopen = function() { notifReconnectDelay = 1000; };
+
+            notifSocket.onclose = function() {
+              setTimeout(function() {
+                notifReconnectDelay = Math.min(notifReconnectDelay * 2, 30000);
+                connectNotifications();
+              }, notifReconnectDelay);
+            };
+
+            notifSocket.onerror = function() { notifSocket.close(); };
+          }
+
+          connectNotifications();
+
+          // --- Chat modal functions ---
+
+          var chatModal = null;
+          function getChatModal() {
+            if (!chatModal) {
+              chatModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('chatModal'));
+            }
+            return chatModal;
+          }
+
+          // Show the conversation list in the modal
+          window.openChatList = function() {
+            currentView = 'list';
+            disconnectChatWebSocket();
+            var body = document.getElementById('chat-modal-body');
+            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            document.getElementById('chatModalLabel').innerHTML = '<i class="bi bi-chat-dots"></i> Messages';
+            getChatModal().show();
+            loadChatList();
+          };
+
+          function loadChatList() {
+            var body = document.getElementById('chat-modal-body');
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/chat/modal/', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                body.innerHTML = xhr.responseText;
+              }
+            };
+            xhr.send();
+          }
+
+          // Show a specific chat room in the modal
+          window.openChat = function(roomPk) {
+            currentView = 'room';
+            currentRoomPk = roomPk;
+            var body = document.getElementById('chat-modal-body');
+            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            getChatModal().show();
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/chat/room/' + roomPk + '/', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                body.innerHTML = xhr.responseText;
+                document.getElementById('chatModalLabel').textContent = '';
+                connectChatWebSocket(roomPk);
+                var msgArea = document.getElementById('chat-messages');
+                if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
+                setupChatForm(roomPk);
+              }
+            };
+            xhr.send();
+          };
+
+          window.startChat = function(applicationPk) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/chat/start/' + applicationPk + '/', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                openChat(data.room_pk);
+              }
+            };
+            xhr.send();
+          };
+
+          // --- Chat WebSocket ---
+
+          function connectChatWebSocket(roomPk) {
+            disconnectChatWebSocket();
+            var chatWsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            var chatWsUrl = chatWsProtocol + '://' + window.location.host + '/ws/chat/room/' + roomPk + '/';
+            chatSocket = new WebSocket(chatWsUrl);
+            var chatReconnectDelay = 1000;
+            var userId = {{ user.pk }};
+
+            chatSocket.onopen = function() { chatReconnectDelay = 1000; };
+
+            chatSocket.onmessage = function(e) {
+              var data = JSON.parse(e.data);
+              appendChatMessage(data.message_id, data.sender_id, data.sender_name, data.content, data.timestamp);
+              var msgArea = document.getElementById('chat-messages');
+              if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
+            };
+
+            chatSocket.onclose = function() {
+              setTimeout(function() {
+                chatReconnectDelay = Math.min(chatReconnectDelay * 2, 30000);
+                if (currentView === 'room' && currentRoomPk === roomPk) {
+                  connectChatWebSocket(roomPk);
+                }
+              }, chatReconnectDelay);
+            };
+
+            chatSocket.onerror = function() { chatSocket.close(); };
+          }
+
+          function disconnectChatWebSocket() {
+            if (chatSocket) {
+              chatSocket.close();
+              chatSocket = null;
+            }
+            currentRoomPk = null;
+          }
+
+          function appendChatMessage(messageId, senderId, senderName, content, timestamp) {
+            var userId = {{ user.pk }};
+            var isSent = senderId === userId;
+            var msgArea = document.getElementById('chat-messages');
+            if (!msgArea) return;
+
+            var div = document.createElement('div');
+            div.className = isSent ? 'message message-sent' : 'message message-received';
+            div.setAttribute('data-message-id', messageId);
+
+            var inner = document.createElement('div');
+            inner.className = 'message-content';
+
+            if (!isSent) {
+              var nameEl = document.createElement('small');
+              nameEl.className = 'text-muted';
+              nameEl.textContent = senderName;
+              inner.appendChild(nameEl);
+            }
+
+            var p = document.createElement('p');
+            p.className = 'mb-1';
+            p.textContent = content;
+            inner.appendChild(p);
+
+            var timeEl = document.createElement('small');
+            timeEl.className = 'text-muted';
+            var date = new Date(timestamp);
+            timeEl.textContent = date.toLocaleString('en-US', {
+              month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+            });
+            inner.appendChild(timeEl);
+
+            div.appendChild(inner);
+            msgArea.appendChild(div);
+          }
+
+          function setupChatForm(roomPk) {
+            var form = document.getElementById('chat-form');
+            var input = document.getElementById('chat-message-input');
+            if (!form || !input) return;
+
+            form.addEventListener('submit', function(e) {
+              var content = input.value.trim();
+              if (!content) {
+                e.preventDefault();
+                return;
+              }
+              if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                e.preventDefault();
+                chatSocket.send(JSON.stringify({ message: content }));
+                input.value = '';
+              }
+            });
+          }
+
+          // Disconnect chat WS when modal closes
+          document.getElementById('chatModal').addEventListener('hidden.bs.modal', function() {
+            disconnectChatWebSocket();
+            currentView = 'list';
+          });
+        })();
+      </script>
+    {% endif %}
   </body>
 </html>

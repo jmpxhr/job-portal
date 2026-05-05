@@ -1,0 +1,167 @@
+import json
+from logging import getLogger
+
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db.models import F, Sum
+
+from server.apps.chat.models import (
+    ChatMessage,
+    ChatNotification,
+    ChatRoom,
+)
+from server.apps.chat.utils import send_notification_update_sync
+
+logger = getLogger('django')
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self) -> None:
+        self.room_pk = self.scope['url_route']['kwargs']['room_pk']
+        self.group_name = f'chat_{self.room_pk}'
+        self.user = self.scope.get('user')
+
+        if self.user is None or self.user.is_anonymous:
+            await self.close()
+            return
+
+        has_access = await self._user_has_access()
+        if not has_access:
+            await self.close()
+            return
+
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name,
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code: int) -> None:
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name,
+            )
+
+    async def receive(self, text_data: str | None = None) -> None:
+        if text_data is None:
+            return
+
+        data = json.loads(text_data)
+        message_content = data.get('message', '').strip()
+        if not message_content:
+            return
+
+        message = await self._save_message(message_content)
+        await self._mark_as_read()
+
+        await self.channel_layer.group_send(
+            self.group_name,
+            {
+                'type': 'chat_message',
+                'message_id': message.pk,
+                'sender_id': self.user.pk,
+                'sender_name': await self._get_sender_name(),
+                'content': message_content,
+                'timestamp': message.created_at.isoformat(),
+            },
+        )
+
+    async def chat_message(self, event: dict) -> None:  # noqa: PLR6301
+        await self.send(text_data=json.dumps({
+            'message_id': event['message_id'],
+            'sender_id': event['sender_id'],
+            'sender_name': event['sender_name'],
+            'content': event['content'],
+            'timestamp': event['timestamp'],
+        }))
+
+    @database_sync_to_async
+    def _user_has_access(self) -> bool:
+        try:
+            room = ChatRoom.objects.select_related(
+                'application__jobseeker__user',
+                'application__job__company__recruiter__user',
+            ).get(pk=self.room_pk)
+        except ChatRoom.DoesNotExist:
+            return False
+
+        user = self.user
+        if user == room.application.jobseeker.user:
+            return True
+        try:
+            return user == room.application.job.company.recruiter.user
+        except Exception:
+            return False
+
+    @database_sync_to_async
+    def _save_message(self, content: str) -> ChatMessage:
+        message = ChatMessage.objects.create(
+            room_id=self.room_pk,
+            sender=self.user,
+            content=content,
+        )
+
+        room = ChatRoom.objects.select_related(
+            'application__jobseeker__user',
+            'application__job__company__recruiter__user',
+        ).get(pk=self.room_pk)
+
+        ChatNotification.objects.filter(
+            user=self.user,
+            room=room,
+        ).update(unread_count=0)
+
+        other_user = (
+            room.application.job.company.recruiter.user
+            if self.user == room.application.jobseeker.user
+            else room.application.jobseeker.user
+        )
+        ChatNotification.objects.filter(
+            user=other_user,
+            room=room,
+        ).update(unread_count=F('unread_count') + 1)
+
+        send_notification_update_sync(self.user.pk)
+        send_notification_update_sync(other_user.pk)
+
+        return message
+
+    @database_sync_to_async
+    def _mark_as_read(self) -> None:
+        ChatMessage.objects.filter(
+            room_id=self.room_pk,
+            is_read=False,
+        ).exclude(sender=self.user).update(is_read=True)
+
+    @database_sync_to_async
+    def _get_sender_name(self) -> str:
+        return self.user.get_full_name() or self.user.email
+
+
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self) -> None:
+        self.user = self.scope.get('user')
+        if self.user is None or self.user.is_anonymous:
+            await self.close()
+            return
+
+        self.group_name = f'notifications_{self.user.pk}'
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name,
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code: int) -> None:
+        if hasattr(self, 'group_name'):
+            await self.channel_layer.group_discard(
+                self.group_name,
+                self.channel_name,
+            )
+
+    async def notification_update(self, event: dict) -> None:  # noqa: PLR6301
+        await self.send(text_data=json.dumps({
+            'type': 'notification_update',
+            'unread_count': event['unread_count'],
+        }))

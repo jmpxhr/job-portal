@@ -112,12 +112,19 @@
                 </div>
               </div>
               <div class="col-md-2 text-end">
-                <button class="btn btn-outline-primary btn-sm"
-                        hx-get="{% url 'dashboard:application-detail' application.pk %}"
-                        hx-target="#modal-body"
-                        hx-swap="innerHTML"
-                        data-bs-toggle="modal"
-                        data-bs-target="#applicationDetailModal">View Details</button>
+                <div class="d-flex gap-1 justify-content-end">
+                  <a href="javascript:void(0)"
+                     onclick="startChat({{ application.pk }})"
+                     class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-chat-dots"></i> Message
+                  </a>
+                  <button class="btn btn-outline-primary btn-sm"
+                          hx-get="{% url 'dashboard:application-detail' application.pk %}"
+                          hx-target="#modal-body"
+                          hx-swap="innerHTML"
+                          data-bs-toggle="modal"
+                          data-bs-target="#applicationDetailModal">View Details</button>
+                </div>
               </div>
             </div>
           </div>

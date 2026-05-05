@@ -10,7 +10,7 @@
 - Python 3.13 (uv for package management)
 - Project structure: `wemake-django-template`
 - Settings: `django-split-settings` (controlled by `DJANGO_ENV`)
-- Apps: `accounts`, `company`, `jobs`, `dashboard`
+- Apps: `accounts`, `company`, `jobs`, `dashboard`, `chat`
 
 ## Apps
 
@@ -32,6 +32,15 @@
 
 ### `dashboard`
 - Entry point for frontend routes
+
+### `chat`
+- Real-time chat via django-channels (WebSocket)
+- `ChatRoom`: OneToOne to `JobApplication` (one chat per application)
+- `ChatMessage`: room, sender (User), content, is_read
+- `ChatNotification`: user + room with unread_count
+- Consumers: `ChatConsumer` at `ws/chat/room/<pk>/`
+- Auto-creates ChatRoom on JobApplication creation via signal
+- Context processor: `unread_messages_count` in templates
 
 ## HTMX
 

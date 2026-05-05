@@ -47,14 +47,17 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
     'django_tasks_db',
     'django_htmx',
     'django_filters',
+    'channels',
 )
 
 INSTALLED_APPS: tuple[str, ...] = (
+    'daphne',
     # Apps:
     'server.apps.accounts',
     'server.apps.company',
     'server.apps.jobs',
     'server.apps.dashboard',
+    'server.apps.chat',
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
 )
@@ -96,6 +99,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
+                # Chat unread messages:
+                'server.apps.chat.context_processors.unread_messages',
             ],
         },
     },

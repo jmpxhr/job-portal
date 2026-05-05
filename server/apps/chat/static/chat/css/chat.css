@@ -1,0 +1,133 @@
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chat-list-item {
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.chat-list-item:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  text-decoration: none !important;
+}
+
+.chat-list-item.has-unread {
+  background-color: #e8f0fe;
+  border-left: 3px solid #0d6efd;
+}
+
+.chat-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  background-color: #667eea;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+#chatModal .chat-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  font-size: 0.9rem;
+}
+
+#chatModal .chat-list-item {
+  padding: 0.625rem;
+}
+
+.chat-room {
+  border: none;
+  box-shadow: none;
+}
+
+.chat-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.chat-messages {
+  height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: #f0f2f5;
+}
+
+.message {
+  margin-bottom: 0.75rem;
+  display: flex;
+}
+
+.message-sent {
+  justify-content: flex-end;
+}
+
+.message-received {
+  justify-content: flex-start;
+}
+
+.message-content {
+  max-width: 70%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  word-wrap: break-word;
+}
+
+.message-sent .message-content {
+  background-color: #667eea;
+  color: #fff;
+}
+
+.message-sent .message-content small {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.message-received .message-content {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+}
+
+.chat-input {
+  background-color: #fff;
+  border-top: 1px solid #e9ecef;
+  border-radius: 0;
+}
+
+.chat-input input {
+  border-radius: 1.5rem;
+}
+
+.chat-input .btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#chatModal .modal-body {
+  padding: 0;
+}
+
+#chatModal .modal-content {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+#chatModal .card {
+  border: none;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+#chatModal .modal-body .chat-room {
+  margin-bottom: 0;
+}

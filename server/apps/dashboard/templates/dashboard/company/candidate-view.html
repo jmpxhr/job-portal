@@ -161,18 +161,24 @@
         <div class="action-buttons mb-4">
           <h5 class="fw-bold mb-3">Actions</h5>
           <div class="d-grid gap-2">
-            <button type="button"
-                    class="btn btn-outline-secondary"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Coming Soon"
-                    disabled>
+            <a href="javascript:void(0)"
+               onclick="startChat({{ application.pk }})"
+               class="btn btn-outline-secondary">
               <i class="bi bi-envelope"></i> Send Message
-            </button>
-            <a href="{{ application.resume.url }}"
-               class="btn btn-outline-secondary"
-               target="_blank">
-              <i class="bi bi-download"></i> Download Resume
             </a>
+            {% if application.resume %}
+              <a href="{{ application.resume.url }}"
+                 class="btn btn-outline-secondary"
+                 target="_blank">
+                <i class="bi bi-download"></i> Download Resume
+              </a>
+            {% else %}
+              <a href=""
+                 class="btn btn-outline-secondary disabled"
+                 target="_blank">
+                <i class="bi bi-download"></i> Download Resume
+              </a>
+            {% endif %}
             <a href="{% url 'dashboard:candidate-resume-pdf' jobseeker.pk %}"
                class="btn btn-outline-secondary"
                target="_blank">

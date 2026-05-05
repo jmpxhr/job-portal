@@ -23,6 +23,7 @@ from django.contrib.admindocs import urls as admindocs_urls
 from django.urls import include, path
 
 from server.apps.accounts import urls as accounts_urls
+from server.apps.chat import urls as chat_urls
 from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
 from server.apps.dashboard.views import HomePageView
@@ -47,6 +48,11 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     path(
         'jobs/',
         include((jobs_urls, 'jobs'), namespace='jobs'),
+    ),
+    # Chat
+    path(
+        'chat/',
+        include((chat_urls, 'chat'), namespace='chat'),
     ),
     # Dashboard
     path(
