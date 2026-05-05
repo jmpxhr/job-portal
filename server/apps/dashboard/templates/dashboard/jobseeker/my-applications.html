@@ -33,14 +33,14 @@
         </div>
         <div class="col-md-3">
           <div class="stat-summary">
-            <h3>{{ reviewed_count }}</h3>
-            <p class="text-muted mb-0">In Review</p>
+            <h3>{{ accepted_count }}</h3>
+            <p class="text-muted mb-0">Accepted</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="stat-summary">
-            <h3>{{ accepted_count }}</h3>
-            <p class="text-muted mb-0">Accepted</p>
+            <h3>{{ rejected_count }}</h3>
+            <p class="text-muted mb-0">Rejected</p>
           </div>
         </div>
       </div>
@@ -102,9 +102,6 @@
                   {% if application.status == application.StatusEnum.PENDING %}
                     <span class="timeline-dot bg-warning"></span>
                     <small>Waiting for review</small>
-                  {% elif application.status == application.StatusEnum.REVIEWED %}
-                    <span class="timeline-dot bg-warning"></span>
-                    <small>Application under review</small>
                   {% elif application.status == application.StatusEnum.ACCEPTED %}
                     <span class="timeline-dot bg-success"></span>
                     <small>Offer received</small>

@@ -3,7 +3,6 @@ from django.urls import path
 from server.apps.dashboard import views
 
 urlpatterns = [
-    path('', views.HomePageView.as_view(), name='home'),
     path(
         'jobseeker/saved-jobs/',
         views.SavedJobsView.as_view(),
@@ -143,5 +142,25 @@ urlpatterns = [
         'company/vacancies/<int:pk>/toggle/',
         views.ToggleVacancyStatusView.as_view(),
         name='toggle-vacancy',
+    ),
+    path(
+        'company/applicants-list/',
+        views.ApplicantsListView.as_view(),
+        name='applicants-list',
+    ),
+    path(
+        'company/applications/<int:pk>/status/',
+        views.UpdateApplicationStatusView.as_view(),
+        name='update-application-status',
+    ),
+    path(
+        'company/applications/<int:pk>/feedback/',
+        views.UpdateApplicationFeedbackView.as_view(),
+        name='update-application-feedback',
+    ),
+    path(
+        'company/candidates/<int:pk>/',
+        views.CandidateView.as_view(),
+        name='candidate-view',
     ),
 ]

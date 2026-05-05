@@ -25,6 +25,7 @@ from django.urls import include, path
 from server.apps.accounts import urls as accounts_urls
 from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
+from server.apps.dashboard.views import HomePageView
 from server.apps.jobs import urls as jobs_urls
 
 if TYPE_CHECKING:
@@ -49,9 +50,11 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     ),
     # Dashboard
     path(
-        '',
+        'dashboard',
         include((dashboard_url, 'dashboard'), namespace='dashboard'),
     ),
+    # Index
+    path('', HomePageView.as_view(), name='home'),
     # django-admin:
     path('admin/doc/', include(admindocs_urls)),
     path('admin/', admin.site.urls),

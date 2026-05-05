@@ -22,7 +22,7 @@
 
 ### `jobs`
 - `Job`: title, description, skills (M2M), experience_level, work_format, schedule, employment_type, salary_min/max, location, is_student_friendly
-- `JobApplication`: links JobSeeker to Job, status enum (PENDING/REVIEWED/ACCEPTED/REJECTED)
+- `JobApplication`: links JobSeeker to Job, status enum (PENDING/ACCEPTED/REJECTED)
 - `SavedJob`: bookmarked jobs per JobSeeker
 - `Skill`: name + slug (auto-generated from name), used by jobs for filtering/searching
 

@@ -238,7 +238,7 @@ class LoginView(View):
     def _redirect_by_user_type(self, user: User) -> HttpResponse:
         """Handle post-login redirection based on user type."""
         redirect_map = {
-            User.AccountTypeEnum.JOBSEEKER: reverse('dashboard:home'),
+            User.AccountTypeEnum.JOBSEEKER: reverse('home'),
             User.AccountTypeEnum.COMPANY: '/employer/dashboard/',
         }
         return redirect(redirect_map.get(user.account_type, '/'))
@@ -380,4 +380,4 @@ class PasswordRecoveryResetView(View):
 class LogoutView(View):
     def get(self, request: HttpRequest) -> HttpResponseRedirect:
         logout(request)
-        return redirect(reverse('dashboard:home'))
+        return redirect(reverse('home'))

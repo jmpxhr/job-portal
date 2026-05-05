@@ -150,9 +150,8 @@ class Job(TimeStampModelMixin):
 class JobApplication(TimeStampModelMixin):
     class StatusEnum(models.IntegerChoices):
         PENDING = 0, _('Pending')
-        REVIEWED = 1, _('Reviewed')
-        ACCEPTED = 2, _('Accepted')
-        REJECTED = 3, _('Rejected')
+        ACCEPTED = 1, _('Accepted')
+        REJECTED = 2, _('Rejected')
 
     job: models.ForeignKey['Job'] = models.ForeignKey(
         Job,
@@ -192,9 +191,8 @@ class JobApplication(TimeStampModelMixin):
     def status_label(self) -> str:
         labels = {
             self.StatusEnum.PENDING: 'Pending',
-            self.StatusEnum.REVIEWED: 'In Review',
             self.StatusEnum.ACCEPTED: 'Accepted',
-            self.StatusEnum.REJECTED: 'Not Selected',
+            self.StatusEnum.REJECTED: 'Rejected',
         }
         return labels.get(self.status, 'Unknown')
 
@@ -202,7 +200,6 @@ class JobApplication(TimeStampModelMixin):
     def status_css_class(self) -> str:
         classes = {
             self.StatusEnum.PENDING: 'status-pending',
-            self.StatusEnum.REVIEWED: 'status-review',
             self.StatusEnum.ACCEPTED: 'status-accepted',
             self.StatusEnum.REJECTED: 'status-rejected',
         }

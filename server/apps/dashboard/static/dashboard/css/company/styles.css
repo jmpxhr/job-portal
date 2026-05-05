@@ -14,13 +14,6 @@
   border-bottom: 2px solid #f0f0f0;
 }
 
-.form-control,
-.form-select {
-  padding: 12px 15px;
-  border-radius: 12px;
-  border: 2px solid #e0e0e0;
-  transition: all 0.3s;
-}
 
 .form-control:focus,
 .form-select:focus {
@@ -323,14 +316,6 @@
   color: #388e3c;
 }
 
-.form-control,
-.form-select {
-  padding: 12px 15px;
-  border-radius: 12px;
-  border: 2px solid #e0e0e0;
-  transition: all 0.3s;
-}
-
 .form-control:focus,
 .form-select:focus {
   border-color: #667eea;
@@ -569,24 +554,6 @@
   font-weight: bold;
 }
 
-.match-score {
-  position: absolute;
-  top: 25px;
-  right: 25px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #e8f5e8;
-  color: #388e3c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.3rem;
-  border: 3px solid white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 .skill-badge {
   background: #f0f0f0;
   padding: 6px 15px;
@@ -770,6 +737,9 @@
   justify-content: center;
   font-weight: bold;
   font-size: 1.1rem;
+
+  border: 3px solid white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .job-filter-tabs {
@@ -800,4 +770,26 @@
 
 .status-option:not(.active) {
   background: #f0f0f0;
+}
+
+.status-pending-border {
+  border-left: 4px solid #ffc107;
+}
+
+.status-accepted-border {
+  border-left: 4px solid #28a745;
+}
+
+.status-rejected-border {
+  border-left: 4px solid #dc3545;
+}
+
+.status-accepted {
+  background: #e8f5e8;
+  color: #388e3c;
+}
+
+.status-rejected {
+  background: #ffebee;
+  color: #d32f2f;
 }

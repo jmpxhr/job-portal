@@ -1,5 +1,6 @@
 import contextlib
 from http import HTTPStatus
+from logging import getLogger
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,6 +44,8 @@ from server.common.types import (
     AuthenticatedHttpRequest,
     HtmxRequest,
 )
+
+logger = getLogger('django')
 
 
 class HomePageView(TemplateView):
@@ -144,14 +147,12 @@ class MyApplicationsView(LoginRequiredMixin, View):
     STATUS_CHOICES: list[tuple[str, str]] = [
         ('', 'All Applications'),
         ('pending', 'Pending'),
-        ('reviewed', 'In Review'),
         ('accepted', 'Accepted'),
         ('rejected', 'Rejected'),
     ]
 
     STATUS_FILTER_MAP: dict[str, int] = {
         'pending': JobApplication.StatusEnum.PENDING,
-        'reviewed': JobApplication.StatusEnum.REVIEWED,
         'accepted': JobApplication.StatusEnum.ACCEPTED,
         'rejected': JobApplication.StatusEnum.REJECTED,
     }
@@ -192,9 +193,6 @@ class MyApplicationsView(LoginRequiredMixin, View):
         pending_count = base_qs.filter(
             status=JobApplication.StatusEnum.PENDING,
         ).count()
-        reviewed_count = base_qs.filter(
-            status=JobApplication.StatusEnum.REVIEWED,
-        ).count()
         accepted_count = base_qs.filter(
             status=JobApplication.StatusEnum.ACCEPTED,
         ).count()
@@ -207,7 +205,6 @@ class MyApplicationsView(LoginRequiredMixin, View):
             'applications': page_obj,
             'total_applications': total_applications,
             'pending_count': pending_count,
-            'reviewed_count': reviewed_count,
             'accepted_count': accepted_count,
             'rejected_count': rejected_count,
             'current_status': status_filter,
@@ -267,9 +264,6 @@ class CandidateProfileView(LoginRequiredMixin, View):
                 jobseeker=jobseeker,
                 job__is_active=True,
             ).count(),
-            'reviewed_count': base_qs.filter(
-                status=JobApplication.StatusEnum.REVIEWED,
-            ).count(),
             'accepted_count': base_qs.filter(
                 status=JobApplication.StatusEnum.ACCEPTED,
             ).count(),
@@ -317,9 +311,6 @@ class EditProfileView(LoginRequiredMixin, View):
                 'saved_jobs_count': SavedJob.objects.filter(
                     jobseeker=jobseeker,
                     job__is_active=True,
-                ).count(),
-                'reviewed_count': base_qs.filter(
-                    status=JobApplication.StatusEnum.REVIEWED,
                 ).count(),
                 'accepted_count': base_qs.filter(
                     status=JobApplication.StatusEnum.ACCEPTED,
@@ -969,10 +960,8 @@ class ManageVacanciesView(LoginRequiredMixin, View):
         employment_type_filter = request.GET.get('employment_type', '')
         q_filter = request.GET.get('q', '').strip()
 
-        base_qs = (
-            Job.objects
-            .filter(company=company)
-            .annotate(applications_count=Count('applications'))
+        base_qs = Job.objects.filter(company=company).annotate(
+            applications_count=Count('applications'),
         )
 
         active_count = base_qs.filter(is_active=True).count()
@@ -1039,3 +1028,253 @@ class ToggleVacancyStatusView(LoginRequiredMixin, View):
         job.save(update_fields=['is_active'])
 
         return redirect('dashboard:manage-vacancies')
+
+
+def _compute_match_score(jobseeker: JobSeeker, job: Job) -> int:
+    job_skills = set(job.skills.values_list('id', flat=True))
+    if not job_skills:
+        return 0
+    candidate_skills = set(jobseeker.skills.values_list('id', flat=True))
+    matching = job_skills & candidate_skills
+    return round((len(matching) / len(job_skills)) * 100)
+
+
+class ApplicantsListView(LoginRequiredMixin, View):
+    template_name = const.APPLICANTS_LIST
+    paginate_by = 10
+
+    STATUS_CHOICES: list[tuple[str, str]] = [
+        ('', 'All'),
+        ('0', 'New'),
+        ('2', 'Accepted'),
+        ('3', 'Rejected'),
+    ]
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get_queryset(self, company: Company) -> QuerySet[JobApplication]:
+        return (
+            JobApplication.objects
+            .filter(job__company=company)
+            .select_related('job', 'jobseeker', 'jobseeker__user')
+            .prefetch_related('jobseeker__skills', 'job__skills')
+            .order_by('-applied_at')
+        )
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:  # noqa: C901
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        job_filter = request.GET.get('job_id', '').strip()
+        status_filter = request.GET.get('status', '').strip()
+
+        base_qs = (
+            JobApplication.objects
+            .filter(job__company=company)
+            .select_related('job', 'jobseeker', 'jobseeker__user')
+            .prefetch_related('jobseeker__skills', 'job__skills')
+        )
+
+        filtered_qs = base_qs
+        if job_filter:
+            with contextlib.suppress(ValueError):
+                filtered_qs = filtered_qs.filter(job_id=int(job_filter))
+
+        if status_filter:
+            with contextlib.suppress(ValueError):
+                filtered_qs = filtered_qs.filter(status=int(status_filter))
+
+        filtered_qs = filtered_qs.order_by('-applied_at')
+
+        total_count = filtered_qs.count()
+        new_count = filtered_qs.filter(
+            status=JobApplication.StatusEnum.PENDING,
+        ).count()
+        accepted_count = filtered_qs.filter(
+            status=JobApplication.StatusEnum.ACCEPTED,
+        ).count()
+        rejected_count = filtered_qs.filter(
+            status=JobApplication.StatusEnum.REJECTED,
+        ).count()
+
+        jobs_list = (
+            Company.objects  # pyrefly: ignore
+            .prefetch_related('jobs')
+            .get(pk=company.pk)
+            .jobs.annotate(applications_count=Count('applications'))
+            .order_by('-posted_at')
+        )
+
+        paginator = Paginator(filtered_qs, self.paginate_by)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        match_score_cache: dict[int, int] = {}
+        for app in page_obj:
+            if app.job_id not in match_score_cache:
+                match_score_cache[app.job_id] = _compute_match_score(
+                    app.jobseeker,
+                    app.job,
+                )
+            app.match_score = match_score_cache[app.job_id]  # type: ignore[attr-defined]
+
+        context = {
+            'page_obj': page_obj,
+            'company': company,
+            'stats': {
+                'total': total_count,
+                'new': new_count,
+                'accepted': accepted_count,
+                'rejected': rejected_count,
+            },
+            'jobs_list': jobs_list,
+            'current_job': job_filter,
+            'current_status': status_filter,
+            'status_choices': self.STATUS_CHOICES,
+        }
+
+        if request.htmx:
+            return render(
+                request,
+                self.template_name + '#applicant_list',
+                context,
+            )
+
+        return render(request, self.template_name, context)
+
+
+class UpdateApplicationStatusView(LoginRequiredMixin, View):
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def post(
+        self,
+        request: AuthenticatedHtmxRequest,
+        pk: int,
+    ) -> HttpResponse | HttpResponseRedirect:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        application = get_object_or_404(
+            JobApplication,
+            pk=pk,
+            job__company=company,
+        )
+
+        new_status = request.POST.get('status')
+        if new_status is not None:
+            try:
+                status_value = int(new_status)
+                if status_value in dict(JobApplication.StatusEnum.choices):
+                    application.status = status_value
+                    application.save(update_fields=['status'])
+            except ValueError:
+                pass
+
+        if request.htmx:
+            return HttpResponse(status=HTTPStatus.OK)
+
+        return redirect('dashboard:applicants-list')
+
+
+class UpdateApplicationFeedbackView(LoginRequiredMixin, View):
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def post(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponseRedirect:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        application = get_object_or_404(
+            JobApplication,
+            pk=pk,
+            job__company=company,
+        )
+
+        feedback = request.POST.get('employer_feedback', '')
+        application.employer_feedback = feedback
+        application.save(update_fields=['employer_feedback'])
+
+        return redirect('dashboard:candidate-view', pk=pk)
+
+
+class CandidateView(LoginRequiredMixin, View):
+    template_name = const.CANDIDATE_VIEW
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        application = get_object_or_404(
+            JobApplication.objects.select_related(
+                'job',
+                'jobseeker',
+                'jobseeker__user',
+            ).prefetch_related(
+                'jobseeker__skills',
+                'job__skills',
+                'jobseeker__education',
+                'jobseeker__experience',
+                'jobseeker__languages',
+            ),
+            pk=pk,
+            job__company=company,
+        )
+
+        jobseeker = application.jobseeker
+        job = application.job
+        match_score = _compute_match_score(jobseeker, job)
+        if match_score >= 70:
+            skill_match_level = 'High'
+        elif match_score >= 40:
+            skill_match_level = 'Medium'
+        else:
+            skill_match_level = 'Low'
+
+        education = jobseeker.education.all().order_by('-year_of_graduation')
+        experience = jobseeker.experience.all().order_by('-start_date')
+        languages = jobseeker.languages.all().order_by('name')
+        skills = jobseeker.skills.all().order_by('name')
+
+        context = {
+            'application': application,
+            'jobseeker': jobseeker,
+            'job': job,
+            'match_score': match_score,
+            'skill_match_level': skill_match_level,
+            'education': education,
+            'experience': experience,
+            'languages': languages,
+            'skills': skills,
+            'status_choices': JobApplication.StatusEnum.choices,
+        }
+
+        return render(request, self.template_name, context)

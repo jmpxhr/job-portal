@@ -1,7 +1,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'dashboard:home' %}">
+    <a class="navbar-brand" href="{% url 'home' %}">
       <i class="bi bi-briefcase-fill text-primary"></i>
       <span class="fw-bold">StartJob</span>
     </a>
@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'dashboard:home' %}">Home</a>
+          <a class="nav-link active" href="{% url 'home' %}">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'jobs:jobs-list' %}">Jobs</a>
@@ -53,19 +53,17 @@
                 </li>
               {% else %}
                 <li>
-                  {# TODO: url for company dashboard  #}
                   <a class="dropdown-item" href="">Dashboard</a>
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url 'dashboard:post-vacancy' %}">Post a Job</a>
                 </li>
                 <li>
-                  {#  TODO: url for manage-vacancies  #}
-                  <a class="dropdown-item" href="">Manage Jobs</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:manage-vacancies' %}">Manage Jobs</a>
                 </li>
                 <li>
                   {#  TODO: url for applicants-list  #}
-                  <a class="dropdown-item" href="">Applicants</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:applicants-list' %}">Applicants</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider">

@@ -1,7 +1,7 @@
 {% extends 'container.html' %}
 {% load static %}
 {% block title %}
-  Saved Jobs | StartJob
+  Applicants | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -20,188 +20,170 @@
     <div class="container">
       <!-- Job Filter Dropdown -->
       <div class="job-filter-tabs">
-        <div class="row align-items-center">
-          <div class="col-md-4">
-            <label class="fw-bold mb-2">Select Job:</label>
-            <select class="form-select">
-              <option>All Jobs</option>
-              <option>Junior Frontend Developer (24 applicants)</option>
-              <option>Marketing Intern (18 applicants)</option>
-              <option>Data Analyst (6 applicants)</option>
-            </select>
-          </div>
-          <div class="col-md-8">
-            <label class="fw-bold mb-2">Filter by Status:</label>
-            <div class="status-selector">
-              <span class="status-option active">All (48)</span>
-              <span class="status-option">New (12)</span>
-              <span class="status-option">Reviewed (15)</span>
-              <span class="status-option">Interview (8)</span>
-              <span class="status-option">Offer (3)</span>
-              <span class="status-option">Rejected (10)</span>
+        <form method="get" action="">
+          <div class="row align-items-center">
+            <div class="col-md-4">
+              <label class="fw-bold mb-2">Select Job:</label>
+              <select class="form-select" name="job_id" onchange="this.form.submit()">
+                <option value="">All Jobs ({{ stats.total }})</option>
+                {% for j in jobs_list %}
+                  <option value="{{ j.id }}"
+                          {% if current_job == j.id|stringformat:"s" %}selected{% endif %}>
+                    {{ j.title }} ({{ j.applications_count }} applicants)
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label class="fw-bold mb-2">Filter by Status:</label>
+              <div class="status-selector">
+                {% for value, label in status_choices %}
+                  {% if value == '' %}
+                    <a href="?{% if current_job %}job_id={{ current_job }}{% endif %}"
+                       class="status-option {% if not current_status %}active{% endif %}">
+                      {{ label }} ({{ stats.total }})
+                    </a>
+                  {% elif value == '0' %}
+                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
+                       class="status-option {% if current_status == value %}active{% endif %}">
+                      {{ label }} ({{ stats.new }})
+                    </a>
+                  {% elif value == '2' %}
+                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
+                       class="status-option {% if current_status == value %}active{% endif %}">
+                      {{ label }} ({{ stats.accepted }})
+                    </a>
+                  {% elif value == '3' %}
+                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
+                       class="status-option {% if current_status == value %}active{% endif %}">
+                      {{ label }} ({{ stats.rejected }})
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
       <!-- Applicants List -->
-      <div class="applicant-card"
-           onclick="window.location.href='candidate-view.html'">
-        <div class="row align-items-center">
-          <div class="col-md-1">
-            <div class="applicant-avatar">AP</div>
-          </div>
-          <div class="col-md-3">
-            <h5 class="fw-bold mb-1">Anna Petrova</h5>
-            <p class="text-muted mb-0">anna.petrova@email.com</p>
-            <small class="text-success">Applied 2 hours ago</small>
-          </div>
-          <div class="col-md-2">
-            <span class="badge bg-primary">Junior Frontend Developer</span>
-          </div>
-          <div class="col-md-2">
-            <div class="match-score">92%</div>
-            <small class="text-muted">Match score</small>
-          </div>
-          <div class="col-md-2">
-            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
-              <option>New</option>
-              <option>Reviewed</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-          <div class="col-md-2 text-end">
-            <button class="btn btn-sm btn-outline-primary"
-                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
-          </div>
+      {% if page_obj|length == 0 %}
+        <div class="text-center py-5">
+          <i class="bi bi-inbox fs-1 text-muted"></i>
+          <h4 class="mt-3">No applicants found</h4>
+          <p class="text-muted">
+            {% if current_job or current_status %}
+              Try adjusting your filters or
+              <a href="{% url 'dashboard:applicants-list' %}">clear all filters</a>.
+            {% else %}
+              Applicants will appear here once candidates apply to your jobs.
+            {% endif %}
+          </p>
         </div>
-        <div class="row mt-2">
-          <div class="col-12">
-            <small class="text-muted">
-              <i class="bi bi-mortarboard"></i> BSU, Computer Science (3rd year) •
-              <i class="bi bi-stars"></i> Skills: HTML, CSS, JavaScript, React
-            </small>
-          </div>
+      {% else %}
+        <div id="applicant_list">
+          {% for app in page_obj %}
+            <div class="applicant-card {% if app.status == 0 %}status-pending-border{% elif app.status == 1 %}status-accepted-border{% elif app.status == 2 %}status-rejected-border{% endif %}"
+                 onclick="window.location.href='{% url 'dashboard:candidate-view' app.pk %}'">
+              <div class="row align-items-center">
+                <div class="col-md-1">
+                  <div class="applicant-avatar">
+                    {% with name=app.jobseeker.user.get_full_name %}
+                      {% if name %}
+                        {{ name|make_list|slice:":2"|join:""|upper }}
+                      {% else %}
+                        ??
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <h5 class="fw-bold mb-1">{{ app.jobseeker.user.get_full_name }}</h5>
+                  <p class="text-muted mb-0">{{ app.jobseeker.user.email }}</p>
+                  <small class="text-muted">Applied {{ app.applied_at|timesince }} ago</small>
+                </div>
+                <div class="col-md-2">
+                  <span class="badge bg-primary">{{ app.job.title }}</span>
+                </div>
+                <div class="col-md-1">
+                  <div class="match-score">{{ app.match_score }}%</div>
+                  <small class="text-muted">Match score</small>
+                </div>
+                <div class="col-md-2">
+                  <span class="status-badge {% if app.status == 0 %}text-bg-warning{% elif app.status == 1 %}status-accepted{% elif app.status == 2 %}status-rejected{% endif %}">
+                    {% if app.status == 0 %}New{% elif app.status == 1 %}Accepted{% elif app.status == 2 %}Rejected{% endif %}
+                  </span>
+                </div>
+                <div class="col-md-2 text-end">
+                  <a href="{% url 'dashboard:candidate-view' app.pk %}"
+                     class="btn btn-sm btn-outline-primary"
+                     onclick="event.stopPropagation()">View Profile</a>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <small class="text-muted">
+                    {% with edu=app.jobseeker.education.first %}
+                      {% if edu %}
+                        <i class="bi bi-mortarboard"></i> {{ edu.institution_name }}, {{ edu.specialization }}
+                        {% if edu.level %}({{ edu.get_level_label }}){% endif %}
+                      {% endif %}
+                    {% endwith %}
+                    {% with skills=app.jobseeker.skills.all %}
+                      {% if skills %}
+                        • <i class="bi bi-stars"></i> Skills:
+                        {% for skill in skills|slice:":5" %}
+                          {{ skill.name }}
+                          {% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        {% if skills.count > 5 %}+{{ skills.count|add:"-5" }} more{% endif %}
+                      {% endif %}
+                    {% endwith %}
+                  </small>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
-      </div>
-      <div class="applicant-card"
-           onclick="window.location.href='candidate-view.html'">
-        <div class="row align-items-center">
-          <div class="col-md-1">
-            <div class="applicant-avatar">IS</div>
-          </div>
-          <div class="col-md-3">
-            <h5 class="fw-bold mb-1">Ivan Sidorov</h5>
-            <p class="text-muted mb-0">ivan.sidorov@email.com</p>
-            <small class="text-warning">Applied yesterday</small>
-          </div>
-          <div class="col-md-2">
-            <span class="badge bg-info">Marketing Intern</span>
-          </div>
-          <div class="col-md-2">
-            <div class="match-score">78%</div>
-            <small class="text-muted">Match score</small>
-          </div>
-          <div class="col-md-2">
-            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
-              <option>New</option>
-              <option>Reviewed</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-          <div class="col-md-2 text-end">
-            <button class="btn btn-sm btn-outline-primary"
-                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-12">
-            <small class="text-muted">
-              <i class="bi bi-mortarboard"></i> BSUIR, Marketing (4th year) •
-              <i class="bi bi-stars"></i> Skills: Digital Marketing, SMM, Analytics
-            </small>
-          </div>
-        </div>
-      </div>
-      <div class="applicant-card"
-           onclick="window.location.href='candidate-view.html'">
-        <div class="row align-items-center">
-          <div class="col-md-1">
-            <div class="applicant-avatar">MK</div>
-          </div>
-          <div class="col-md-3">
-            <h5 class="fw-bold mb-1">Maria Kovalenko</h5>
-            <p class="text-muted mb-0">maria.k@email.com</p>
-            <small class="text-muted">Applied 3 days ago</small>
-          </div>
-          <div class="col-md-2">
-            <span class="badge bg-success">Data Analyst</span>
-          </div>
-          <div class="col-md-2">
-            <div class="match-score">85%</div>
-            <small class="text-muted">Match score</small>
-          </div>
-          <div class="col-md-2">
-            <select class="form-select form-select-sm" onclick="event.stopPropagation()">
-              <option>New</option>
-              <option>Reviewed</option>
-              <option selected>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-          <div class="col-md-2 text-end">
-            <button class="btn btn-sm btn-outline-primary"
-                    onclick="event.stopPropagation(); window.location.href='candidate-view.html'">View Profile</button>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-12">
-            <small class="text-muted">
-              <i class="bi bi-mortarboard"></i> BSU, Applied Mathematics •
-              <i class="bi bi-stars"></i> Skills: Python, SQL, Excel, Statistics
-            </small>
-          </div>
-        </div>
-      </div>
-      <!-- Bulk Actions -->
-      <div class="mt-4 d-flex gap-2">
-        <button class="btn btn-outline-secondary">
-          <i class="bi bi-check-all"></i> Select All
-        </button>
-        <button class="btn btn-outline-success">
-          <i class="bi bi-envelope"></i> Message Selected
-        </button>
-        <button class="btn btn-outline-warning">
-          <i class="bi bi-star"></i> Shortlist
-        </button>
-        <button class="btn btn-outline-danger">
-          <i class="bi bi-x-circle"></i> Reject Selected
-        </button>
-      </div>
-      <!-- Pagination -->
-      <nav class="mt-4">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <span class="page-link">Previous</span>
-          </li>
-          <li class="page-item active">
-            <span class="page-link">1</span>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">3</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link"
+                     href="?page={{ page_obj.previous_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">Previous</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">Previous</span>
+                </li>
+              {% endif %}
+              {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ num }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link"
+                     href="?page={{ page_obj.next_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">Next</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">Next</span>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% endif %}
     </div>
   </section>
 {% endblock content %}

@@ -1,7 +1,7 @@
 {% extends 'container.html' %}
 {% load static %}
 {% block title %}
-  Saved Jobs | StartJob
+  Candidate Profile | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -12,12 +12,12 @@
   <section class="candidate-header">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
-        {#  TODO: url for applicants-list  #}
-        <a href="" class="text-white text-decoration-none">
+        <a href="{% url 'dashboard:applicants-list' %}"
+           class="text-white text-decoration-none">
           <i class="bi bi-arrow-left"></i> Back to Applicants
         </a>
         <div>
-          <span class="badge bg-light text-dark p-2">Applied for: Junior Frontend Developer</span>
+          <span class="badge bg-light text-dark p-2">Applied for: {{ job.title }}</span>
         </div>
       </div>
     </div>
@@ -30,130 +30,128 @@
         <div class="profile-card mb-4">
           <div class="text-center mb-4">
             <div class="candidate-avatar-large mx-auto">
-              <span>AP</span>
+              {% if jobseeker.avatar %}
+                <img src="{{ jobseeker.avatar.url }}"
+                     alt="{{ jobseeker.user.get_full_name }}"
+                     class="rounded-circle"
+                     style="width: 120px;
+                            height: 120px;
+                            object-fit: cover">
+              {% else %}
+                <span>{{ jobseeker.user.get_full_name|make_list|slice:":2"|join:""|upper }}</span>
+              {% endif %}
             </div>
-            <h2 class="fw-bold mb-1">Anna Petrova</h2>
-            <p class="text-muted">Computer Science Student | Aspiring Frontend Developer</p>
+            <h2 class="fw-bold mb-1">{{ jobseeker.user.get_full_name }}</h2>
+            <p class="text-muted">{{ jobseeker.title }}</p>
             <div class="d-flex justify-content-center gap-3">
-              <span><i class="bi bi-geo-alt"></i> Minsk, Belarus</span>
-              <span><i class="bi bi-briefcase"></i> Student (3rd year)</span>
+              {% if jobseeker.location %}<span><i class="bi bi-geo-alt"></i> {{ jobseeker.location }}</span>{% endif %}
+              {% if jobseeker.profile_visible %}<span><i class="bi bi-briefcase"></i> Visible to employers</span>{% endif %}
             </div>
           </div>
           <!-- Match Score & Status -->
           <div class="row g-3 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="info-card text-center">
-                <h3 class="fw-bold text-primary">92%</h3>
+                <h3 class="fw-bold text-primary">{{ match_score }}%</h3>
                 <small>Match Score</small>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="info-card text-center">
-                <h3 class="fw-bold text-success">High</h3>
+                <h3 class="fw-bold {% if skill_match_level == 'High' %}text-success{% elif skill_match_level == 'Medium' %}text-warning{% else %}text-danger{% endif %}">
+                  {{ skill_match_level }}
+                </h3>
                 <small>Skill Match</small>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="info-card text-center">
-                <h3 class="fw-bold text-warning">2 days</h3>
-                <small>Response Time</small>
               </div>
             </div>
           </div>
           <!-- Application Status Update -->
-          <div class="alert alert-info d-flex justify-content-between align-items-center">
+          <div class="alert {% if application.status == 0 %}alert-info{% elif application.status == 1 %}alert-success{% else %}alert-danger{% endif %} d-flex justify-content-between align-items-center">
             <div>
               <i class="bi bi-info-circle-fill me-2"></i>
-              <strong>Current Status:</strong> Under Review
+              <strong>Current Status:</strong> {{ application.status_label }}
             </div>
-            <select class="form-select form-select-sm" style="width: 150px;">
-              <option>New</option>
-              <option selected>Under Review</option>
-              <option>Interview</option>
-              <option>Offer</option>
-              <option>Rejected</option>
-            </select>
+            <form method="post"
+                  action="{% url 'dashboard:update-application-status' application.pk %}"
+                  style="width: 150px">
+              {% csrf_token %}
+              <select class="form-select form-select-sm"
+                      name="status"
+                      onchange="this.form.submit()">
+                <option value="0" {% if application.status == 0 %}selected{% endif %}>New</option>
+                <option value="1" {% if application.status == 1 %}selected{% endif %}>Accepted</option>
+                <option value="2" {% if application.status == 2 %}selected{% endif %}>Rejected</option>
+              </select>
+            </form>
           </div>
           <!-- About -->
-          <div class="mb-4">
-            <h5 class="fw-bold mb-3">About</h5>
-            <p>
-              3rd-year Computer Science student passionate about web development and UI/UX design. Looking
-              for internship opportunities to gain practical experience and learn from industry
-              professionals. Quick learner with strong problem-solving skills.
-            </p>
-          </div>
+          {% if jobseeker.about %}
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3">About</h5>
+              <p>{{ jobseeker.about }}</p>
+            </div>
+          {% endif %}
           <!-- Skills -->
-          <div class="mb-4">
-            <h5 class="fw-bold mb-3">Skills</h5>
-            <div class="skill-badge">HTML5</div>
-            <div class="skill-badge">CSS3</div>
-            <div class="skill-badge">JavaScript</div>
-            <div class="skill-badge">React</div>
-            <div class="skill-badge">Git</div>
-            <div class="skill-badge">Bootstrap</div>
-            <div class="skill-badge">Figma</div>
-          </div>
+          {% if skills %}
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3">Skills</h5>
+              {% for skill in skills %}<span class="skill-badge">{{ skill.name }}</span>{% endfor %}
+            </div>
+          {% endif %}
           <!-- Education -->
-          <div class="mb-4">
-            <h5 class="fw-bold mb-3">Education</h5>
-            <div class="education-item">
-              <div class="d-flex justify-content-between">
-                <h6 class="fw-bold mb-1">Belarusian State University</h6>
-                <small class="text-muted">2022 - 2026</small>
-              </div>
-              <p class="text-muted mb-1">Bachelor of Science in Computer Science</p>
-              <small>GPA: 3.8/4.0</small>
+          {% if education %}
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3">Education</h5>
+              {% for edu in education %}
+                <div class="education-item">
+                  <div class="d-flex justify-content-between">
+                    <h6 class="fw-bold mb-1">{{ edu.institution_name }}</h6>
+                    {% if edu.year_of_graduation %}<small class="text-muted">{{ edu.year_of_graduation }}</small>{% endif %}
+                  </div>
+                  {% if edu.faculty or edu.specialization %}
+                    <p class="text-muted mb-1">
+                      {% if edu.faculty %}{{ edu.faculty }}{% endif %}
+                      {% if edu.specialization %}- {{ edu.specialization }}{% endif %}
+                    </p>
+                  {% endif %}
+                  <small>{{ edu.get_level_label }}</small>
+                </div>
+              {% endfor %}
             </div>
-          </div>
+          {% endif %}
           <!-- Experience -->
-          <div class="mb-4">
-            <h5 class="fw-bold mb-3">Experience</h5>
-            <div class="experience-item">
-              <div class="d-flex justify-content-between">
-                <h6 class="fw-bold mb-1">Frontend Developer Intern</h6>
-                <small class="text-success">Current</small>
-              </div>
-              <p class="text-muted mb-2">TechStart Inc. | June 2024 - Present</p>
-              <ul class="small">
-                <li>Developing responsive web interfaces using React and Bootstrap</li>
-                <li>Collaborating with design team on UI/UX improvements</li>
-              </ul>
+          {% if experience %}
+            <div class="mb-4">
+              <h5 class="fw-bold mb-3">Experience</h5>
+              {% for exp in experience %}
+                <div class="experience-item">
+                  <div class="d-flex justify-content-between">
+                    <h6 class="fw-bold mb-1">{{ exp.position }}</h6>
+                    {% if exp.is_current %}<small class="text-success">Current</small>{% endif %}
+                  </div>
+                  <p class="text-muted mb-2">
+                    {{ exp.company_name }} | {{ exp.start_date|date:"M Y" }} -
+                    {% if exp.end_date %}
+                      {{ exp.end_date|date:"M Y" }}
+                    {% else %}
+                      Present
+                    {% endif %}
+                  </p>
+                  {% if exp.description %}
+                    <ul class="small">
+                      {% for line in exp.description.splitlines %}<li>{{ line }}</li>{% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              {% endfor %}
             </div>
-            <div class="experience-item">
-              <div class="d-flex justify-content-between">
-                <h6 class="fw-bold mb-1">Junior Web Developer (Freelance)</h6>
-              </div>
-              <p class="text-muted mb-2">Self-employed | Jan 2024 - May 2024</p>
-              <ul class="small">
-                <li>Built websites for 3 local businesses using HTML, CSS, JavaScript</li>
-              </ul>
-            </div>
-          </div>
-          <!-- Projects -->
+          {% endif %}
+          <!-- Projects (Placeholder - to be implemented) -->
           <div class="mb-4">
             <h5 class="fw-bold mb-3">Projects</h5>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="border rounded-3 p-3">
-                  <h6 class="fw-bold mb-1">E-commerce Website</h6>
-                  <small class="text-muted">React, Node.js, MongoDB</small>
-                  <p class="small mt-2">
-                    Built a full-stack e-commerce platform with user
-                    authentication and payment integration.
-                  </p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="border rounded-3 p-3">
-                  <h6 class="fw-bold mb-1">Student Portal</h6>
-                  <small class="text-muted">Vue.js, Firebase</small>
-                  <p class="small mt-2">
-                    Developed a student management system for university course
-                    registration.
-                  </p>
-                </div>
-              </div>
+            <div class="text-center py-4 text-muted">
+              <i class="bi bi-code-slash fs-2"></i>
+              <p class="mt-2 mb-0">Projects section coming soon</p>
             </div>
           </div>
         </div>
@@ -164,56 +162,134 @@
         <div class="action-buttons mb-4">
           <h5 class="fw-bold mb-3">Actions</h5>
           <div class="d-grid gap-2">
-            <button class="btn btn-primary">
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-toggle="tooltip"
+                    data-bs-title="Coming Soon"
+                    disabled>
               <i class="bi bi-envelope"></i> Send Message
             </button>
-            <button class="btn btn-success">
-              <i class="bi bi-calendar-check"></i> Schedule Interview
-            </button>
-            <button class="btn btn-outline-primary">
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-toggle="tooltip"
+                    data-bs-title="Coming Soon"
+                    disabled>
               <i class="bi bi-star"></i> Add to Shortlist
             </button>
-            <button class="btn btn-outline-secondary">
-              <i class="bi bi-download"></i> Download Resume
+            {% if jobseeker.resume_file %}
+              <a href="{{ jobseeker.resume_file.url }}"
+                 class="btn btn-outline-secondary"
+                 target="_blank">
+                <i class="bi bi-download"></i> Download Resume
+              </a>
+            {% else %}
+              <button type="button" class="btn btn-outline-secondary" disabled>
+                <i class="bi bi-download"></i> No Resume Uploaded
+              </button>
+            {% endif %}
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#feedbackModal">
+              <i class="bi bi-chat-text"></i> Write Feedback
             </button>
             <hr>
             <div class="d-flex gap-2">
-              <button class="btn btn-outline-success flex-grow-1">
-                <i class="bi bi-check-circle"></i> Accept
-              </button>
-              <button class="btn btn-outline-danger flex-grow-1">
-                <i class="bi bi-x-circle"></i> Reject
-              </button>
+              <form method="post"
+                    action="{% url 'dashboard:update-application-status' application.pk %}"
+                    class="flex-grow-1">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="1">
+                <button type="submit" class="btn btn-outline-success w-100">
+                  <i class="bi bi-check-circle"></i> Accept
+                </button>
+              </form>
+              <form method="post"
+                    action="{% url 'dashboard:update-application-status' application.pk %}"
+                    class="flex-grow-1">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="2">
+                <button type="submit" class="btn btn-outline-danger w-100">
+                  <i class="bi bi-x-circle"></i> Reject
+                </button>
+              </form>
             </div>
           </div>
         </div>
         <!-- Contact Information -->
         <div class="contact-info mb-4">
           <h5 class="fw-bold mb-3">Contact Information</h5>
-          <div class="mb-3">
-            <small class="text-muted">Email</small>
-            <p class="fw-bold mb-2">anna.petrova@email.com</p>
-          </div>
-          <div class="mb-3">
-            <small class="text-muted">Phone</small>
-            <p class="fw-bold mb-2">+375 29 123-45-67</p>
-          </div>
-          <div class="mb-3">
-            <small class="text-muted">Location</small>
-            <p class="fw-bold mb-2">Minsk, Belarus</p>
-          </div>
-          <div class="mb-3">
-            <small class="text-muted">Portfolio</small>
-            <p class="mb-2">
-              <a href="#" class="text-decoration-none">github.com/annapetrova</a>
-            </p>
-          </div>
-          <div>
-            <small class="text-muted">Languages</small>
-            <p class="mb-2">Russian (Native), English (Fluent), German (Basic)</p>
-          </div>
+          {% if jobseeker.user.email %}
+            <div class="mb-3">
+              <small class="text-muted">Email</small>
+              <p class="fw-bold mb-2">{{ jobseeker.user.email }}</p>
+            </div>
+          {% endif %}
+          {% if jobseeker.phone %}
+            <div class="mb-3">
+              <small class="text-muted">Phone</small>
+              <p class="fw-bold mb-2">{{ jobseeker.phone }}</p>
+            </div>
+          {% endif %}
+          {% if jobseeker.location %}
+            <div class="mb-3">
+              <small class="text-muted">Location</small>
+              <p class="fw-bold mb-2">{{ jobseeker.location }}</p>
+            </div>
+          {% endif %}
+          {% if languages %}
+            <div>
+              <small class="text-muted">Languages</small>
+              <p class="mb-2">
+                {% for lang in languages %}
+                  {{ lang.name }} ({{ lang.get_proficiency_label }})
+                  {% if not forloop.last %},{% endif %}
+                {% endfor %}
+              </p>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </section>
+  <!-- Feedback Modal -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="feedbackModalLabel">
+            <i class="bi bi-chat-text me-2"></i>Employer Feedback
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="post" action="{% url 'dashboard:update-application-feedback' application.pk %}">
+          {% csrf_token %}
+          <div class="modal-body">
+            {% if application.employer_feedback %}
+              <div class="mb-3">
+                <label class="form-label fw-bold">Current Feedback:</label>
+                <div class="p-3 bg-light rounded">{{ application.employer_feedback }}</div>
+              </div>
+            {% endif %}
+            <div class="mb-3">
+              <label for="feedbackText" class="form-label fw-bold">
+                {% if application.employer_feedback %}Update Feedback{% else %}Write Feedback{% endif %}
+              </label>
+              <textarea class="form-control"
+                        id="feedbackText"
+                        name="employer_feedback"
+                        rows="5"
+                        placeholder="Write your feedback about this candidate...">{{ application.employer_feedback }}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg"></i> Save Feedback
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

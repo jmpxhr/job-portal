@@ -136,7 +136,7 @@
                     <i class="bi bi-pencil"></i> Edit
                   </a>
                   {% if job.is_active %}
-                    <a href="#" class="btn btn-sm btn-outline-success">
+                    <a href="{% url 'dashboard:applicants-list' %}?job_id={{ job.pk }}" class="btn btn-sm btn-outline-success">
                       <i class="bi bi-people"></i> View
                     </a>
                     <div class="dropdown">
