@@ -112,6 +112,11 @@
               <p class="mb-0 text-muted">{{ job.posted_at|date:"F d, Y" }}</p>
             </div>
             <div class="job-meta-item">
+              <i class="bi bi-eye me-2 text-primary"></i>
+              <strong>Views:</strong>
+              <p class="mb-0 text-muted">{{ job.views_count }}</p>
+            </div>
+            <div class="job-meta-item">
               <i class="bi bi-briefcase me-2 text-primary"></i>
               <strong>Employment Type:</strong>
               <p class="mb-0 text-muted">{{ job.employment_type_label }}</p>

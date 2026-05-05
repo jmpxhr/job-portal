@@ -13,7 +13,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        {% if user.account_type == 1 %}
+        {% if user.account_type != 2 %}
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'home' %}">Home</a>
           </li>
@@ -31,8 +31,12 @@
             <a class="nav-link" href="{% url 'dashboard:manage-vacancies' %}">Jobs</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link"
-               href="{% url 'company:company-detail' pk=user.recruiter.company.id %}">Company</a>
+            {% if user.recruiter.company.pk %}
+              <a class="nav-link"
+                 href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">Company</a>
+            {% else %}
+              <a class="nav-link" href="{% url 'dashboard:employer-dashboard' %}">Company</a>
+            {% endif %}
           </li>
         {% endif %}
         {% if user.is_authenticated %}
@@ -81,8 +85,12 @@
                   <hr class="dropdown-divider">
                 </li>
                 <li>
-                  <a class="dropdown-item"
-                     href="{% url 'company:company-detail' pk=user.recruiter.company.id %}">Company Profile</a>
+                  {% if user.recruiter.company.pk %}
+                    <a class="dropdown-item"
+                       href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">Company Profile</a>
+                  {% else %}
+                    <a class="dropdown-item" href="{% url 'dashboard:employer-dashboard' %}">Company Profile</a>
+                  {% endif %}
                 </li>
               {% endif %}
               <li>

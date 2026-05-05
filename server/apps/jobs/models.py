@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, override
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_enum import EnumField
@@ -11,7 +12,10 @@ if TYPE_CHECKING:
     from django.utils.functional import _StrPromise
 
     from server.apps.accounts.models import JobSeeker
+    from server.apps.accounts.models import User as UserType
     from server.apps.company.models import Company
+
+User = get_user_model()
 
 
 class Skill(models.Model):
@@ -98,6 +102,11 @@ class Job(TimeStampModelMixin):
     )
     is_active = models.BooleanField(_('active'), default=True)
     posted_at = models.DateTimeField(_('posted at'), auto_now_add=True)
+    views_count = models.PositiveIntegerField(
+        _('views count'),
+        default=0,
+        db_index=True,
+    )
 
     skills = models.ManyToManyField(
         Skill,
@@ -247,4 +256,46 @@ class SavedJob(TimeStampModelMixin):
                 fields=['job', 'jobseeker'],
                 name='unique_saved_job',
             ),
+        ]
+
+
+class JobView(TimeStampModelMixin):
+    job: models.ForeignKey['Job'] = models.ForeignKey(
+        'jobs.Job',
+        on_delete=models.CASCADE,
+        related_name='view_records',
+        verbose_name=_('job'),
+    )
+    session_key = models.CharField(
+        _('session key'),
+        max_length=40,
+        db_index=True,
+    )
+    viewer: models.ForeignKey['UserType'] = models.ForeignKey(  # type: ignore[misc]
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='job_views',
+        verbose_name=_('viewer'),
+    )
+    viewed_at = models.DateTimeField(_('viewed at'), auto_now_add=True)
+
+    @override
+    def __str__(self) -> str:
+        return f'View of {self.job} by {self.viewer or self.session_key}'  # type: ignore[truthy-bool]
+
+    class Meta(TypedModelMeta):
+        db_table = 'job_views'
+        ordering = ['-viewed_at']
+        verbose_name = _('job view')
+        verbose_name_plural = _('job views')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['job', 'session_key'],
+                name='unique_job_view_per_session',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['job', '-viewed_at']),
         ]

@@ -6,35 +6,44 @@
         <h5 class="fw-bold mb-3">StartJob</h5>
         <p>Your gateway to first job and successful career start.</p>
       </div>
-      <div class="col-lg-3 col-md-6 mb-4">
-        <h5 class="fw-bold mb-3">For Candidates</h5>
-        <ul class="list-unstyled">
-          <li>
-            {#  TODO: url to jobs list page  #}
-            <a href="" class="text-white-50 text-decoration-none">Browse Jobs</a>
-          </li>
-          <li>
-            <a href="#" class="text-white-50 text-decoration-none">Create Resume</a>
-          </li>
-          <li>
-            <a href="#" class="text-white-50 text-decoration-none">Saved Jobs</a>
-          </li>
-        </ul>
-      </div>
-      <div class="col-lg-3 col-md-6 mb-4">
-        <h5 class="fw-bold mb-3">For Employers</h5>
-        <ul class="list-unstyled">
-          <li>
-            <a href="#" class="text-white-50 text-decoration-none">Post a Job</a>
-          </li>
-          <li>
-            <a href="#" class="text-white-50 text-decoration-none">Browse Candidates</a>
-          </li>
-          <li>
-            <a href="#" class="text-white-50 text-decoration-none">Employer Dashboard</a>
-          </li>
-        </ul>
-      </div>
+      {% if user.account_type == 1 %}
+        <div class="col-lg-3 col-md-6 mb-4">
+          <h5 class="fw-bold mb-3">For Candidates</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="{% url 'jobs:jobs-list' %}"
+                 class="text-white-50 text-decoration-none">Browse Jobs</a>
+            </li>
+            <li>
+              <a href="{% url 'dashboard:candidate-profile' %}"
+                 class="text-white-50 text-decoration-none">Create Resume</a>
+            </li>
+            <li>
+              <a href="{% url 'dashboard:saved-jobs' %}"
+                 class="text-white-50 text-decoration-none">Saved Jobs</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+      {% if user.account_type == 2 %}
+        <div class="col-lg-3 col-md-6 mb-4">
+          <h5 class="fw-bold mb-3">For Employers</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="{% url 'dashboard:post-vacancy' %}"
+                 class="text-white-50 text-decoration-none">Post a Job</a>
+            </li>
+            <li>
+              <a href="{% url 'company:company-list' %}"
+                 class="text-white-50 text-decoration-none">Browse Companies</a>
+            </li>
+            <li>
+              <a href="{% url 'dashboard:employer-dashboard' %}"
+                 class="text-white-50 text-decoration-none">Employer Dashboard</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
       <div class="col-lg-3 col-md-6 mb-4">
         <h5 class="fw-bold mb-3">Contact Info</h5>
         <ul class="list-unstyled">

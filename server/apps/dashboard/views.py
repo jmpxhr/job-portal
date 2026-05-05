@@ -65,6 +65,11 @@ class HomePageView(TemplateView):
             .prefetch_related('skills')
             .order_by('-posted_at')[:3]
         )
+        context['active_jobs_count'] = Job.objects.filter(
+            is_active=True,
+        ).count()
+        context['companies_count'] = Company.objects.count()
+        context['students_count'] = JobSeeker.objects.count()
         return context
 
 
@@ -888,13 +893,20 @@ class EmployerDashboardView(LoginRequiredMixin, View):
             entry['count'] for entry in category_qs
         ])
 
+        job_views_count = (
+            company.jobs.aggregate(  # pyrefly: ignore
+                total=Sum('views_count'),
+            )['total']
+            or 0
+        )
+
         context = {
             'company': company,
             'active_jobs_count': active_jobs_count,
             'total_applicants': total_applicants,
             'new_applicants_count': new_applicants_count,
             'pending_applicants_count': pending_applicants_count,
-            'job_views_count': 0,
+            'job_views_count': job_views_count,
             'recent_applications': recent_applications,
             'application_trends_labels': application_trends_labels,
             'application_trends_data': application_trends_data,

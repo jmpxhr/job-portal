@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
+from server.apps.jobs.models import (
+    Job,
+    JobApplication,
+    JobView,
+    SavedJob,
+    Skill,
+)
 
 
 @admin.register(Skill)
@@ -19,6 +25,7 @@ class JobAdmin(admin.ModelAdmin[Job]):
         'experience_level_label',
         'salary_display',
         'location',
+        'views_count',
         'is_active',
         'posted_at',
     )
@@ -48,3 +55,12 @@ class SavedJobAdmin(admin.ModelAdmin[SavedJob]):
     list_display = ('job', 'jobseeker', 'saved_at')
     search_fields = ('job__title', 'jobseeker__user__email')
     list_select_related = ('job', 'jobseeker__user')
+
+
+@admin.register(JobView)
+class JobViewAdmin(admin.ModelAdmin[JobView]):
+    list_display = ('job', 'viewer', 'session_key', 'viewed_at')
+    list_filter = ('viewed_at',)
+    search_fields = ('job__title', 'viewer__email')
+    list_select_related = ('job', 'viewer')
+    date_hierarchy = 'viewed_at'

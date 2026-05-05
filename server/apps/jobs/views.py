@@ -2,13 +2,13 @@ from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q, QuerySet
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import DetailView, ListView
 
 from server.apps.accounts.models import JobSeeker, User
-from server.apps.jobs import const, filters
+from server.apps.jobs import const, filters, services
 from server.apps.jobs.forms import JobApplicationForm
 from server.apps.jobs.models import Job, JobApplication, SavedJob
 from server.common.types import AuthenticatedHttpRequest, HtmxRequest
@@ -88,6 +88,18 @@ class JobDetailView(DetailView[Job]):
             .select_related('company')
             .prefetch_related('skills')
         )
+
+    @override
+    def get(
+        self,
+        request: HttpRequest,
+        *args: Any,
+        **kwargs: Any,
+    ) -> HttpResponse:
+        self.object = self.get_object()
+        services.record_job_view(self.object, request)
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
