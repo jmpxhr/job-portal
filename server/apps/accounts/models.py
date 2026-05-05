@@ -173,12 +173,6 @@ class JobSeeker(TimeStampModelMixin):
         blank=True,
         default='',
     )
-    resume_file = models.FileField(
-        _('resume file'),
-        upload_to='jobseeker/resumes/',
-        blank=True,
-        default='',
-    )
 
     @override
     def __str__(self) -> str:

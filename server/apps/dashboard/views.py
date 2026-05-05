@@ -615,11 +615,8 @@ class ResumeEditView(LoginRequiredMixin, View):
 
     def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
         jobseeker = self.get_jobseeker(request.user)
-        clear_file = request.POST.get('clear_resume_file') == '1'
-        form = ResumeForm(request.POST, request.FILES, instance=jobseeker)
+        form = ResumeForm(request.POST, instance=jobseeker)
         if form.is_valid():
-            if clear_file and jobseeker.resume_file:
-                jobseeker.resume_file.delete(save=False)
             form.save()
             context = {'jobseeker': jobseeker}
             context.update(_resume_context(jobseeker))
@@ -663,22 +660,44 @@ class ResumePDFView(LoginRequiredMixin, View):
         return response
 
 
-class ResumeFileDownloadView(LoginRequiredMixin, View):
-    def get_jobseeker(self, user: Any) -> JobSeeker:
-        return get_object_or_404(JobSeeker, user=user)
+class CandidateResumePDFView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/resume-pdf.html'
 
-    def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
-        jobseeker = self.get_jobseeker(request.user)
-        if not jobseeker.resume_file:
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
             raise Http404
-        response = HttpResponse(
-            jobseeker.resume_file.open('rb').read(),
-            content_type='application/octet-stream',
+
+        jobseeker = get_object_or_404(
+            JobSeeker.objects.select_related('user'),
+            pk=pk,
         )
-        response['Content-Disposition'] = (
-            'attachment; '
-            + f'filename="{jobseeker.resume_file.name.split("/")[-1]}"'  # type: ignore[union-attr]
+
+        context: dict[str, Any] = {
+            'jobseeker': jobseeker,
+        }
+        context.update(_resume_context(jobseeker))
+        html_string = render(
+            request,
+            self.template_name,
+            context,
+        ).content.decode('utf-8')
+        pdf_file = HTML(string=html_string).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        filename = (
+            f'{jobseeker.user.get_full_name().replace(" ", "_")}_Resume.pdf'
         )
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
 
 

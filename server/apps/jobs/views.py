@@ -132,7 +132,7 @@ class JobDetailView(DetailView[Job]):
                     job=job,
                     jobseeker=jobseeker,
                 ).exists()
-                has_resume = bool(jobseeker.resume_file)
+                has_resume = bool(jobseeker.resume_objective)
                 if not has_applied:
                     apply_form = JobApplicationForm()
             except JobSeeker.DoesNotExist:
@@ -202,8 +202,6 @@ class ApplyForJobView(LoginRequiredMixin, View):
                 application.resume = resume_file
                 application.save()
                 resume_file.seek(0)
-                jobseeker.resume_file = resume_file
-                jobseeker.save(update_fields=['resume_file'])
             else:
                 application.save()
 
@@ -218,7 +216,7 @@ class ApplyForJobView(LoginRequiredMixin, View):
             'job': job,
             'form': form,
             'has_applied': False,
-            'has_resume': bool(jobseeker.resume_file),
+            'has_resume': bool(jobseeker.resume_objective),
         }
         return render(
             request,

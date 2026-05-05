@@ -44,11 +44,6 @@ urlpatterns = [
         name='resume-pdf',
     ),
     path(
-        'jobseeker/profile/resume/file-download/',
-        views.ResumeFileDownloadView.as_view(),
-        name='resume-file-download',
-    ),
-    path(
         'jobseeker/profile/education/create/',
         views.EducationCreateView.as_view(),
         name='education-create',
@@ -162,5 +157,10 @@ urlpatterns = [
         'company/candidates/<int:pk>/',
         views.CandidateView.as_view(),
         name='candidate-view',
+    ),
+    path(
+        'company/candidates/<int:pk>/resume-pdf/',
+        views.CandidateResumePDFView.as_view(),
+        name='candidate-resume-pdf',
     ),
 ]

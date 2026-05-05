@@ -9,30 +9,13 @@
 </div>
 <form hx-post="{% url 'dashboard:resume-edit' %}"
       hx-target="#resume-content"
-      hx-swap="innerHTML"
-      hx-encoding="multipart/form-data"
-      enctype="multipart/form-data">
+      hx-swap="innerHTML">
   {% csrf_token %}
   <div class="mb-3">
     <label class="form-label fw-bold"
            for="{{ form.resume_objective.id_for_label }}">{{ form.resume_objective.label }}</label>
     {{ form.resume_objective }}
     {% for error in form.resume_objective.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-  </div>
-  <div class="mb-3">
-    <label class="form-label fw-bold" for="{{ form.resume_file.id_for_label }}">{{ form.resume_file.label }}</label>
-    {{ form.resume_file }}
-    {% for error in form.resume_file.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-    {% if jobseeker.resume_file %}
-      <div class="form-check mt-2">
-        <input type="checkbox"
-               class="form-check-input"
-               id="clear_resume_file"
-               name="clear_resume_file"
-               value="1">
-        <label class="form-check-label small text-danger" for="clear_resume_file">Remove current uploaded file</label>
-      </div>
-    {% endif %}
   </div>
   <div class="d-flex gap-2">
     <button type="submit" class="btn btn-primary btn-sm">

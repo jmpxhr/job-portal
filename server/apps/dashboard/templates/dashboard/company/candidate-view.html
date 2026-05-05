@@ -176,17 +176,16 @@
                     disabled>
               <i class="bi bi-star"></i> Add to Shortlist
             </button>
-            {% if jobseeker.resume_file %}
-              <a href="{{ jobseeker.resume_file.url }}"
-                 class="btn btn-outline-secondary"
-                 target="_blank">
-                <i class="bi bi-download"></i> Download Resume
-              </a>
-            {% else %}
-              <button type="button" class="btn btn-outline-secondary" disabled>
-                <i class="bi bi-download"></i> No Resume Uploaded
-              </button>
-            {% endif %}
+            <a href="{{ application.resume.url }}"
+               class="btn btn-outline-secondary"
+               target="_blank">
+              <i class="bi bi-download"></i> Download Resume
+            </a>
+            <a href="{% url 'dashboard:candidate-resume-pdf' jobseeker.pk %}"
+               class="btn btn-outline-secondary"
+               target="_blank">
+              <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+            </a>
             <button type="button"
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
@@ -253,16 +252,24 @@
     </div>
   </section>
   <!-- Feedback Modal -->
-  <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal fade"
+       id="feedbackModal"
+       tabindex="-1"
+       aria-labelledby="feedbackModalLabel"
+       aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="feedbackModalLabel">
             <i class="bi bi-chat-text me-2"></i>Employer Feedback
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
         </div>
-        <form method="post" action="{% url 'dashboard:update-application-feedback' application.pk %}">
+        <form method="post"
+              action="{% url 'dashboard:update-application-feedback' application.pk %}">
           {% csrf_token %}
           <div class="modal-body">
             {% if application.employer_feedback %}
@@ -273,7 +280,11 @@
             {% endif %}
             <div class="mb-3">
               <label for="feedbackText" class="form-label fw-bold">
-                {% if application.employer_feedback %}Update Feedback{% else %}Write Feedback{% endif %}
+                {% if application.employer_feedback %}
+                  Update Feedback
+                {% else %}
+                  Write Feedback
+                {% endif %}
               </label>
               <textarea class="form-control"
                         id="feedbackText"

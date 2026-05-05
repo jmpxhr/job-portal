@@ -50,7 +50,7 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     ),
     # Dashboard
     path(
-        'dashboard',
+        'dashboard/',
         include((dashboard_url, 'dashboard'), namespace='dashboard'),
     ),
     # Index

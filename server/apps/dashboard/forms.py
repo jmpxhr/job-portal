@@ -205,7 +205,7 @@ class ExperienceForm(forms.ModelForm[Experience]):
 class ResumeForm(forms.ModelForm[JobSeeker]):
     class Meta:
         model = JobSeeker
-        fields = ('resume_objective', 'resume_file')
+        fields = ('resume_objective',)
         widgets = {
             'resume_objective': forms.Textarea(
                 attrs={
@@ -217,13 +217,9 @@ class ResumeForm(forms.ModelForm[JobSeeker]):
                     ),
                 },
             ),
-            'resume_file': forms.FileInput(
-                attrs={'class': 'form-control'},
-            ),
         }
         labels = {
             'resume_objective': 'Career Objective',
-            'resume_file': 'Upload Resume File',
         }
 
 
