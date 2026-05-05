@@ -30,6 +30,7 @@
     </div>
     <p class="text-muted mb-0">{{ lang.get_proficiency_label }}</p>
   </div>
+  {% if not forloop.last %}<hr>{% endif %}
 {% empty %}
   <div class="text-center py-4">
     <i class="bi bi-translate fs-1 text-muted"></i>

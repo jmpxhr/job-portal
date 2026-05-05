@@ -87,13 +87,22 @@
               <div class="row align-items-center">
                 <div class="col-md-1">
                   <div class="applicant-avatar">
-                    {% with name=app.jobseeker.user.get_full_name %}
-                      {% if name %}
-                        {{ name|make_list|slice:":2"|join:""|upper }}
-                      {% else %}
-                        ??
-                      {% endif %}
-                    {% endwith %}
+                    {% if app.jobseeker.avatar %}
+                      <img src="{{ app.jobseeker.avatar.url }}"
+                           alt="{{ app.jobseeker.user.get_full_name }}"
+                           class="rounded-circle"
+                           style="width: 60px;
+                                  height: 60px;
+                                  object-fit: cover">
+                    {% else %}
+                      {% with name=app.jobseeker.user.get_full_name %}
+                        {% if name %}
+                          {{ name|make_list|slice:":2"|join:""|upper }}
+                        {% else %}
+                          ??
+                        {% endif %}
+                      {% endwith %}
+                    {% endif %}
                   </div>
                 </div>
                 <div class="col-md-3">
@@ -110,7 +119,13 @@
                 </div>
                 <div class="col-md-2">
                   <span class="status-badge {% if app.status == 0 %}text-bg-warning{% elif app.status == 1 %}status-accepted{% elif app.status == 2 %}status-rejected{% endif %}">
-                    {% if app.status == 0 %}New{% elif app.status == 1 %}Accepted{% elif app.status == 2 %}Rejected{% endif %}
+                    {% if app.status == 0 %}
+                      New
+                    {% elif app.status == 1 %}
+                      Accepted
+                    {% elif app.status == 2 %}
+                      Rejected
+                    {% endif %}
                   </span>
                 </div>
                 <div class="col-md-2 text-end">

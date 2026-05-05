@@ -114,7 +114,7 @@ urlpatterns = [
         name='settings-password',
     ),
     path(
-        'company/dashboard/',
+        'company/',
         views.EmployerDashboardView.as_view(),
         name='employer-dashboard',
     ),

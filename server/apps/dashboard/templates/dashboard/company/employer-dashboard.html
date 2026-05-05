@@ -1,11 +1,12 @@
 {% extends 'container.html' %}
 {% load static %}
 {% block title %}
-  Saved Jobs | StartJob
+  Employer Dashboard | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
         href="{% static 'dashboard/css/company/styles.css' %}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock head %}
 {% block content %}
   <!-- Main Content -->
@@ -15,30 +16,42 @@
       <div class="col-lg-3 mb-4">
         <div class="sidebar">
           <div class="company-logo">
-            <i class="bi bi-building"></i>
+            {% if company.logo %}
+              <img src="{{ company.logo.url }}"
+                   alt="{{ company.name }}"
+                   class="rounded-circle"
+                   width="60"
+                   height="60">
+            {% else %}
+              <i class="bi bi-building"></i>
+            {% endif %}
           </div>
-          <h5 class="text-center fw-bold mb-1">TechStart Inc.</h5>
-          <p class="text-center text-muted small mb-3">IT Services • 50-200 employees</p>
+          <h5 class="text-center fw-bold mb-1">{{ company.name }}</h5>
+          <p class="text-center text-muted small mb-3">
+            {% if company.industry %}{{ company.industry.name }}{% endif %}
+            • {{ company.display_size }}
+          </p>
           <div class="nav flex-column">
-            <a class="nav-link-custom active" href="#">
+            <a class="nav-link-custom active"
+               href="{% url 'dashboard:employer-dashboard' %}">
               <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            {#  TODO: url for post-vacancy  #}
-            <a class="nav-link-custom" href="">
+            <a class="nav-link-custom"
+               href="{% url 'dashboard:post-vacancy' %}">
               <i class="bi bi-plus-circle"></i> Post a Job
             </a>
-            {#  TODO: url for manage-vacancies  #}
-            <a class="nav-link-custom" href="">
+            <a class="nav-link-custom"
+               href="{% url 'dashboard:manage-vacancies' %}">
               <i class="bi bi-briefcase"></i> Manage Jobs
-              <span class="badge bg-primary float-end">12</span>
+              <span class="badge bg-primary float-end">{{ active_jobs_count }}</span>
             </a>
-            {#  TODO: applicants-list  #}
-            <a class="nav-link-custom" href="">
+            <a class="nav-link-custom"
+               href="{% url 'dashboard:applicants-list' %}">
               <i class="bi bi-people"></i> Applicants
-              <span class="badge bg-warning float-end">8</span>
+              <span class="badge bg-warning float-end">{{ pending_applicants_count }}</span>
             </a>
-            {#  TODO: url for company-profile  #}
-            <a class="nav-link-custom" href="">
+            <a class="nav-link-custom"
+               href="{% url 'company:company-detail' pk=company.id %}">
               <i class="bi bi-building"></i> Company Profile
             </a>
           </div>
@@ -50,59 +63,46 @@
         <!-- Welcome Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h2 class="fw-bold mb-1">Welcome back, TechStart Inc.!</h2>
+            <h2 class="fw-bold mb-1">Welcome back, {{ company.name }}!</h2>
             <p class="text-muted">Here's what's happening with your job postings today.</p>
           </div>
           <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary">
-              <i class="bi bi-calendar"></i> Last 30 days
-            </button>
-            <button class="btn btn-primary"
-                    onclick="window.location.href='post-vacancy.html'">
+            <a class="btn btn-primary"
+               href="{% url 'dashboard:post-vacancy' %}">
               <i class="bi bi-plus-circle"></i> Post New Job
-            </button>
+            </a>
           </div>
         </div>
         <!-- Statistics Cards -->
         <div class="row g-3 mb-4">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="stat-card">
               <div class="stat-icon bg-primary bg-opacity-10 text-primary">
                 <i class="bi bi-briefcase"></i>
               </div>
-              <h3 class="fw-bold mb-1">12</h3>
+              <h3 class="fw-bold mb-1">{{ active_jobs_count }}</h3>
               <p class="text-muted mb-0">Active Jobs</p>
-              <small class="text-success">+3 this week</small>
+              <small class="text-success">+{{ new_applicants_count }} new applicants this week</small>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="stat-card">
               <div class="stat-icon bg-success bg-opacity-10 text-success">
                 <i class="bi bi-people"></i>
               </div>
-              <h3 class="fw-bold mb-1">48</h3>
+              <h3 class="fw-bold mb-1">{{ total_applicants }}</h3>
               <p class="text-muted mb-0">Total Applicants</p>
-              <small class="text-success">+12 new</small>
+              <small class="text-success">+{{ new_applicants_count }} new</small>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div class="stat-card">
               <div class="stat-icon bg-warning bg-opacity-10 text-warning">
                 <i class="bi bi-eye"></i>
               </div>
-              <h3 class="fw-bold mb-1">1,248</h3>
+              <h3 class="fw-bold mb-1">{{ job_views_count }}</h3>
               <p class="text-muted mb-0">Job Views</p>
-              <small class="text-success">+18%</small>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="stat-card">
-              <div class="stat-icon bg-info bg-opacity-10 text-info">
-                <i class="bi bi-clock-history"></i>
-              </div>
-              <h3 class="fw-bold mb-1">5</h3>
-              <p class="text-muted mb-0">Interviews</p>
-              <small class="text-warning">3 scheduled</small>
+              <small class="text-muted">Coming soon</small>
             </div>
           </div>
         </div>
@@ -126,105 +126,59 @@
           <div class="col-md-7">
             <div class="recent-activity">
               <h5 class="fw-bold mb-3">Recent Applications</h5>
-              <div class="activity-item d-flex align-items-center">
-                <img src="https://placehold.co/40"
-                     class="rounded-circle me-3"
-                     alt="avatar">
-                <div class="flex-grow-1">
-                  <h6 class="fw-bold mb-1">Anna Petrova</h6>
-                  <small class="text-muted">Applied for Junior Frontend Developer</small>
+              {% for app in recent_applications %}
+                <div class="activity-item d-flex align-items-center">
+                  {% if app.jobseeker.avatar %}
+                    <img src="{{ app.jobseeker.avatar.url }}"
+                         class="rounded-circle me-3"
+                         width="40"
+                         height="40"
+                         alt="avatar">
+                  {% else %}
+                    <div class="rounded-circle me-3 bg-light d-flex align-items-center justify-content-center"
+                         style="width:40px;height:40px;">
+                      <i class="bi bi-person text-muted"></i>
+                    </div>
+                  {% endif %}
+                  <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-1">{{ app.jobseeker.user.get_full_name|default:app.jobseeker.user.email }}</h6>
+                    <small class="text-muted">Applied for {{ app.job.title }}</small>
+                  </div>
+                  <div class="text-end">
+                    <small class="text-muted">{{ app.applied_at|timesince }} ago</small>
+                    {% if app.status == 0 %}
+                      <span class="badge-new ms-2">New</span>
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="text-end">
-                  <small class="text-muted">2 min ago</small>
-                  <span class="badge-new ms-2">New</span>
-                </div>
-              </div>
-              <div class="activity-item d-flex align-items-center">
-                <img src="https://placehold.co/40"
-                     class="rounded-circle me-3"
-                     alt="avatar">
-                <div class="flex-grow-1">
-                  <h6 class="fw-bold mb-1">Ivan Sidorov</h6>
-                  <small class="text-muted">Applied for Marketing Intern</small>
-                </div>
-                <div class="text-end">
-                  <small class="text-muted">15 min ago</small>
-                </div>
-              </div>
-              <div class="activity-item d-flex align-items-center">
-                <img src="https://placehold.co/40"
-                     class="rounded-circle me-3"
-                     alt="avatar">
-                <div class="flex-grow-1">
-                  <h6 class="fw-bold mb-1">Maria Kovalenko</h6>
-                  <small class="text-muted">Applied for Data Analyst</small>
-                </div>
-                <div class="text-end">
-                  <small class="text-muted">1 hour ago</small>
-                </div>
-              </div>
-              <div class="activity-item d-flex align-items-center">
-                <img src="https://placehold.co/40"
-                     class="rounded-circle me-3"
-                     alt="avatar">
-                <div class="flex-grow-1">
-                  <h6 class="fw-bold mb-1">Dmitry Volkov</h6>
-                  <small class="text-muted">Applied for QA Intern</small>
-                </div>
-                <div class="text-end">
-                  <small class="text-muted">3 hours ago</small>
-                </div>
-              </div>
-              {#  TODO: url for applicants-list  #}
-              <a href="" class="btn btn-link w-100 mt-2">View All Applicants</a>
+              {% empty %}
+                <p class="text-muted">No applications yet.</p>
+              {% endfor %}
+              <a href="{% url 'dashboard:applicants-list' %}"
+                 class="btn btn-link w-100 mt-2">View All Applicants</a>
             </div>
           </div>
           <div class="col-md-5">
             <div class="recent-activity">
               <h5 class="fw-bold mb-3">Quick Actions</h5>
-              <div class="quick-action-btn mb-3"
-                   onclick="window.location.href='post-vacancy.html'">
+              <a href="{% url 'dashboard:post-vacancy' %}"
+                 class="quick-action-btn mb-3 d-block text-decoration-none">
                 <i class="bi bi-plus-circle fs-4"></i>
                 <h6 class="fw-bold mt-2">Post a New Job</h6>
                 <small class="text-muted">Create a new vacancy for students</small>
-              </div>
-              <div class="quick-action-btn mb-3"
-                   onclick="window.location.href='manage-vacancies.html'">
+              </a>
+              <a href="{% url 'dashboard:manage-vacancies' %}"
+                 class="quick-action-btn mb-3 d-block text-decoration-none">
                 <i class="bi bi-pencil-square fs-4"></i>
                 <h6 class="fw-bold mt-2">Update Job Listings</h6>
                 <small class="text-muted">Edit or close existing positions</small>
-              </div>
-              <div class="quick-action-btn"
-                   onclick="window.location.href='applicants-list.html'">
+              </a>
+              <a href="{% url 'dashboard:applicants-list' %}"
+                 class="quick-action-btn d-block text-decoration-none">
                 <i class="bi bi-person-check fs-4"></i>
                 <h6 class="fw-bold mt-2">Review Applications</h6>
                 <small class="text-muted">Check new candidates</small>
-              </div>
-            </div>
-            <!-- Upcoming Interviews -->
-            <div class="recent-activity mt-3">
-              <h5 class="fw-bold mb-3">Upcoming Interviews</h5>
-              <div class="activity-item">
-                <div class="d-flex justify-content-between">
-                  <h6 class="fw-bold mb-1">Anna Petrova</h6>
-                  <small class="text-primary">Today, 14:00</small>
-                </div>
-                <small class="text-muted">Junior Frontend Developer</small>
-              </div>
-              <div class="activity-item">
-                <div class="d-flex justify-content-between">
-                  <h6 class="fw-bold mb-1">Ivan Sidorov</h6>
-                  <small class="text-primary">Tomorrow, 11:30</small>
-                </div>
-                <small class="text-muted">Marketing Intern</small>
-              </div>
-              <div class="activity-item">
-                <div class="d-flex justify-content-between">
-                  <h6 class="fw-bold mb-1">Maria Kovalenko</h6>
-                  <small class="text-primary">Mar 25, 10:00</small>
-                </div>
-                <small class="text-muted">Data Analyst</small>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -241,10 +195,10 @@
         new Chart(ctx1, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: {{ application_trends_labels|safe }},
                 datasets: [{
                     label: 'Applications',
-                    data: [12, 19, 25, 32, 28, 48],
+                    data: {{ application_trends_data|safe }},
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
                     tension: 0.4,
@@ -267,9 +221,9 @@
         new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['IT', 'Marketing', 'Design', 'Other'],
+                labels: {{ jobs_by_category_labels|safe }},
                 datasets: [{
-                    data: [6, 3, 2, 1],
+                    data: {{ jobs_by_category_data|safe }},
                     backgroundColor: ['#667eea', '#48bb78', '#fbbf24', '#f87171'],
                     borderWidth: 0
                 }]

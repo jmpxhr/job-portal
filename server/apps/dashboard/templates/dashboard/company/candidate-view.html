@@ -45,7 +45,6 @@
             <p class="text-muted">{{ jobseeker.title }}</p>
             <div class="d-flex justify-content-center gap-3">
               {% if jobseeker.location %}<span><i class="bi bi-geo-alt"></i> {{ jobseeker.location }}</span>{% endif %}
-              {% if jobseeker.profile_visible %}<span><i class="bi bi-briefcase"></i> Visible to employers</span>{% endif %}
             </div>
           </div>
           <!-- Match Score & Status -->
@@ -168,13 +167,6 @@
                     data-bs-title="Coming Soon"
                     disabled>
               <i class="bi bi-envelope"></i> Send Message
-            </button>
-            <button type="button"
-                    class="btn btn-outline-secondary"
-                    data-bs-toggle="tooltip"
-                    data-bs-title="Coming Soon"
-                    disabled>
-              <i class="bi bi-star"></i> Add to Shortlist
             </button>
             <a href="{{ application.resume.url }}"
                class="btn btn-outline-secondary"

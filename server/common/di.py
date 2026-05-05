@@ -5,8 +5,8 @@
 
 
 # def _global_namespace() -> dict[str, Any]:
-#     from django.conf import LazySettings  # noqa: F401, PLC0415
-#     from django.core.cache import BaseCache  # noqa: F401, PLC0415
+#     from django.conf import LazySettings
+#     from django.core.cache import BaseCache
 
 #     return locals()
 
@@ -18,12 +18,12 @@
 #     # We need to provide the same string names as we do in the definition.
 #     localns.pop('container')
 #     localns.update(_global_namespace())
-#     container.registrations._localns.update(localns)  # type: ignore[attr-defined]  # noqa: SLF001
+#     container.registrations._localns.update(localns)  # type: ignore[attr-defined]
 #     return lambda service: service
 
 
 # def _inject_django(container: punq.Container) -> None:
-#     from django.conf import LazySettings, settings  # noqa: PLC0415
+#     from django.conf import LazySettings, settings
 
 #     # Django:
 #     container.register(

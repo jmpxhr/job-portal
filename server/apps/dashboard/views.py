@@ -1,4 +1,6 @@
 import contextlib
+import json
+from datetime import timedelta
 from http import HTTPStatus
 from logging import getLogger
 from typing import Any, override
@@ -6,6 +8,7 @@ from typing import Any, override
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Count, Q, QuerySet, Sum
+from django.db.models.functions import TruncMonth
 from django.http import (
     Http404,
     HttpResponse,
@@ -13,6 +16,7 @@ from django.http import (
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 from weasyprint import HTML
@@ -829,7 +833,74 @@ class EmployerDashboardView(LoginRequiredMixin, View):
         company = self.get_company(request.user)
         if not company:
             raise Http404
-        context = {'company': company}
+
+        now = timezone.now()
+        week_ago = now - timedelta(days=7)
+
+        active_jobs_count = company.jobs.filter(is_active=True).count()  # pyrefly: ignore
+
+        base_app_qs = JobApplication.objects.filter(job__company=company)
+        total_applicants = base_app_qs.count()
+        new_applicants_count = base_app_qs.filter(
+            applied_at__gte=week_ago,
+        ).count()
+        pending_applicants_count = base_app_qs.filter(
+            status=JobApplication.StatusEnum.PENDING,
+        ).count()
+
+        recent_applications = base_app_qs.select_related(
+            'jobseeker__user',
+            'job',
+        ).order_by('-applied_at')[:5]
+
+        six_months_ago = now - timedelta(days=180)
+        trends_qs = (
+            base_app_qs
+            .filter(applied_at__gte=six_months_ago)
+            .annotate(month=TruncMonth('applied_at'))
+            .values('month')
+            .annotate(count=Count('id'))
+            .order_by('month')
+        )
+        application_trends_labels = json.dumps([
+            entry['month'].strftime('%b') if entry['month'] else ''
+            for entry in trends_qs
+        ])
+        application_trends_data = json.dumps([
+            entry['count'] for entry in trends_qs
+        ])
+
+        emp_type_labels_map = {
+            k: str(v) for k, v in Job.EmploymentTypeEnum.choices
+        }
+        category_qs = (
+            company.jobs  # pyrefly: ignore
+            .filter(is_active=True)
+            .values('employment_type')
+            .annotate(count=Count('id'))
+            .order_by('employment_type')
+        )
+        jobs_by_category_labels = json.dumps([
+            emp_type_labels_map.get(entry['employment_type'], 'Other')
+            for entry in category_qs
+        ])
+        jobs_by_category_data = json.dumps([
+            entry['count'] for entry in category_qs
+        ])
+
+        context = {
+            'company': company,
+            'active_jobs_count': active_jobs_count,
+            'total_applicants': total_applicants,
+            'new_applicants_count': new_applicants_count,
+            'pending_applicants_count': pending_applicants_count,
+            'job_views_count': 0,
+            'recent_applications': recent_applications,
+            'application_trends_labels': application_trends_labels,
+            'application_trends_data': application_trends_data,
+            'jobs_by_category_labels': jobs_by_category_labels,
+            'jobs_by_category_data': jobs_by_category_data,
+        }
         return render(request, self.template_name, context)
 
 
