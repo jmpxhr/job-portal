@@ -1,3 +1,5 @@
+from typing import override
+
 from django.apps import AppConfig
 
 
@@ -6,5 +8,6 @@ class ChatConfig(AppConfig):
     name = 'server.apps.chat'
     verbose_name = 'Chat'
 
+    @override
     def ready(self) -> None:
         from server.apps.chat import signals  # noqa: F401, PLC0415

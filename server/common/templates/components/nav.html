@@ -41,11 +41,13 @@
         {% endif %}
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link position-relative" href="javascript:void(0)" onclick="openChatList()">
+            <a class="nav-link position-relative"
+               href="javascript:void(0)"
+               onclick="openChatList()">
               <i class="bi bi-chat-dots"></i> Messages
               <span id="unread-messages-badge"
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger{% if unread_messages_count == 0 %} d-none{% endif %}"
-                    style="font-size:0.65rem;">{{ unread_messages_count }}</span>
+                    style="font-size:0.65rem">{{ unread_messages_count }}</span>
             </a>
           </li>
           <li class="nav-item dropdown">
@@ -88,6 +90,9 @@
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url 'dashboard:applicants-list' %}">Applicants</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'dashboard:browse-candidates' %}">Browse candidates</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider">

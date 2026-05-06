@@ -1,9 +1,10 @@
 import json
 from logging import getLogger
+from typing import Any, override
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.db.models import F, Sum
+from django.db.models import F
 
 from server.apps.chat.models import (
     ChatMessage,
@@ -16,6 +17,7 @@ logger = getLogger('django')
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    @override
     async def connect(self) -> None:
         self.room_pk = self.scope['url_route']['kwargs']['room_pk']
         self.group_name = f'chat_{self.room_pk}'
@@ -36,14 +38,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-    async def disconnect(self, close_code: int) -> None:
+    @override
+    async def disconnect(self, code: int) -> None:
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(
                 self.group_name,
                 self.channel_name,
             )
 
-    async def receive(self, text_data: str | None = None) -> None:
+    @override
+    async def receive(self, text_data: str | None = None) -> None:  # type: ignore[override] # pyrefly: ignore
         if text_data is None:
             return
 
@@ -60,21 +64,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message_id': message.pk,
-                'sender_id': self.user.pk,
+                'sender_id': self.user.pk,  # type: ignore[union-attr] # pyrefly: ignore
                 'sender_name': await self._get_sender_name(),
                 'content': message_content,
                 'timestamp': message.created_at.isoformat(),
             },
         )
 
-    async def chat_message(self, event: dict) -> None:  # noqa: PLR6301
-        await self.send(text_data=json.dumps({
-            'message_id': event['message_id'],
-            'sender_id': event['sender_id'],
-            'sender_name': event['sender_name'],
-            'content': event['content'],
-            'timestamp': event['timestamp'],
-        }))
+    async def chat_message(self, event: dict[str, Any]) -> None:
+        await self.send(
+            text_data=json.dumps({
+                'message_id': event['message_id'],
+                'sender_id': event['sender_id'],
+                'sender_name': event['sender_name'],
+                'content': event['content'],
+                'timestamp': event['timestamp'],
+            }),
+        )
 
     @database_sync_to_async
     def _user_has_access(self) -> bool:
@@ -96,7 +102,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _save_message(self, content: str) -> ChatMessage:
-        message = ChatMessage.objects.create(
+        message = ChatMessage.objects.create(  # type: ignore[misc]
             room_id=self.room_pk,
             sender=self.user,
             content=content,
@@ -110,7 +116,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         ChatNotification.objects.filter(
             user=self.user,
             room=room,
-        ).update(unread_count=0)
+        ).update(unread_count=0)  # type: ignore[misc]
 
         other_user = (
             room.application.job.company.recruiter.user
@@ -122,7 +128,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room=room,
         ).update(unread_count=F('unread_count') + 1)
 
-        send_notification_update_sync(self.user.pk)
+        send_notification_update_sync(self.user.pk)  # type: ignore[union-attr] # pyrefly: ignore
         send_notification_update_sync(other_user.pk)
 
         return message
@@ -132,14 +138,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         ChatMessage.objects.filter(
             room_id=self.room_pk,
             is_read=False,
-        ).exclude(sender=self.user).update(is_read=True)
+        ).exclude(sender=self.user).update(is_read=True)  # type: ignore[misc]
 
     @database_sync_to_async
     def _get_sender_name(self) -> str:
-        return self.user.get_full_name() or self.user.email
+        return self.user.get_full_name() or self.user.email  # type: ignore[no-any-return, union-attr] # pyrefly: ignore
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
+    @override
     async def connect(self) -> None:
         self.user = self.scope.get('user')
         if self.user is None or self.user.is_anonymous:
@@ -153,15 +160,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-    async def disconnect(self, close_code: int) -> None:
+    @override
+    async def disconnect(self, code: int) -> None:
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(
                 self.group_name,
                 self.channel_name,
             )
 
-    async def notification_update(self, event: dict) -> None:  # noqa: PLR6301
-        await self.send(text_data=json.dumps({
-            'type': 'notification_update',
-            'unread_count': event['unread_count'],
-        }))
+    async def notification_update(self, event: dict[str, Any]) -> None:
+        await self.send(
+            text_data=json.dumps({
+                'type': 'notification_update',
+                'unread_count': event['unread_count'],
+            }),
+        )

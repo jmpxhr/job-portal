@@ -154,6 +154,11 @@ urlpatterns = [
         name='update-application-feedback',
     ),
     path(
+        'company/browse-candidates/',
+        views.BrowseCandidatesView.as_view(),
+        name='browse-candidates',
+    ),
+    path(
         'company/candidates/<int:pk>/',
         views.CandidateView.as_view(),
         name='candidate-view',

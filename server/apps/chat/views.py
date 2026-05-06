@@ -130,9 +130,13 @@ class ChatListModalView(LoginRequiredMixin, View):
                 'unread_count': unread_map.get(room.pk, 0),
             })
 
-        return render(request, 'chat/chat-list-partial.html', {
-            'rooms_with_data': rooms_with_data,
-        })
+        return render(
+            request,
+            'chat/chat-list-partial.html',
+            {
+                'rooms_with_data': rooms_with_data,
+            },
+        )
 
 
 class UnreadCountView(LoginRequiredMixin, View):
@@ -181,13 +185,17 @@ class ChatRoomView(LoginRequiredMixin, View):
         else:
             other_user = room.application.jobseeker.user
 
-        return render(request, 'chat/chat-modal.html', {
-            'room': room,
-            'messages': messages,
-            'other_user': other_user,
-            'job': room.application.job,
-            'user': user,
-        })
+        return render(
+            request,
+            'chat/chat-modal.html',
+            {
+                'room': room,
+                'messages': messages,
+                'other_user': other_user,
+                'job': room.application.job,
+                'user': user,
+            },
+        )
 
     def _user_has_access(self, room: ChatRoom, user: 'UserType') -> bool:
         if user == room.application.jobseeker.user:

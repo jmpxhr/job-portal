@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
 from django.db.models import Sum
 
@@ -23,7 +24,7 @@ def send_notification_update_sync(user_id: int) -> None:
     if channel_layer is None:
         return
     unread_count = _get_unread_count_sync(user_id)
-    channel_layer.group_send(
+    channel_layer.group_send(  # type: ignore[unused-coroutine] # pyrefly: ignore
         f'notifications_{user_id}',
         {
             'type': 'notification_update',
@@ -33,8 +34,6 @@ def send_notification_update_sync(user_id: int) -> None:
 
 
 async def _get_unread_count_async(user_id: int) -> int:
-    from asgiref.sync import sync_to_async
-
     return await sync_to_async(_get_unread_count_sync)(user_id)
 
 

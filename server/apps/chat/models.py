@@ -21,13 +21,16 @@ class ChatRoom(TimeStampModelMixin):
 
     @override
     def __str__(self) -> str:
-        return f'ChatRoom[{self.application_id}]'
+        return f'ChatRoom[{self.application_id}]'  # pyrefly: ignore
 
     @property
     def other_user_unread_count(self) -> int:
-        return self.notifications.aggregate(
-            total=models.Sum('unread_count'),
-        )['total'] or 0
+        return (
+            self.notifications.aggregate(  # pyrefly: ignore
+                total=models.Sum('unread_count'),
+            )['total']
+            or 0
+        )
 
     class Meta(TypedModelMeta):
         db_table = 'chat_rooms'
@@ -79,7 +82,10 @@ class ChatNotification(models.Model):
 
     @override
     def __str__(self) -> str:
-        return f'Notification[{self.user_id} in Room[{self.room_id}]]: {self.unread_count}'
+        return (
+            f'Notification[{self.user_id} in Room[{self.room_id}]]: '  # pyrefly: ignore
+            f'{self.unread_count}'
+        )
 
     class Meta(TypedModelMeta):
         db_table = 'chat_notifications'

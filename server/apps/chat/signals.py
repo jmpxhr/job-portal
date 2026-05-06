@@ -3,14 +3,14 @@ from django.dispatch import receiver
 
 from server.apps.jobs.models import JobApplication
 
-from .models import ChatRoom, ChatNotification
+from .models import ChatNotification, ChatRoom
 
 
 @receiver(post_save, sender=JobApplication)
 def create_chat_room(
     sender: type[JobApplication],
     instance: JobApplication,
-    created: bool,
+    created: bool,  # noqa: FBT001
     **kwargs: object,
 ) -> None:
     if created:

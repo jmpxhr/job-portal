@@ -1,6 +1,6 @@
 import contextlib
 import json
-from datetime import timedelta
+from datetime import date, timedelta
 from http import HTTPStatus
 from logging import getLogger
 from typing import Any, override
@@ -21,6 +21,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from weasyprint import HTML
 
+from server.apps.accounts.filters import JobSeekerFilter
 from server.apps.accounts.models import (
     Education,
     Experience,
@@ -1380,3 +1381,189 @@ class CandidateView(LoginRequiredMixin, View):
         }
 
         return render(request, self.template_name, context)
+
+
+class BrowseCandidatesView(LoginRequiredMixin, View):
+    template_name = const.BROWSE_CANDIDATES
+    paginate_by = 12
+
+    SORT_CHOICES: list[tuple[str, str]] = [
+        ('recent', 'Most Recent'),
+        ('name', 'Name (A-Z)'),
+    ]
+
+    EXPERIENCE_CHOICES: list[tuple[str, str]] = [
+        ('0', "Doesn't matter"),
+        ('1', 'No experience'),
+        ('2', 'From 1 year to 3 years'),
+        ('3', 'From 3 to 6 years'),
+        ('4', 'More than 6 years'),
+    ]
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    EXP_RANGES: dict[str, tuple[float, float]] = {
+        '2': (1.0, 3.0),
+        '3': (3.0, 6.0),
+        '4': (6.0, 9999.0),
+    }
+
+    def apply_experience_filter(
+        self,
+        qs: QuerySet[JobSeeker],
+        experience_level: str,
+    ) -> QuerySet[JobSeeker]:
+        if not experience_level or experience_level == '0':
+            return qs
+
+        if experience_level == '1':
+            return qs.filter(experience__isnull=True).distinct()
+
+        if experience_level not in self.EXP_RANGES:
+            return qs
+
+        min_yr, max_yr = self.EXP_RANGES[experience_level]
+        today = timezone.now().date()
+
+        matching_ids: list[int] = []
+        candidates = qs.filter(experience__isnull=False).distinct()
+        for js in candidates:
+            total_years = self._calc_total_years(js, today)
+            if min_yr <= total_years < max_yr:
+                matching_ids.append(js.pk)
+
+        return qs.filter(pk__in=matching_ids)
+
+    @staticmethod
+    def _calc_total_years(jobseeker: JobSeeker, today: date) -> float:
+        total_days = 0
+        for exp in jobseeker.experience.all():  # pyrefly: ignore
+            end = exp.end_date or today
+            total_days += max(0, (end - exp.start_date).days)
+        return total_days / 365.25
+
+    def get(
+        self,
+        request: AuthenticatedHtmxRequest,
+    ) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        jobseeker_qs = (
+            JobSeeker.objects
+            .filter(profile_visible=True)
+            .select_related('user')
+            .prefetch_related(
+                'skills',
+                'education',
+                'experience',
+                'languages',
+            )
+        )
+
+        jobseeker_filter = JobSeekerFilter(
+            data=request.GET,
+            queryset=jobseeker_qs,
+        )
+
+        filtered_qs = jobseeker_filter.qs
+
+        experience_level = request.GET.get('experience_level', '')
+        filtered_qs = self.apply_experience_filter(
+            filtered_qs,
+            experience_level,
+        )
+
+        selected_job, match_scores = self._compute_match_scores(
+            request,
+            company,
+            filtered_qs,
+        )
+
+        selected_job_id = request.GET.get('job_id', '')
+
+        paginator = Paginator(filtered_qs, self.paginate_by)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        if match_scores:
+            for js in page_obj:
+                js.match_score = match_scores.get(js.pk, 0)  # type: ignore[attr-defined] # pyrefly: ignore
+
+        for js in page_obj:
+            js.exp_count = js.experience.count()  # type: ignore[attr-defined] # pyrefly: ignore
+
+        context = {
+            'page_obj': page_obj,
+            'company': company,
+            'filter': jobseeker_filter,
+            'popular_skills': self._get_popular_skills(),
+            'selected_job': selected_job,
+            'company_jobs': self._get_company_jobs(company),
+            'current_q': request.GET.get('q', ''),
+            'current_location': request.GET.get('location', ''),
+            'current_sort': request.GET.get('sort', ''),
+            'current_education_level': request.GET.get(
+                'education_level',
+                '',
+            ),
+            'current_experience_level': experience_level,
+            'current_job_id': selected_job_id,
+            'current_skills': request.GET.getlist('skills'),
+            'sort_choices': self.SORT_CHOICES,
+            'experience_choices': self.EXPERIENCE_CHOICES,
+            'education_choices': Education.EducationLevelEnum.choices,
+        }
+
+        return render(request, self.template_name, context)
+
+    def _compute_match_scores(
+        self,
+        request: AuthenticatedHtmxRequest,
+        company: Company,
+        qs: QuerySet[JobSeeker],
+    ) -> tuple[Job | None, dict[int, int]]:
+        selected_job_id = request.GET.get('job_id', '')
+        if not selected_job_id:
+            return None, {}
+
+        try:
+            selected_job = Job.objects.get(
+                pk=int(selected_job_id),
+                company=company,
+            )
+        except (ValueError, Job.DoesNotExist):
+            return None, {}
+
+        job_skills = set(selected_job.skills.values_list('id', flat=True))
+        if not job_skills:
+            return selected_job, {}
+
+        match_scores: dict[int, int] = {}
+        for js in qs:
+            candidate_skills = set(
+                js.skills.values_list('id', flat=True),
+            )
+            matching = job_skills & candidate_skills
+            match_scores[js.pk] = round(
+                (len(matching) / len(job_skills)) * 100,
+            )
+        return selected_job, match_scores
+
+    @staticmethod
+    def _get_popular_skills() -> QuerySet[Skill]:
+        return Skill.objects.annotate(
+            jobseeker_count=Count('jobseekers'),
+        ).order_by('-jobseeker_count')[:15]
+
+    @staticmethod
+    def _get_company_jobs(company: Company) -> QuerySet[Job]:
+        return Job.objects.filter(
+            company=company,
+            is_active=True,
+        ).order_by('-posted_at')
