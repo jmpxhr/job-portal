@@ -145,14 +145,6 @@
               {% endfor %}
             </div>
           {% endif %}
-          <!-- Projects (Placeholder - to be implemented) -->
-          <div class="mb-4">
-            <h5 class="fw-bold mb-3">Projects</h5>
-            <div class="text-center py-4 text-muted">
-              <i class="bi bi-code-slash fs-2"></i>
-              <p class="mt-2 mb-0">Projects section coming soon</p>
-            </div>
-          </div>
         </div>
       </div>
       <!-- Right Sidebar - Actions & Contact -->
@@ -182,6 +174,14 @@
                target="_blank">
               <i class="bi bi-file-earmark-pdf"></i> Generate PDF
             </a>
+            {% if application.cover_letter %}
+              <button type="button"
+                      class="btn btn-outline-warning"
+                      data-bs-toggle="modal"
+                      data-bs-target="#coverLetterModal">
+                <i class="bi bi-envelope-paper"></i> View Cover Letter
+              </button>
+            {% endif %}
             <button type="button"
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
@@ -247,6 +247,34 @@
       </div>
     </div>
   </section>
+  <!-- Cover Letter Modal -->
+  {% if application.cover_letter %}
+    <div class="modal fade"
+         id="coverLetterModal"
+         tabindex="-1"
+         aria-labelledby="coverLetterModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="coverLetterModalLabel">
+              <i class="bi bi-envelope-paper me-2"></i>Cover Letter
+            </h5>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ application.cover_letter }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
   <!-- Feedback Modal -->
   <div class="modal fade"
        id="feedbackModal"
