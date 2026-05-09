@@ -159,6 +159,11 @@ urlpatterns = [
         name='browse-candidates',
     ),
     path(
+        'company/browse-candidates/<int:pk>/',
+        views.BrowseCandidateProfileView.as_view(),
+        name='browse-candidate-profile',
+    ),
+    path(
         'company/candidates/<int:pk>/',
         views.CandidateView.as_view(),
         name='candidate-view',

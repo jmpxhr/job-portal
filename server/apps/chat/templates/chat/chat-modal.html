@@ -8,16 +8,22 @@
     </button>
     <div class="d-flex align-items-center flex-grow-1">
       {% if other_user.account_type == 2 %}
-        {% if room.application.job.company.logo %}
+        {% if room.application_id and room.application.job.company.logo %}
           <img src="{{ room.application.job.company.logo.url }}"
                alt="{{ room.application.job.company.name }}"
+               class="rounded-circle me-2"
+               width="40"
+               height="40">
+        {% elif other_user.recruiter.company.logo %}
+          <img src="{{ other_user.recruiter.company.logo.url }}"
+               alt="{{ other_user.recruiter.company.name }}"
                class="rounded-circle me-2"
                width="40"
                height="40">
         {% else %}
           <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center me-2"
                style="width:40px;height:40px;">
-            {{ room.application.job.company.name|make_list|slice:":1"|join:""|upper }}
+            {{ other_user.recruiter.company.name|make_list|slice:":1"|join:""|upper }}
           </div>
         {% endif %}
       {% else %}
@@ -36,7 +42,13 @@
       {% endif %}
       <div>
         <h6 class="fw-bold mb-0">{{ other_user.get_full_name }}</h6>
-        <small class="text-muted">{{ job.title }}</small>
+        {% if job %}
+          <small class="text-muted">{{ job.title }}</small>
+        {% elif other_user.account_type == 2 %}
+          <small class="text-muted">{{ other_user.recruiter.company.name }}</small>
+        {% else %}
+          <small class="text-muted">Direct Message</small>
+        {% endif %}
       </div>
     </div>
   </div>

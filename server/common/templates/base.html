@@ -199,6 +199,19 @@
             xhr.send();
           };
 
+          window.startDirectChat = function(jobseekerPk) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/chat/start-direct/' + jobseekerPk + '/', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                openChat(data.room_pk);
+              }
+            };
+            xhr.send();
+          };
+
           // --- Chat WebSocket ---
 
           function connectChatWebSocket(roomPk) {

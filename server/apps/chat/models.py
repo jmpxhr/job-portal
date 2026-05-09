@@ -17,11 +17,31 @@ class ChatRoom(TimeStampModelMixin):
         on_delete=models.CASCADE,
         related_name='chat_room',
         verbose_name=_('application'),
+        null=True,
+        blank=True,
+    )
+    jobseeker_user: models.ForeignKey['UserType'] = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+        related_name='direct_chat_rooms_as_jobseeker',
+        verbose_name=_('jobseeker user'),
+        null=True,
+        blank=True,
+    )
+    recruiter_user: models.ForeignKey['UserType'] = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+        related_name='direct_chat_rooms_as_recruiter',
+        verbose_name=_('recruiter user'),
+        null=True,
+        blank=True,
     )
 
     @override
     def __str__(self) -> str:
-        return f'ChatRoom[{self.application_id}]'  # pyrefly: ignore
+        if self.application_id:
+            return f'ChatRoom[{self.application_id}]'  # pyrefly: ignore
+        return f'ChatRoom[direct:{self.jobseeker_user_id}-{self.recruiter_user_id}]'  # pyrefly: ignore
 
     @property
     def other_user_unread_count(self) -> int:

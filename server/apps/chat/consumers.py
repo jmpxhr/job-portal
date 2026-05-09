@@ -12,6 +12,7 @@ from server.apps.chat.models import (
     ChatRoom,
 )
 from server.apps.chat.utils import send_notification_update_sync
+from server.apps.chat.views import _get_other_user, _user_has_room_access
 
 logger = getLogger('django')
 
@@ -88,17 +89,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room = ChatRoom.objects.select_related(
                 'application__jobseeker__user',
                 'application__job__company__recruiter__user',
+                'jobseeker_user',
+                'recruiter_user',
             ).get(pk=self.room_pk)
         except ChatRoom.DoesNotExist:
             return False
-
-        user = self.user
-        if user == room.application.jobseeker.user:
-            return True
-        try:
-            return user == room.application.job.company.recruiter.user
-        except Exception:
-            return False
+        return _user_has_room_access(room, self.user)  # type: ignore[arg-type]
 
     @database_sync_to_async
     def _save_message(self, content: str) -> ChatMessage:
@@ -111,6 +107,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         room = ChatRoom.objects.select_related(
             'application__jobseeker__user',
             'application__job__company__recruiter__user',
+            'jobseeker_user',
+            'recruiter_user',
         ).get(pk=self.room_pk)
 
         ChatNotification.objects.filter(
@@ -118,11 +116,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room=room,
         ).update(unread_count=0)  # type: ignore[misc]
 
-        other_user = (
-            room.application.job.company.recruiter.user
-            if self.user == room.application.jobseeker.user
-            else room.application.jobseeker.user
-        )
+        other_user = _get_other_user(room, self.user)  # type: ignore[arg-type]
         ChatNotification.objects.filter(
             user=other_user,
             room=room,

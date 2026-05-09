@@ -60,7 +60,9 @@
               <label for="sort-select" class="form-label mb-0 small text-muted">Sort by</label>
               <select id="sort-select" name="sort" class="form-select" style="width: 200px;" onchange="this.form.submit()">
                 {% for value, label in sort_choices %}
-                  <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
+                  {% if value != 'match_score' or selected_job %}
+                    <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
+                  {% endif %}
                 {% endfor %}
               </select>
             </div>
@@ -151,7 +153,7 @@
           <div class="col-lg-9" id="listView">
             {% for jobseeker in page_obj %}
               <!-- Candidate Card -->
-              <a href="{% url 'dashboard:candidate-view' jobseeker.pk %}" class="text-decoration-none text-dark">
+              <a href="{% url 'dashboard:browse-candidate-profile' jobseeker.pk %}{% if selected_job %}?job_id={{ selected_job.pk }}{% endif %}" class="text-decoration-none text-dark">
                 <div class="candidate-card">
                   <div class="row">
                     <div class="col-md-2">

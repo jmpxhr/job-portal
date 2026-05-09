@@ -2,12 +2,13 @@ from typing import TYPE_CHECKING, Any, override
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F, Sum
+from django.db.models import F, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import TemplateView
 
+from server.apps.accounts.models import JobSeeker, Recruiter
 from server.apps.chat.models import ChatMessage, ChatNotification, ChatRoom
 from server.apps.chat.utils import send_notification_update_sync
 from server.apps.jobs.models import JobApplication
@@ -18,7 +19,6 @@ if TYPE_CHECKING:
 
 User = get_user_model()
 
-
 _select_related_company = (
     'application__job',
     'application__jobseeker__user',
@@ -26,6 +26,75 @@ _select_related_company = (
     'application__job__company',
     'application__job__company__recruiter__user',
 )
+
+_select_related_direct = (
+    'jobseeker_user',
+    'jobseeker_user__jobseeker',
+    'recruiter_user',
+    'recruiter_user__recruiter',
+    'recruiter_user__recruiter__company',
+)
+
+
+def _get_other_user(room: ChatRoom, user: 'UserType') -> 'UserType':
+    if room.application_id:
+        if user == room.application.jobseeker.user:
+            return room.application.job.company.recruiter.user
+        return room.application.jobseeker.user
+    if user == room.jobseeker_user:
+        return room.recruiter_user  # type: ignore[return-value]
+    return room.jobseeker_user  # type: ignore[return-value]
+
+
+def _user_has_room_access(room: ChatRoom, user: 'UserType') -> bool:
+    if room.application_id:
+        if user == room.application.jobseeker.user:
+            return True
+        try:
+            return user == room.application.job.company.recruiter.user
+        except Exception:
+            return False
+    return user in (room.jobseeker_user, room.recruiter_user)
+
+
+def _get_user_rooms(user: 'UserType') -> list[ChatRoom]:
+    app_rooms = (
+        ChatRoom.objects
+        .filter(application__isnull=False)
+        .select_related(*_select_related_company)
+    )
+    direct_rooms = (
+        ChatRoom.objects
+        .filter(application__isnull=True)
+        .select_related(*_select_related_direct)
+    )
+
+    if user.account_type == User.AccountTypeEnum.JOBSEEKER:  # pyrefly: ignore
+        app_rooms = app_rooms.filter(
+            application__jobseeker__user=user,
+        )
+        direct_rooms = direct_rooms.filter(jobseeker_user=user)
+    elif user.account_type == User.AccountTypeEnum.COMPANY:  # pyrefly: ignore
+        app_rooms = app_rooms.filter(
+            application__job__company__recruiter__user=user,
+        )
+        direct_rooms = direct_rooms.filter(recruiter_user=user)
+    else:
+        return []
+
+    all_room_ids = list(app_rooms.values_list('pk', flat=True)) + list(
+        direct_rooms.values_list('pk', flat=True),
+    )
+    if not all_room_ids:
+        return []
+
+    return list(
+        ChatRoom.objects
+        .filter(pk__in=all_room_ids)
+        .select_related(*_select_related_company, *_select_related_direct)
+        .prefetch_related('messages')
+        .order_by('-updated_at')
+    )
 
 
 class ChatListView(LoginRequiredMixin, TemplateView):
@@ -37,28 +106,7 @@ class ChatListView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        if user.account_type == User.AccountTypeEnum.JOBSEEKER:  # pyrefly: ignore
-            rooms = (
-                ChatRoom.objects
-                .filter(
-                    application__jobseeker__user=user,
-                )
-                .select_related(*_select_related_company)
-                .prefetch_related('messages')
-                .order_by('-updated_at')
-            )
-        elif user.account_type == User.AccountTypeEnum.COMPANY:  # pyrefly: ignore
-            rooms = (
-                ChatRoom.objects
-                .filter(
-                    application__job__company__recruiter__user=user,
-                )
-                .select_related(*_select_related_company)
-                .prefetch_related('messages')
-                .order_by('-updated_at')
-            )
-        else:
-            rooms = ChatRoom.objects.none()
+        rooms = _get_user_rooms(user)
 
         notifications = ChatNotification.objects.filter(
             user=user,
@@ -76,6 +124,7 @@ class ChatListView(LoginRequiredMixin, TemplateView):
                 'room': room,
                 'last_message': last_message,
                 'unread_count': unread_map.get(room.pk, 0),
+                'other_user': _get_other_user(room, user),
             })
 
         context['rooms_with_data'] = rooms_with_data
@@ -89,28 +138,7 @@ class ChatListModalView(LoginRequiredMixin, View):
     def get(self, request: AuthenticatedHttpRequest) -> HttpResponse:
         user = request.user
 
-        if user.account_type == User.AccountTypeEnum.JOBSEEKER:  # pyrefly: ignore
-            rooms = (
-                ChatRoom.objects
-                .filter(
-                    application__jobseeker__user=user,
-                )
-                .select_related(*_select_related_company)
-                .prefetch_related('messages')
-                .order_by('-updated_at')
-            )
-        elif user.account_type == User.AccountTypeEnum.COMPANY:  # pyrefly: ignore
-            rooms = (
-                ChatRoom.objects
-                .filter(
-                    application__job__company__recruiter__user=user,
-                )
-                .select_related(*_select_related_company)
-                .prefetch_related('messages')
-                .order_by('-updated_at')
-            )
-        else:
-            rooms = ChatRoom.objects.none()
+        rooms = _get_user_rooms(user)
 
         notifications = ChatNotification.objects.filter(
             user=user,
@@ -128,6 +156,7 @@ class ChatListModalView(LoginRequiredMixin, View):
                 'room': room,
                 'last_message': last_message,
                 'unread_count': unread_map.get(room.pk, 0),
+                'other_user': _get_other_user(room, user),
             })
 
         return render(
@@ -159,11 +188,13 @@ class ChatRoomView(LoginRequiredMixin, View):
                 'application__jobseeker',
                 'application__job__company',
                 'application__job__company__recruiter__user',
+                'jobseeker_user',
+                'recruiter_user',
             ),
             pk=pk,
         )
 
-        if not self._user_has_access(room, user):
+        if not _user_has_room_access(room, user):
             raise Http404
 
         ChatMessage.objects.filter(
@@ -180,10 +211,8 @@ class ChatRoomView(LoginRequiredMixin, View):
 
         messages = room.messages.select_related('sender').order_by('created_at')  # pyrefly: ignore
 
-        if user == room.application.jobseeker.user:
-            other_user = room.application.job.company.recruiter.user
-        else:
-            other_user = room.application.jobseeker.user
+        other_user = _get_other_user(room, user)
+        job = room.application.job if room.application_id else None  # pyrefly: ignore
 
         return render(
             request,
@@ -192,18 +221,10 @@ class ChatRoomView(LoginRequiredMixin, View):
                 'room': room,
                 'messages': messages,
                 'other_user': other_user,
-                'job': room.application.job,
+                'job': job,
                 'user': user,
             },
         )
-
-    def _user_has_access(self, room: ChatRoom, user: 'UserType') -> bool:
-        if user == room.application.jobseeker.user:
-            return True
-        try:
-            return user == room.application.job.company.recruiter.user
-        except Exception:
-            return False
 
 
 class StartChatView(LoginRequiredMixin, View):
@@ -257,17 +278,59 @@ class StartChatView(LoginRequiredMixin, View):
             return False
 
 
+class StartDirectChatView(LoginRequiredMixin, View):
+    request: AuthenticatedHttpRequest  # pyrefly: ignore
+
+    def get(
+        self,
+        request: AuthenticatedHttpRequest,
+        jobseeker_pk: int,
+    ) -> HttpResponse:
+        user = request.user
+
+        jobseeker = get_object_or_404(JobSeeker, pk=jobseeker_pk)
+
+        try:
+            recruiter = user.recruiter  # pyrefly: ignore
+        except Recruiter.DoesNotExist:
+            raise Http404
+
+        if jobseeker.user == user:
+            raise Http404
+
+        room, _created = ChatRoom.objects.get_or_create(
+            application__isnull=True,
+            jobseeker_user=jobseeker.user,
+            recruiter_user=user,
+            defaults={
+                'jobseeker_user': jobseeker.user,
+                'recruiter_user': user,
+            },
+        )
+
+        ChatNotification.objects.get_or_create(
+            user=jobseeker.user,
+            room=room,
+            defaults={'unread_count': 0},
+        )
+        ChatNotification.objects.get_or_create(
+            user=user,
+            room=room,
+            defaults={'unread_count': 0},
+        )
+
+        return JsonResponse({'room_pk': room.pk})
+
+
 class SendMessageView(LoginRequiredMixin, View):
     request: AuthenticatedHttpRequest  # pyrefly: ignore
 
     def post(self, request: AuthenticatedHttpRequest, pk: int) -> HttpResponse:
-        room = get_object_or_404(
-            ChatRoom.objects.select_related(
-                'application__jobseeker__user',
-                'application__job__company__recruiter__user',
-            ),
-            pk=pk,
-        )
+        room = get_object_or_404(ChatRoom, pk=pk)
+
+        if not _user_has_room_access(room, request.user):
+            raise Http404
+
         content = request.POST.get('content', '').strip()
 
         if not content:
@@ -284,11 +347,7 @@ class SendMessageView(LoginRequiredMixin, View):
             room=room,
         ).update(unread_count=0)
 
-        other_user = (
-            room.application.job.company.recruiter.user
-            if request.user == room.application.jobseeker.user
-            else room.application.jobseeker.user
-        )
+        other_user = _get_other_user(room, request.user)
         ChatNotification.objects.filter(
             user=other_user,
             room=room,

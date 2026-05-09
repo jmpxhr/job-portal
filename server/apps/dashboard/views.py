@@ -7,7 +7,7 @@ from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Count, Q, QuerySet, Sum
+from django.db.models import Case, Count, IntegerField, Q, QuerySet, Sum, Value, When
 from django.db.models.functions import TruncMonth
 from django.http import (
     Http404,
@@ -1383,6 +1383,73 @@ class CandidateView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class BrowseCandidateProfileView(LoginRequiredMixin, View):
+    template_name = const.BROWSE_CANDIDATE_PROFILE
+
+    def get_company(self, user: User) -> Company | None:
+        try:
+            return user.recruiter.company  # pyrefly: ignore
+        except (Recruiter.DoesNotExist, Company.DoesNotExist):
+            return None
+
+    def get(
+        self,
+        request: AuthenticatedHttpRequest,
+        pk: int,
+    ) -> HttpResponse:
+        company = self.get_company(request.user)
+        if not company:
+            raise Http404
+
+        jobseeker = get_object_or_404(
+            JobSeeker.objects.select_related('user').prefetch_related(
+                'skills',
+                'education',
+                'experience',
+                'languages',
+            ),
+            pk=pk,
+            profile_visible=True,
+        )
+
+        match_score = 0
+        skill_match_level = ''
+        job = None
+
+        job_id = request.GET.get('job_id', '')
+        if job_id:
+            try:
+                job = Job.objects.get(pk=int(job_id), company=company)
+                match_score = _compute_match_score(jobseeker, job)
+                if match_score >= 70:
+                    skill_match_level = 'High'
+                elif match_score >= 40:
+                    skill_match_level = 'Medium'
+                else:
+                    skill_match_level = 'Low'
+            except (ValueError, Job.DoesNotExist):
+                pass
+
+        education = jobseeker.education.all().order_by('-year_of_graduation')
+        experience = jobseeker.experience.all().order_by('-start_date')
+        languages = jobseeker.languages.all().order_by('name')
+        skills = jobseeker.skills.all().order_by('name')
+
+        context = {
+            'jobseeker': jobseeker,
+            'job': job,
+            'match_score': match_score,
+            'skill_match_level': skill_match_level,
+            'education': education,
+            'experience': experience,
+            'languages': languages,
+            'skills': skills,
+            'company': company,
+        }
+
+        return render(request, self.template_name, context)
+
+
 class BrowseCandidatesView(LoginRequiredMixin, View):
     template_name = const.BROWSE_CANDIDATES
     paginate_by = 12
@@ -1390,6 +1457,7 @@ class BrowseCandidatesView(LoginRequiredMixin, View):
     SORT_CHOICES: list[tuple[str, str]] = [
         ('recent', 'Most Recent'),
         ('name', 'Name (A-Z)'),
+        ('match_score', 'Match Score'),
     ]
 
     EXPERIENCE_CHOICES: list[tuple[str, str]] = [
@@ -1484,6 +1552,20 @@ class BrowseCandidatesView(LoginRequiredMixin, View):
             company,
             filtered_qs,
         )
+
+        sort = request.GET.get('sort', '')
+        if sort == 'match_score' and match_scores:
+            preserved_order = Case(
+                *[
+                    When(pk=pk, then=Value(score))
+                    for pk, score in match_scores.items()
+                ],
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+            filtered_qs = filtered_qs.annotate(
+                match_score_order=preserved_order,
+            ).order_by('-match_score_order')
 
         selected_job_id = request.GET.get('job_id', '')
 

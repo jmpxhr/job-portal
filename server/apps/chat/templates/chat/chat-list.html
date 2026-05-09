@@ -18,27 +18,39 @@
                  class="chat-list-item d-flex align-items-center text-decoration-none {% if item.unread_count > 0 %}has-unread{% endif %}">
                 <div class="chat-avatar me-3">
                   {% if request.user.account_type == 1 %}
-                    {% if item.room.application.job.company.logo %}
-                      <img src="{{ item.room.application.job.company.logo.url }}"
-                           alt="{{ item.room.application.job.company.name }}"
-                           class="rounded-circle"
-                           width="48"
-                           height="48">
+                    {% if item.other_user.account_type == 2 %}
+                      {% if item.room.application_id and item.room.application.job.company.logo %}
+                        <img src="{{ item.room.application.job.company.logo.url }}"
+                             alt="{{ item.room.application.job.company.name }}"
+                             class="rounded-circle"
+                             width="48"
+                             height="48">
+                      {% elif item.other_user.recruiter.company.logo %}
+                        <img src="{{ item.other_user.recruiter.company.logo.url }}"
+                             alt="{{ item.other_user.recruiter.company.name }}"
+                             class="rounded-circle"
+                             width="48"
+                             height="48">
+                      {% else %}
+                        <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
+                          {{ item.other_user.get_full_name|make_list|slice:":1"|join:""|upper }}
+                        </div>
+                      {% endif %}
                     {% else %}
                       <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
-                        {{ item.room.application.job.company.name|make_list|slice:":1"|join:""|upper }}
+                        {{ item.other_user.get_full_name|make_list|slice:":1"|join:""|upper }}
                       </div>
                     {% endif %}
                   {% else %}
-                    {% if item.room.application.jobseeker.avatar %}
-                      <img src="{{ item.room.application.jobseeker.avatar.url }}"
-                           alt="{{ item.room.application.jobseeker.user.get_full_name }}"
+                    {% if item.other_user.jobseeker.avatar %}
+                      <img src="{{ item.other_user.jobseeker.avatar.url }}"
+                           alt="{{ item.other_user.get_full_name }}"
                            class="rounded-circle"
                            width="48"
                            height="48">
                     {% else %}
                       <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
-                        {{ item.room.application.jobseeker.user.get_full_name|make_list|slice:":1"|join:""|upper }}
+                        {{ item.other_user.get_full_name|make_list|slice:":1"|join:""|upper }}
                       </div>
                     {% endif %}
                   {% endif %}
@@ -47,9 +59,13 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <h6 class="fw-bold mb-0 text-dark">
                       {% if request.user.account_type == 1 %}
-                        {{ item.room.application.job.company.name }}
+                        {% if item.room.application_id %}
+                          {{ item.room.application.job.company.name }}
+                        {% else %}
+                          {{ item.other_user.get_full_name }}
+                        {% endif %}
                       {% else %}
-                        {{ item.room.application.jobseeker.user.get_full_name }}
+                        {{ item.other_user.get_full_name }}
                       {% endif %}
                     </h6>
                     {% if item.last_message %}
@@ -59,7 +75,13 @@
                     {% endif %}
                   </div>
                   <p class="text-muted mb-1 small">
-                    {{ item.room.application.job.title }}
+                    {% if item.room.application_id %}
+                      {{ item.room.application.job.title }}
+                    {% elif item.other_user.account_type == 2 %}
+                      {{ item.other_user.recruiter.company.name }}
+                    {% else %}
+                      Direct Message
+                    {% endif %}
                   </p>
                   {% if item.last_message %}
                     <p class="text-muted mb-0 small text-truncate"

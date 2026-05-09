@@ -31,6 +31,11 @@ urlpatterns = [
         name='start',
     ),
     path(
+        'start-direct/<int:jobseeker_pk>/',
+        views.StartDirectChatView.as_view(),
+        name='start-direct',
+    ),
+    path(
         'room/<int:pk>/send/',
         views.SendMessageView.as_view(),
         name='send',
