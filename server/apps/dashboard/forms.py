@@ -2,6 +2,7 @@ from typing import override
 
 from django import forms
 from django.contrib.auth.password_validation import validate_password
+from django_prose_editor.fields import ProseEditorFormField
 
 from server.apps.accounts.models import (
     Education,
@@ -313,6 +314,7 @@ class JobPostForm(forms.ModelForm[Job]):
         required=False,
         widget=forms.HiddenInput(),
     )
+    description = ProseEditorFormField()
 
     class Meta:
         model = Job

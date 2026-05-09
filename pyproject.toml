@@ -19,6 +19,7 @@ dependencies = [
   "djangorestframework>=3.17.1",
   "weasyprint>=68.1",
   "channels[daphne,types]>=4.3.2",
+  "django-prose-editor[sanitize]>=0.25.1",
 ]
 
 [dependency-groups]

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, override
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_enum import EnumField
+from django_prose_editor.fields import ProseEditorField
 from django_stubs_ext.db.models import TypedModelMeta
 
 from server.common.models import TimeStampModelMixin
@@ -99,7 +100,7 @@ class Company(models.Model):
     email = models.EmailField(_('company email'), unique=False, blank=True)
     size = EnumField(CompanySizeEnum, default=CompanySizeEnum.SMALL)
     website = models.CharField(max_length=150, blank=True)
-    description = models.TextField(_('about company'), blank=True, default='')
+    description = ProseEditorField(_('about company'), blank=True, default='')
     logo = models.ImageField(
         _('company logo'),
         upload_to='company/logos/',

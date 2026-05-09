@@ -1,6 +1,7 @@
 from typing import override
 
 from django import forms
+from django_prose_editor.fields import ProseEditorFormField
 
 from server.apps.company.models import (
     Benefit,
@@ -27,6 +28,7 @@ class CompanyUpdateForm(forms.ModelForm[Company]):
         label='Remove current cover image',
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
     )
+    description = ProseEditorFormField()
 
     class Meta:
         model = Company

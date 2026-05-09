@@ -6,7 +6,7 @@
           {% if company.description %}
             <div class="info-card">
               <h5 class="section-title">About Company</h5>
-              <p>{{ company.description }}</p>
+              <p>{{ company.description|safe }}</p>
             </div>
           {% endif %}
           <div class="info-card">

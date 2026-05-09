@@ -48,6 +48,7 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
     'django_htmx',
     'django_filters',
     'channels',
+    'django_prose_editor',
 )
 
 INSTALLED_APPS: tuple[str, ...] = (
@@ -101,6 +102,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 # Chat unread messages:
                 'server.apps.chat.context_processors.unread_messages',
+                'js_asset.context_processors.importmap',
             ],
         },
     },

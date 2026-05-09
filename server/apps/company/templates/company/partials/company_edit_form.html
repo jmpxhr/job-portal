@@ -58,6 +58,7 @@
               {% endif %}
             </div>
             <div class="col-12">
+              {{ form.media }}
               <label class="form-label" for="{{ form.description.id_for_label }}">About Company</label>
               {{ form.description }}
               {% if form.description.errors %}

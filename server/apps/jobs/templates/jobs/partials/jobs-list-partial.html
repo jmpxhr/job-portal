@@ -30,7 +30,6 @@
             <small><i class="bi bi-clock me-1"></i>Posted {{ job.posted_at|timesince }} ago</small>
           </div>
         </div>
-        <p class="mt-2 text-muted">{{ job.description|striptags|truncatewords:20 }}</p>
         <div class="d-flex justify-content-between align-items-center mt-2">
           <div>
             {% for skill in job.skills.all %}

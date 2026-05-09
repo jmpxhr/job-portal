@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_enum import EnumField
+from django_prose_editor.fields import ProseEditorField
 from django_stubs_ext.db.models import TypedModelMeta
 
 from server.common.models import TimeStampModelMixin
@@ -68,7 +69,7 @@ class Job(TimeStampModelMixin):
         verbose_name=_('company'),
     )
     title = models.CharField(_('title'), max_length=200)
-    description = models.TextField(_('description'), blank=True, default='')
+    description = ProseEditorField(_('description'))
     experience_level = EnumField(
         ExperienceLevelEnum,
         default=ExperienceLevelEnum.ENTRY_LEVEL,
