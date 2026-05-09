@@ -17,7 +17,8 @@
     {% for error in form.level.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>
   <div class="mb-3">
-    <label class="form-label fw-bold" for="{{ form.institution_name.id_for_label }}">{{ form.institution_name.label }}</label>
+    <label class="form-label fw-bold"
+           for="{{ form.institution_name.id_for_label }}">{{ form.institution_name.label }}</label>
     {{ form.institution_name }}
     {% for error in form.institution_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>
@@ -28,13 +29,15 @@
       {% for error in form.faculty.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
     <div class="col-md-6">
-      <label class="form-label fw-bold" for="{{ form.specialization.id_for_label }}">{{ form.specialization.label }}</label>
+      <label class="form-label fw-bold"
+             for="{{ form.specialization.id_for_label }}">{{ form.specialization.label }}</label>
       {{ form.specialization }}
       {% for error in form.specialization.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
   </div>
   <div class="mb-3">
-    <label class="form-label fw-bold" for="{{ form.year_of_graduation.id_for_label }}">{{ form.year_of_graduation.label }}</label>
+    <label class="form-label fw-bold"
+           for="{{ form.year_of_graduation.id_for_label }}">{{ form.year_of_graduation.label }}</label>
     {{ form.year_of_graduation }}
     {% for error in form.year_of_graduation.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>

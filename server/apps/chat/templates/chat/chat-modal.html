@@ -22,9 +22,8 @@
                height="40">
         {% else %}
           <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center me-2"
-               style="width:40px;height:40px;">
-            {{ other_user.recruiter.company.name|make_list|slice:":1"|join:""|upper }}
-          </div>
+               style="width:40px;
+                      height:40px">{{ other_user.recruiter.company.name|make_list|slice:":1"|join:""|upper }}</div>
         {% endif %}
       {% else %}
         {% if other_user.jobseeker.avatar %}
@@ -35,9 +34,8 @@
                height="40">
         {% else %}
           <div class="chat-avatar-placeholder rounded-circle d-flex align-items-center justify-content-center me-2"
-               style="width:40px;height:40px;">
-            {{ other_user.get_full_name|make_list|slice:":1"|join:""|upper }}
-          </div>
+               style="width:40px;
+                      height:40px">{{ other_user.get_full_name|make_list|slice:":1"|join:""|upper }}</div>
         {% endif %}
       {% endif %}
       <div>
@@ -57,9 +55,7 @@
       <div class="message {% if message.sender == user %}message-sent{% else %}message-received{% endif %}"
            data-message-id="{{ message.pk }}">
         <div class="message-content">
-          {% if message.sender != user %}
-            <small class="text-muted">{{ message.sender.get_full_name }}</small>
-          {% endif %}
+          {% if message.sender != user %}<small class="text-muted">{{ message.sender.get_full_name }}</small>{% endif %}
           <p class="mb-1">{{ message.content }}</p>
           <small class="text-muted">{{ message.created_at|date:"M d, h:i A" }}</small>
         </div>

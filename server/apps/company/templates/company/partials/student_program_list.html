@@ -7,9 +7,7 @@
           <div class="col-md-6">
             <div class="border rounded-3 p-3 mb-3">
               <h6 class="fw-bold mb-2">{{ program.title }}</h6>
-              {% if program.description %}
-                <p class="small text-muted">{{ program.description }}</p>
-              {% endif %}
+              {% if program.description %}<p class="small text-muted">{{ program.description }}</p>{% endif %}
               <div class="d-flex justify-content-between align-items-center">
                 <span class="student-friendly-badge">{{ program.get_status_display }}</span>
                 {% if can_edit %}

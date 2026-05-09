@@ -48,7 +48,8 @@
               </div>
               <div class="col">
                 <h1 class="fw-bold mb-2">{{ job.title }}</h1>
-                <p class="text-primary h5 mb-2">{{ job.company.name }}</p>
+                <a class="text-primary h5 d-inline-block mb-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                   href='{% url 'company:company-detail' pk=job.company.id %}'>{{ job.company.name }}</a>
                 <div class="d-flex flex-wrap gap-2">
                   {% if job.is_student_friendly %}<span class="badge bg-primary">Student-friendly</span>{% endif %}
                   <span class="badge bg-success">{{ job.experience_level_label }}</span>
@@ -153,7 +154,7 @@
                 {{ job.company.industry.name|default:"Technology" }} &bull; {{ job.company.display_size }}
               </p>
             </div>
-            <p class="small">{{ job.company.description|truncatewords:30 }}</p>
+            <p class="small">{{ job.company.description|striptags|truncatewords:30 }}</p>
             <a href="{% url 'company:company-detail' job.company.pk %}"
                class="btn btn-outline-primary w-100">View Company Profile</a>
           </div>

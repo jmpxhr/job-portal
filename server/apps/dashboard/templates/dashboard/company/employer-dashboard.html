@@ -36,17 +36,14 @@
                href="{% url 'dashboard:employer-dashboard' %}">
               <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a class="nav-link-custom"
-               href="{% url 'dashboard:post-vacancy' %}">
+            <a class="nav-link-custom" href="{% url 'dashboard:post-vacancy' %}">
               <i class="bi bi-plus-circle"></i> Post a Job
             </a>
-            <a class="nav-link-custom"
-               href="{% url 'dashboard:manage-vacancies' %}">
+            <a class="nav-link-custom" href="{% url 'dashboard:manage-vacancies' %}">
               <i class="bi bi-briefcase"></i> Manage Jobs
               <span class="badge bg-primary float-end">{{ active_jobs_count }}</span>
             </a>
-            <a class="nav-link-custom"
-               href="{% url 'dashboard:applicants-list' %}">
+            <a class="nav-link-custom" href="{% url 'dashboard:applicants-list' %}">
               <i class="bi bi-people"></i> Applicants
               <span class="badge bg-warning float-end">{{ pending_applicants_count }}</span>
             </a>
@@ -67,8 +64,7 @@
             <p class="text-muted">Here's what's happening with your job postings today.</p>
           </div>
           <div class="d-flex gap-2">
-            <a class="btn btn-primary"
-               href="{% url 'dashboard:post-vacancy' %}">
+            <a class="btn btn-primary" href="{% url 'dashboard:post-vacancy' %}">
               <i class="bi bi-plus-circle"></i> Post New Job
             </a>
           </div>
@@ -141,7 +137,8 @@
                          alt="avatar">
                   {% else %}
                     <div class="rounded-circle me-3 bg-light d-flex align-items-center justify-content-center"
-                         style="width:40px;height:40px;">
+                         style="width:40px;
+                                height:40px">
                       <i class="bi bi-person text-muted"></i>
                     </div>
                   {% endif %}
@@ -151,9 +148,7 @@
                   </div>
                   <div class="text-end">
                     <small class="text-muted">{{ app.applied_at|timesince }} ago</small>
-                    {% if app.status == 0 %}
-                      <span class="badge-new ms-2">New</span>
-                    {% endif %}
+                    {% if app.status == 0 %}<span class="badge-new ms-2">New</span>{% endif %}
                   </div>
                 </div>
               {% empty %}

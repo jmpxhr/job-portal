@@ -10,7 +10,8 @@
   {% csrf_token %}
   <div class="form-check form-switch mb-2">
     {{ form.profile_visible }}
-    <label class="form-check-label" for="{{ form.profile_visible.id_for_label }}">{{ form.profile_visible.label }}</label>
+    <label class="form-check-label"
+           for="{{ form.profile_visible.id_for_label }}">{{ form.profile_visible.label }}</label>
   </div>
   {% for error in form.profile_visible.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   <div class="form-check form-switch mb-2">

@@ -164,5 +164,6 @@ warn_required_dynamic_aliases = true
 warn_untyped_fields = true
 
 [tool.djlint]
+indent = 2
 profile = "django"
 ignore = "T002,H030,H021,H031,H006,H005,H023"

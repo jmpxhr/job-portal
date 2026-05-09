@@ -36,8 +36,7 @@
                 Information
               </h5>
               <div class="mb-3">
-                <label class="form-label required"
-                       for="{{ form.title.id_for_label }}">Job Title</label>
+                <label class="form-label required" for="{{ form.title.id_for_label }}">Job Title</label>
                 {{ form.title }}
                 {% if form.title.errors %}
                   <div class="invalid-feedback d-block">
@@ -77,17 +76,14 @@
               <div class="mb-3">
                 <div class="row g-3 mb-3">
                   <div class="col-md-6">
-                    <label class="form-label"
-                           for="{{ form.schedule.id_for_label }}">Schedule</label>
+                    <label class="form-label" for="{{ form.schedule.id_for_label }}">Schedule</label>
                     {{ form.schedule }}
                   </div>
                   <div class="col-md-6 d-flex align-items-end">
                     <div class="form-check">
                       {{ form.is_student_friendly }}
                       <label class="form-check-label"
-                             for="{{ form.is_student_friendly.id_for_label }}">
-                        Student-friendly position
-                      </label>
+                             for="{{ form.is_student_friendly.id_for_label }}">Student-friendly position</label>
                     </div>
                   </div>
                 </div>
@@ -122,8 +118,7 @@
                 <i class="bi bi-file-text text-primary me-2"></i>Job Description
               </h5>
               <div class="mb-3">
-                <label class="form-label required"
-                       for="{{ form.description.id_for_label }}">Job Description</label>
+                <label class="form-label required" for="{{ form.description.id_for_label }}">Job Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                   <div class="invalid-feedback d-block">

@@ -13,9 +13,7 @@
     <div class="d-flex justify-content-between">
       <h5 class="fw-bold mb-2">{{ exp.position }}</h5>
       <div class="d-flex gap-1">
-        {% if exp.is_current %}
-          <span class="badge bg-primary">Current</span>
-        {% endif %}
+        {% if exp.is_current %}<span class="badge bg-primary">Current</span>{% endif %}
         <button class="btn btn-sm btn-outline-secondary"
                 hx-get="{% url 'dashboard:experience-update' exp.pk %}"
                 hx-target="#experience-content"
@@ -32,11 +30,14 @@
       </div>
     </div>
     <p class="text-muted mb-2">
-      {{ exp.company_name }} | {{ exp.start_date|date:"M Y" }} — {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}
+      {{ exp.company_name }} | {{ exp.start_date|date:"M Y" }} —
+      {% if exp.end_date %}
+        {{ exp.end_date|date:"M Y" }}
+      {% else %}
+        Present
+      {% endif %}
     </p>
-    {% if exp.description %}
-      <p>{{ exp.description }}</p>
-    {% endif %}
+    {% if exp.description %}<p>{{ exp.description }}</p>{% endif %}
   </div>
 {% empty %}
   <div class="text-center py-4">

@@ -14,41 +14,37 @@
         <label class="form-label" for="{{ form.title.id_for_label }}">Program Title</label>
         {{ form.title }}
         {% if form.title.errors %}
-          {% for error in form.title.errors %}
-            <small class="text-danger">{{ error }}</small>
-          {% endfor %}
+          {% for error in form.title.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-12">
         <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
         {{ form.description }}
         {% if form.description.errors %}
-          {% for error in form.description.errors %}
-            <small class="text-danger">{{ error }}</small>
-          {% endfor %}
+          {% for error in form.description.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-md-6">
         <label class="form-label" for="{{ form.status.id_for_label }}">Status</label>
         {{ form.status }}
         {% if form.status.errors %}
-          {% for error in form.status.errors %}
-            <small class="text-danger">{{ error }}</small>
-          {% endfor %}
+          {% for error in form.status.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-md-6">
         <label class="form-label" for="{{ form.url.id_for_label }}">Program URL</label>
         {{ form.url }}
         {% if form.url.errors %}
-          {% for error in form.url.errors %}
-            <small class="text-danger">{{ error }}</small>
-          {% endfor %}
+          {% for error in form.url.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-12 text-end">
         <button type="submit" class="btn btn-save">
-          {% if program %}Update Program{% else %}Create Program{% endif %}
+          {% if program %}
+            Update Program
+          {% else %}
+            Create Program
+          {% endif %}
         </button>
       </div>
     </div>

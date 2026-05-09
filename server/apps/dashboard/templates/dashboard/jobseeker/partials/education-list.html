@@ -29,7 +29,9 @@
       </div>
     </div>
     <p class="text-muted mb-2">
-      {{ edu.get_level_label }}{% if edu.faculty %} | {{ edu.faculty }}{% endif %}{% if edu.specialization %} — {{ edu.specialization }}{% endif %}
+      {{ edu.get_level_label }}
+      {% if edu.faculty %}| {{ edu.faculty }}{% endif %}
+      {% if edu.specialization %}— {{ edu.specialization }}{% endif %}
     </p>
     {% if edu.year_of_graduation %}
       <p class="mb-0">

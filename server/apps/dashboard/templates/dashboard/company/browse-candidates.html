@@ -37,28 +37,43 @@
   <!-- Main Content -->
   <section class="py-4">
     <div class="container">
-      <form method="get" action="{% url 'dashboard:browse-candidates' %}" id="filterForm">
+      <form method="get"
+            action="{% url 'dashboard:browse-candidates' %}"
+            id="filterForm">
         <!-- Results Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h5 class="fw-bold mb-0">{{ page_obj.paginator.count|default:0 }} candidate{{ page_obj.paginator.count|pluralize }} found</h5>
+            <h5 class="fw-bold mb-0">
+              {{ page_obj.paginator.count|default:0 }} candidate{{ page_obj.paginator.count|pluralize }} found
+            </h5>
             <small class="text-muted">Showing {{ page_obj.start_index|default:0 }}-{{ page_obj.end_index|default:0 }} of {{ page_obj.paginator.count|default:0 }} results</small>
           </div>
           <div class="d-flex gap-3">
             <!-- Job Selector for Match Score -->
             <div>
               <label for="job-select" class="form-label mb-0 small text-muted">Match by job</label>
-              <select id="job-select" name="job_id" class="form-select" style="width: 220px;" onchange="this.form.submit()">
+              <select id="job-select"
+                      name="job_id"
+                      class="form-select"
+                      style="width: 220px"
+                      onchange="this.form.submit()">
                 <option value="">Select job...</option>
                 {% for job in company_jobs %}
-                  <option value="{{ job.pk }}" {% if current_job_id == job.pk|stringformat:"s" %}selected{% endif %}>{{ job.title }}</option>
+                  <option value="{{ job.pk }}"
+                          {% if current_job_id == job.pk|stringformat:"s" %}selected{% endif %}>
+                    {{ job.title }}
+                  </option>
                 {% endfor %}
               </select>
             </div>
             <!-- Sort Dropdown -->
             <div>
               <label for="sort-select" class="form-label mb-0 small text-muted">Sort by</label>
-              <select id="sort-select" name="sort" class="form-select" style="width: 200px;" onchange="this.form.submit()">
+              <select id="sort-select"
+                      name="sort"
+                      class="form-select"
+                      style="width: 200px"
+                      onchange="this.form.submit()">
                 {% for value, label in sort_choices %}
                   {% if value != 'match_score' or selected_job %}
                     <option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>
@@ -91,7 +106,9 @@
                        placeholder="Filter skills...">
                 <div class="skill-search-list" id="skillList">
                   {% for skill in popular_skills %}
-                    <div class="form-check skill-check {% if forloop.counter > 5 %}skill-extra{% endif %}" {% if forloop.counter > 5 %}data-skill-extra{% endif %} data-skill-name="{{ skill.name|lower }}">
+                    <div class="form-check skill-check {% if forloop.counter > 5 %}skill-extra{% endif %}"
+                         {% if forloop.counter > 5 %}data-skill-extra{% endif %}
+                         data-skill-name="{{ skill.name|lower }}">
                       <input class="form-check-input"
                              type="checkbox"
                              id="skill_{{ skill.slug }}"
@@ -103,7 +120,10 @@
                   {% endfor %}
                 </div>
                 {% if popular_skills|length > 5 %}
-                  <a href="#" class="text-decoration-none small" onclick="toggleSkills(event)" id="toggleSkillsLink">+ {{ popular_skills|length|add:"-5" }} more</a>
+                  <a href="#"
+                     class="text-decoration-none small"
+                     onclick="toggleSkills(event)"
+                     id="toggleSkillsLink">+ {{ popular_skills|length|add:"-5" }} more</a>
                 {% endif %}
               </div>
               <!-- Education Level -->
@@ -146,14 +166,16 @@
                        value="{{ current_location }}">
               </div>
               <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
-              <a href="{% url 'dashboard:browse-candidates' %}" class="btn btn-link w-100 mt-2">Clear All</a>
+              <a href="{% url 'dashboard:browse-candidates' %}"
+                 class="btn btn-link w-100 mt-2">Clear All</a>
             </div>
           </div>
           <!-- Candidates List -->
           <div class="col-lg-9" id="listView">
             {% for jobseeker in page_obj %}
               <!-- Candidate Card -->
-              <a href="{% url 'dashboard:browse-candidate-profile' jobseeker.pk %}{% if selected_job %}?job_id={{ selected_job.pk }}{% endif %}" class="text-decoration-none text-dark">
+              <a href="{% url 'dashboard:browse-candidate-profile' jobseeker.pk %}{% if selected_job %}?job_id={{ selected_job.pk }}{% endif %}"
+                 class="text-decoration-none text-dark">
                 <div class="candidate-card">
                   <div class="row">
                     <div class="col-md-2">
@@ -206,15 +228,14 @@
                           <div class="col-md-4">
                             <small>
                               <i class="bi bi-mortarboard me-1"></i>
-                              {{ edu.get_level_label }}{% if edu.institution_name %}, {{ edu.institution_name }}{% endif %}
+                              {{ edu.get_level_label }}
+                              {% if edu.institution_name %}, {{ edu.institution_name }}{% endif %}
                             </small>
                           </div>
                         {% endfor %}
                       </div>
                       <div class="mt-3">
-                        {% for skill in jobseeker.skills.all %}
-                          <span class="skill-badge">{{ skill.name }}</span>
-                        {% endfor %}
+                        {% for skill in jobseeker.skills.all %}<span class="skill-badge">{{ skill.name }}</span>{% endfor %}
                       </div>
                       <div class="mt-2 d-flex justify-content-between align-items-center">
                         <div>
@@ -235,7 +256,8 @@
                 <i class="bi bi-people" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold mt-3">No candidates found</h4>
                 <p class="text-muted">Try adjusting your filters to find more candidates</p>
-                <a href="{% url 'dashboard:browse-candidates' %}" class="btn btn-primary mt-2">Clear Filters</a>
+                <a href="{% url 'dashboard:browse-candidates' %}"
+                   class="btn btn-primary mt-2">Clear Filters</a>
               </div>
             {% endfor %}
             <!-- Pagination -->

@@ -29,14 +29,12 @@
         <div class="col-lg-3 mb-4">
           <div class="filter-card">
             <h5 class="fw-bold mb-3">Filters</h5>
-<form method="get"
-                   hx-get="{% url 'jobs:jobs-list' %}"
-                   hx-target="#job-list-container"
-                   hx-push-url="true"
-                   id="job-filter-form">
-              {% if current_company %}
-                <input type="hidden" name="company" value="{{ current_company }}" />
-              {% endif %}
+            <form method="get"
+                  hx-get="{% url 'jobs:jobs-list' %}"
+                  hx-target="#job-list-container"
+                  hx-push-url="true"
+                  id="job-filter-form">
+              {% if current_company %}<input type="hidden" name="company" value="{{ current_company }}" />{% endif %}
               <!-- Search -->
               <div class="mb-4">
                 <label class="form-label fw-semibold" for="id_q">Search</label>

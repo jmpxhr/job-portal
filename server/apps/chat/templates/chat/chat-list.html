@@ -69,9 +69,7 @@
                       {% endif %}
                     </h6>
                     {% if item.last_message %}
-                      <small class="text-muted">
-                        {{ item.last_message.created_at|timesince }} ago
-                      </small>
+                      <small class="text-muted">{{ item.last_message.created_at|timesince }} ago</small>
                     {% endif %}
                   </div>
                   <p class="text-muted mb-1 small">
@@ -84,16 +82,13 @@
                     {% endif %}
                   </p>
                   {% if item.last_message %}
-                    <p class="text-muted mb-0 small text-truncate"
-                       style="max-width: 400px">
+                    <p class="text-muted mb-0 small text-truncate" style="max-width: 400px">
                       <strong>{{ item.last_message.sender.get_full_name }}:</strong>
                       {{ item.last_message.content|truncatewords:10 }}
                     </p>
                   {% endif %}
                 </div>
-                {% if item.unread_count > 0 %}
-                  <span class="badge bg-primary ms-2">{{ item.unread_count }}</span>
-                {% endif %}
+                {% if item.unread_count > 0 %}<span class="badge bg-primary ms-2">{{ item.unread_count }}</span>{% endif %}
               </a>
             {% endfor %}
           </div>
