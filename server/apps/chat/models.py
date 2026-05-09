@@ -39,9 +39,9 @@ class ChatRoom(TimeStampModelMixin):
 
     @override
     def __str__(self) -> str:
-        if self.application_id:
+        if self.application_id:  # pyrefly: ignore
             return f'ChatRoom[{self.application_id}]'  # pyrefly: ignore
-        return f'ChatRoom[direct:{self.jobseeker_user_id}-{self.recruiter_user_id}]'  # pyrefly: ignore
+        return f'ChatRoom[direct:{self.jobseeker_user_id}-{self.recruiter_user_id}]'  # pyrefly: ignore  # noqa: E501
 
     @property
     def other_user_unread_count(self) -> int:

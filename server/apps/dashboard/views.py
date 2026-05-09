@@ -7,8 +7,17 @@ from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Case, Count, IntegerField, Q, QuerySet, Sum, Value, When
-from django.db.models.functions import TruncMonth
+from django.db.models import (
+    Case,
+    Count,
+    IntegerField,
+    Q,
+    QuerySet,
+    Sum,
+    Value,
+    When,
+)
+from django.db.models.functions import TruncDay
 from django.http import (
     Http404,
     HttpResponse,
@@ -859,22 +868,28 @@ class EmployerDashboardView(LoginRequiredMixin, View):
             'job',
         ).order_by('-applied_at')[:5]
 
-        six_months_ago = now - timedelta(days=180)
+        thirty_days_ago = now - timedelta(days=30)
         trends_qs = (
             base_app_qs
-            .filter(applied_at__gte=six_months_ago)
-            .annotate(month=TruncMonth('applied_at'))
-            .values('month')
+            .filter(applied_at__gte=thirty_days_ago)
+            .annotate(day=TruncDay('applied_at'))
+            .values('day')
             .annotate(count=Count('id'))
-            .order_by('month')
+            .order_by('day')
         )
-        application_trends_labels = json.dumps([
-            entry['month'].strftime('%b') if entry['month'] else ''
-            for entry in trends_qs
-        ])
-        application_trends_data = json.dumps([
-            entry['count'] for entry in trends_qs
-        ])
+        trend_days = {
+            entry['day'].date(): entry['count'] for entry in trends_qs
+        }
+        trend_labels = []
+        trend_data = []
+        current = thirty_days_ago.date()
+        end = now.date()
+        while current <= end:
+            trend_labels.append(current.strftime('%b %d'))
+            trend_data.append(trend_days.get(current, 0))
+            current += timedelta(days=1)
+        application_trends_labels = json.dumps(trend_labels)
+        application_trends_data = json.dumps(trend_data)
 
         emp_type_labels_map = {
             k: str(v) for k, v in Job.EmploymentTypeEnum.choices
@@ -893,6 +908,18 @@ class EmployerDashboardView(LoginRequiredMixin, View):
         jobs_by_category_data = json.dumps([
             entry['count'] for entry in category_qs
         ])
+
+        skills_qs = (
+            Skill.objects
+            .filter(jobs__company=company, jobs__is_active=True)
+            .values('name')
+            .annotate(count=Count('jobs'))
+            .order_by('-count')[:10]
+        )
+        jobs_by_skill_labels = json.dumps([
+            entry['name'] for entry in skills_qs
+        ])
+        jobs_by_skill_data = json.dumps([entry['count'] for entry in skills_qs])
 
         job_views_count = (
             company.jobs.aggregate(  # pyrefly: ignore
@@ -913,6 +940,8 @@ class EmployerDashboardView(LoginRequiredMixin, View):
             'application_trends_data': application_trends_data,
             'jobs_by_category_labels': jobs_by_category_labels,
             'jobs_by_category_data': jobs_by_category_data,
+            'jobs_by_skill_labels': jobs_by_skill_labels,
+            'jobs_by_skill_data': jobs_by_skill_data,
         }
         return render(request, self.template_name, context)
 
@@ -1430,9 +1459,11 @@ class BrowseCandidateProfileView(LoginRequiredMixin, View):
             except (ValueError, Job.DoesNotExist):
                 pass
 
-        education = jobseeker.education.all().order_by('-year_of_graduation')
-        experience = jobseeker.experience.all().order_by('-start_date')
-        languages = jobseeker.languages.all().order_by('name')
+        education = jobseeker.education.all().order_by('-year_of_graduation')  # pyrefly: ignore
+        experience = jobseeker.experience.all().order_by('-start_date')  # pyrefly: ignore
+
+        languages = jobseeker.languages.all().order_by('name')  # pyrefly: ignore
+
         skills = jobseeker.skills.all().order_by('name')
 
         context = {

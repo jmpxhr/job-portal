@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, override
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F, Q, Sum
+from django.db.models import F, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
@@ -37,37 +37,33 @@ _select_related_direct = (
 
 
 def _get_other_user(room: ChatRoom, user: 'UserType') -> 'UserType':
-    if room.application_id:
-        if user == room.application.jobseeker.user:
-            return room.application.job.company.recruiter.user
-        return room.application.jobseeker.user
+    if room.application_id:  # pyrefly: ignore
+        if user == room.application.jobseeker.user:  # pyrefly: ignore
+            return room.application.job.company.recruiter.user  # pyrefly: ignore
+        return room.application.jobseeker.user  # pyrefly: ignore
     if user == room.jobseeker_user:
         return room.recruiter_user  # type: ignore[return-value]
     return room.jobseeker_user  # type: ignore[return-value]
 
 
 def _user_has_room_access(room: ChatRoom, user: 'UserType') -> bool:
-    if room.application_id:
-        if user == room.application.jobseeker.user:
+    if room.application_id:  # pyrefly: ignore
+        if user == room.application.jobseeker.user:  # pyrefly: ignore
             return True
         try:
-            return user == room.application.job.company.recruiter.user
+            return user == room.application.job.company.recruiter.user  # pyrefly: ignore
         except Exception:
             return False
-    return user in (room.jobseeker_user, room.recruiter_user)
+    return user in {room.jobseeker_user, room.recruiter_user}
 
 
 def _get_user_rooms(user: 'UserType') -> list[ChatRoom]:
-    app_rooms = (
-        ChatRoom.objects
-        .filter(application__isnull=False)
-        .select_related(*_select_related_company)
-    )
-    direct_rooms = (
-        ChatRoom.objects
-        .filter(application__isnull=True)
-        .select_related(*_select_related_direct)
-    )
+    app_rooms = ChatRoom.objects.filter(
+        application__isnull=False,
+    ).select_related(*_select_related_company)
+    direct_rooms = ChatRoom.objects.filter(
+        application__isnull=True,
+    ).select_related(*_select_related_direct)
 
     if user.account_type == User.AccountTypeEnum.JOBSEEKER:  # pyrefly: ignore
         app_rooms = app_rooms.filter(
@@ -93,7 +89,7 @@ def _get_user_rooms(user: 'UserType') -> list[ChatRoom]:
         .filter(pk__in=all_room_ids)
         .select_related(*_select_related_company, *_select_related_direct)
         .prefetch_related('messages')
-        .order_by('-updated_at')
+        .order_by('-updated_at'),
     )
 
 
@@ -291,9 +287,9 @@ class StartDirectChatView(LoginRequiredMixin, View):
         jobseeker = get_object_or_404(JobSeeker, pk=jobseeker_pk)
 
         try:
-            recruiter = user.recruiter  # pyrefly: ignore
+            recruiter = user.recruiter  # pyrefly: ignore  # noqa: F841
         except Recruiter.DoesNotExist:
-            raise Http404
+            raise Http404 from None
 
         if jobseeker.user == user:
             raise Http404
@@ -364,3 +360,4 @@ def get_unread_count(user: 'UserType') -> int:
         user=user,
     ).aggregate(total=Sum('unread_count'))
     return result['total'] or 0
+

@@ -6,7 +6,7 @@
 {% block head %}
   <link rel="stylesheet"
         href="{% static 'dashboard/css/company/styles.css' %}" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'vendor/js/chart.js' %}"></script>
 {% endblock head %}
 {% block content %}
   <!-- Main Content -->
@@ -107,16 +107,22 @@
         </div>
         <!-- Charts Row -->
         <div class="row g-3 mb-4">
-          <div class="col-md-8">
+          <div class="col-md-6">
             <div class="stat-card">
               <h5 class="fw-bold mb-3">Application Trends</h5>
               <canvas id="applicationsChart" style="height: 250px;"></canvas>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="stat-card">
               <h5 class="fw-bold mb-3">Jobs by Category</h5>
               <canvas id="jobsChart" style="height: 250px;"></canvas>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <h5 class="fw-bold mb-3">Jobs by Skills</h5>
+              <canvas id="skillsChart" style="height: 250px;"></canvas>
             </div>
           </div>
         </div>
@@ -211,6 +217,13 @@
                     legend: {
                         display: false
                     }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxTicksLimit: 10
+                        }
+                    }
                 }
             }
         });
@@ -224,6 +237,30 @@
                 datasets: [{
                     data: {{ jobs_by_category_data|safe }},
                     backgroundColor: ['#667eea', '#48bb78', '#fbbf24', '#f87171'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Jobs by Skills Chart
+        const ctx3 = document.getElementById('skillsChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: {{ jobs_by_skill_labels|safe }},
+                datasets: [{
+                    data: {{ jobs_by_skill_data|safe }},
+                    backgroundColor: ['#667eea', '#48bb78', '#fbbf24', '#f87171', '#a78bfa',
+                                      '#34d399', '#f59e0b', '#ef4444', '#818cf8', '#6ee7b7'],
                     borderWidth: 0
                 }]
             },
