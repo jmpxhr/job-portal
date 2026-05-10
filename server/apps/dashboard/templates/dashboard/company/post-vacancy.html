@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Post a New Job | StartJob
+  {% translate "Post a New Job" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -13,8 +14,8 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <h1 class="fw-bold mb-0">Post a New Job</h1>
-          <p class="text-muted mb-0">Create a vacancy and attract young talents</p>
+          <h1 class="fw-bold mb-0">{% translate "Post a New Job" %}</h1>
+          <p class="text-muted mb-0">{% translate "Create a vacancy and attract young talents" %}</p>
         </div>
       </div>
     </div>
@@ -32,11 +33,10 @@
             <!-- Basic Information -->
             <div class="form-section">
               <h5 class="section-title">
-                <i class="bi bi-info-circle text-primary me-2"></i>Basic
-                Information
+                <i class="bi bi-info-circle text-primary me-2"></i>{% translate "Basic Information" %}
               </h5>
               <div class="mb-3">
-                <label class="form-label required" for="{{ form.title.id_for_label }}">Job Title</label>
+                <label class="form-label required" for="{{ form.title.id_for_label }}">{% translate "Job Title" %}</label>
                 {{ form.title }}
                 {% if form.title.errors %}
                   <div class="invalid-feedback d-block">
@@ -47,7 +47,7 @@
               <div class="row g-3 mb-3">
                 <div class="col-md-6">
                   <label class="form-label required"
-                         for="{{ form.employment_type.id_for_label }}">Employment Type</label>
+                         for="{{ form.employment_type.id_for_label }}">{% translate "Employment Type" %}</label>
                   {{ form.employment_type }}
                   {% if form.employment_type.errors %}
                     <div class="invalid-feedback d-block">
@@ -57,7 +57,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label required"
-                         for="{{ form.experience_level.id_for_label }}">Experience Level</label>
+                         for="{{ form.experience_level.id_for_label }}">{% translate "Experience Level" %}</label>
                   {{ form.experience_level }}
                   {% if form.experience_level.errors %}
                     <div class="invalid-feedback d-block">
@@ -67,7 +67,7 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label class="form-label">Work Location</label>
+                <label class="form-label">{% translate "Work Location" %}</label>
                 <div class="row g-3">
                   <div class="col-md-6">{{ form.location }}</div>
                   <div class="col-md-6">{{ form.work_format }}</div>
@@ -76,20 +76,22 @@
               <div class="mb-3">
                 <div class="row g-3 mb-3">
                   <div class="col-md-6">
-                    <label class="form-label" for="{{ form.schedule.id_for_label }}">Schedule</label>
+                    <label class="form-label" for="{{ form.schedule.id_for_label }}">{% translate "Schedule" %}</label>
                     {{ form.schedule }}
                   </div>
                   <div class="col-md-6 d-flex align-items-end">
                     <div class="form-check">
                       {{ form.is_student_friendly }}
                       <label class="form-check-label"
-                             for="{{ form.is_student_friendly.id_for_label }}">Student-friendly position</label>
+                             for="{{ form.is_student_friendly.id_for_label }}">
+                        {% translate "Student-friendly position" %}
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-                <label class="form-label">Salary Range (per month)</label>
+                <label class="form-label">{% translate "Salary Range (per month)" %}</label>
                 <div class="row g-2">
                   <div class="col-md-6">
                     {{ form.salary_min }}
@@ -108,17 +110,17 @@
                     {% endif %}
                   </div>
                 </div>
-                <small class="text-muted">Leave empty if negotiable</small>
+                <small class="text-muted">{% translate "Leave empty if negotiable" %}</small>
               </div>
             </div>
             <!-- Job Description -->
             {{ form.media }}
             <div class="form-section">
               <h5 class="section-title">
-                <i class="bi bi-file-text text-primary me-2"></i>Job Description
+                <i class="bi bi-file-text text-primary me-2"></i>{% translate "Job Description" %}
               </h5>
               <div class="mb-3">
-                <label class="form-label required" for="{{ form.description.id_for_label }}">Job Description</label>
+                <label class="form-label required" for="{{ form.description.id_for_label }}">{% translate "Job Description" %}</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                   <div class="invalid-feedback d-block">
@@ -127,29 +129,29 @@
                 {% endif %}
               </div>
               <div class="mb-3">
-                <label class="form-label">Required Skills</label>
+                <label class="form-label">{% translate "Required Skills" %}</label>
                 <div class="input-group mb-2">
                   <input type="text"
                          class="form-control"
                          id="skill-input"
-                         placeholder="Type a skill and press Enter or comma to add..."
+                         placeholder="{% translate 'Type a skill and press Enter or comma to add...' %}"
                          list="skill-suggestions"
                          autocomplete="off">
-                  <button type="button" class="btn btn-outline-primary" id="skill-add-btn">Add</button>
+                  <button type="button" class="btn btn-outline-primary" id="skill-add-btn">{% translate "Add" %}</button>
                 </div>
                 <datalist id="skill-suggestions"></datalist>
                 <div id="skill-tags" class="d-flex flex-wrap gap-2 mb-2"></div>
                 {{ form.skills_text }}
-                <small class="text-muted">Type a skill name and press Enter, comma, or click Add.</small>
+                <small class="text-muted">{% translate "Type a skill name and press Enter, comma, or click Add." %}</small>
               </div>
             </div>
             <!-- Form Actions -->
             <div class="d-flex gap-3 mt-4">
               <button type="submit" class="btn-publish" name="publish">
-                <i class="bi bi-check-circle"></i> Publish Job
+                <i class="bi bi-check-circle"></i> {% translate "Publish Job" %}
               </button>
               <button type="submit" class="btn-save-draft" name="save_draft">
-                <i class="bi bi-save"></i> Save as Draft
+                <i class="bi bi-save"></i> {% translate "Save as Draft" %}
               </button>
             </div>
           </form>
@@ -158,7 +160,7 @@
         <div class="col-lg-4">
           <div class="preview-card">
             <h5 class="fw-bold mb-3">
-              <i class="bi bi-eye"></i> Job Preview
+              <i class="bi bi-eye"></i> {% translate "Job Preview" %}
             </h5>
             <div class="job-preview-content">
               <div class="company-info d-flex align-items-center mb-3">
@@ -178,28 +180,30 @@
                   {% endif %}
                 </div>
                 <div>
-                  <h6 class="fw-bold mb-0">{{ company.name|default:"Your Company" }}</h6>
-                  <small class="text-muted">{{ company.industry.name|default:"Technology" }}</small>
+                  {% translate "Your Company" as default_company_name %}
+                  <h6 class="fw-bold mb-0">{{ company.name|default:default_company_name }}</h6>
+                  {% translate "Technology" as default_industry_name %}
+                  <small class="text-muted">{{ company.industry.name|default:default_industry_name }}</small>
                 </div>
               </div>
-              <h6 class="fw-bold" id="previewTitle">Job Title</h6>
+              <h6 class="fw-bold" id="previewTitle">{% translate "Job Title" %}</h6>
               <div class="d-flex flex-wrap gap-2 mb-2">
-                <span class="badge bg-primary">Employment Type</span>
-                <span class="badge bg-success">Experience Level</span>
-                <span class="badge bg-info">Work Format</span>
+                <span class="badge bg-primary">{% translate "Employment Type" %}</span>
+                <span class="badge bg-success">{% translate "Experience Level" %}</span>
+                <span class="badge bg-info">{% translate "Work Format" %}</span>
               </div>
               <p class="small text-muted mb-2">
-                <i class="bi bi-geo-alt"></i> Location
+                <i class="bi bi-geo-alt"></i> {% translate "Location" %}
                 <br>
-                <i class="bi bi-cash"></i> Salary
+                <i class="bi bi-cash"></i> {% translate "Salary" %}
               </p>
               <hr>
-              <h6 class="fw-bold mb-2">Tips for better results:</h6>
+              <h6 class="fw-bold mb-2">{% translate "Tips for better results:" %}</h6>
               <ul class="small text-muted">
-                <li class="mb-2">&#10003; Add specific requirements for students</li>
-                <li class="mb-2">&#10003; Mention if you offer flexible hours</li>
-                <li class="mb-2">&#10003; Include salary range to get more applications</li>
-                <li class="mb-2">&#10003; Specify if no experience is required</li>
+                <li class="mb-2">&#10003; {% translate "Add specific requirements for students" %}</li>
+                <li class="mb-2">&#10003; {% translate "Mention if you offer flexible hours" %}</li>
+                <li class="mb-2">&#10003; {% translate "Include salary range to get more applications" %}</li>
+                <li class="mb-2">&#10003; {% translate "Specify if no experience is required" %}</li>
               </ul>
             </div>
           </div>

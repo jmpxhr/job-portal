@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 {% for job in jobs %}
   <div class="job-card">
     <div class="row">
@@ -26,13 +26,13 @@
         </div>
         <div class="row mt-2">
           <div class="col-md-4 col-6">
-            <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:"Remote" }}</small>
+            <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:_("Remote") }}</small>
           </div>
           <div class="col-md-4 col-6">
             <small><i class="bi bi-cash me-1"></i>{{ job.salary_display }}</small>
           </div>
           <div class="col-md-4">
-            <small><i class="bi bi-clock me-1"></i>Posted {{ job.posted_at|timesince }} ago</small>
+            <small><i class="bi bi-clock me-1"></i>{% blocktranslate with timesince=job.posted_at|timesince %}Posted {{ timesince }} ago{% endblocktranslate %}</small>
           </div>
         </div>
         <div class="d-flex justify-content-between align-items-center mt-2">
@@ -40,11 +40,11 @@
             {% for skill in job.skills.all %}
               <span class="badge bg-light text-dark me-1">{{ skill.name }}</span>
             {% empty %}
-              <span class="badge bg-light text-dark me-1">General</span>
+              <span class="badge bg-light text-dark me-1">{% translate "General" %}</span>
             {% endfor %}
           </div>
           <a href="{% url 'jobs:jobs-detail' job.pk %}"
-             class="btn btn-primary btn-sm">View Details</a>
+             class="btn btn-primary btn-sm">{% translate "View Details" %}</a>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
 {% empty %}
   <div class="text-center py-5">
     <i class="bi bi-search display-4 text-muted"></i>
-    <p class="mt-3 text-muted">No jobs found matching your criteria.</p>
+    <p class="mt-3 text-muted">{% translate "No jobs found matching your criteria." %}</p>
   </div>
 {% endfor %}
 <!-- Pagination -->
@@ -65,11 +65,11 @@
              href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}"
              hx-get="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}"
              hx-target="#job-list-container"
-             hx-push-url="true">Previous</a>
+             hx-push-url="true">{% translate "Previous" %}</a>
         </li>
       {% else %}
         <li class="page-item disabled">
-          <span class="page-link">Previous</span>
+          <span class="page-link">{% translate "Previous" %}</span>
         </li>
       {% endif %}
       {% for num in page_obj.paginator.page_range %}
@@ -93,11 +93,11 @@
              href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}"
              hx-get="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}"
              hx-target="#job-list-container"
-             hx-push-url="true">Next</a>
+             hx-push-url="true">{% translate "Next" %}</a>
         </li>
       {% else %}
         <li class="page-item disabled">
-          <span class="page-link">Next</span>
+          <span class="page-link">{% translate "Next" %}</span>
         </li>
       {% endif %}
     </ul>
@@ -105,5 +105,5 @@
 {% endif %}
 <!-- Results info -->
 <p class="mb-0 mt-3 text-muted small">
-  Showing <strong>{{ page_obj.start_index }}-{{ page_obj.end_index }}</strong> of <strong>{{ paginator.count }}</strong> jobs
+  {% blocktranslate with start=page_obj.start_index end=page_obj.end_index count=paginator.count %}Showing <strong>{{ start }}-{{ end }}</strong> of <strong>{{ count }}</strong> jobs{% endblocktranslate %}
 </p>

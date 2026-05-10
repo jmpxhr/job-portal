@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-bold mb-0">Add Skills</h4>
+  <h4 class="fw-bold mb-0">{% translate "Add Skills" %}</h4>
   <button class="btn btn-outline-secondary btn-sm"
           hx-get="{% url 'dashboard:candidate-profile' %}"
           hx-target="#skills-content"
           hx-select="#skills-content"
-          hx-swap="innerHTML">Cancel</button>
+          hx-swap="innerHTML">{% translate "Cancel" %}</button>
 </div>
 <form hx-post="{% url 'dashboard:skill-add' %}"
       hx-target="#skills-content"
@@ -13,35 +14,36 @@
       id="skill-add-form">
   {% csrf_token %}
   <div class="mb-3">
-    <label class="form-label fw-bold">Skill Names</label>
+    <label class="form-label fw-bold">{% translate "Skill Names" %}</label>
     <div class="input-group">
+      {% translate "Type a skill and press Enter or comma to add..." as skill_placeholder %}
       <input type="text"
              class="form-control"
              id="skill-input"
-             placeholder="Type a skill and press Enter or comma to add..."
+             placeholder="{{ skill_placeholder }}"
              list="skill-suggestions"
              autocomplete="off">
-      <button type="button" class="btn btn-outline-primary" id="skill-add-btn">Add</button>
+      <button type="button" class="btn btn-outline-primary" id="skill-add-btn">{% translate "Add" %}</button>
     </div>
     <datalist id="skill-suggestions"></datalist>
     <div id="skill-tags" class="d-flex flex-wrap gap-2 mt-2"></div>
     <input type="hidden" name="names" id="skill-names-input">
     {% for error in form.names.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-    <small class="text-muted">Type a skill name and press Enter, comma, or click Add. Add multiple skills before submitting.</small>
+    <small class="text-muted">{% translate "Type a skill name and press Enter, comma, or click Add. Add multiple skills before submitting." %}</small>
   </div>
   <div class="d-flex gap-2">
     <button type="submit"
             class="btn btn-primary btn-sm"
             id="skill-submit-btn"
             disabled>
-      <i class="bi bi-check-lg"></i> Save Skills
+      <i class="bi bi-check-lg"></i> {% translate "Save Skills" %}
     </button>
     <button type="button"
             class="btn btn-outline-secondary btn-sm"
             hx-get="{% url 'dashboard:candidate-profile' %}"
             hx-target="#skills-content"
             hx-select="#skills-content"
-            hx-swap="innerHTML">Cancel</button>
+            hx-swap="innerHTML">{% translate "Cancel" %}</button>
   </div>
 </form>
 <script>
@@ -52,7 +54,7 @@
     var hiddenInput = document.getElementById('skill-names-input');
     var submitBtn = document.getElementById('skill-submit-btn');
     var datalist = document.getElementById('skill-suggestions');
-    var debounceTimer;
+    var debounce_timer;
     var skills = [];
 
     function updateHiddenInput() {
@@ -106,13 +108,13 @@
     });
 
     input.addEventListener('input', function() {
-      clearTimeout(debounceTimer);
+      clearTimeout(debounce_timer);
       var query = this.value.trim();
       if (query.length < 2) {
         datalist.innerHTML = '';
         return;
       }
-      debounceTimer = setTimeout(function() {
+      debounce_timer = setTimeout(function() {
         fetch('{% url "dashboard:skill-search" %}?q=' + encodeURIComponent(query))
           .then(function(response) { return response.json(); })
           .then(function(data) {

@@ -1,7 +1,7 @@
 {% extends 'container.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %}
-  Jobs | StartJob
+  {% translate "Jobs" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'jobs/css/styles.css' %}" />
@@ -10,13 +10,13 @@
   <!-- Page Header -->
   <section class="bg-light py-4">
     <div class="container">
-      <h1 class="fw-bold mb-0">Browse Jobs</h1>
+      <h1 class="fw-bold mb-0">{% translate "Browse Jobs" %}</h1>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}">{% translate "Home" %}</a>
           </li>
-          <li class="breadcrumb-item active">Jobs</li>
+          <li class="breadcrumb-item active">{% translate "Jobs" %}</li>
         </ol>
       </nav>
     </div>
@@ -28,7 +28,7 @@
         <!-- Filters Sidebar -->
         <div class="col-lg-3 mb-4">
           <div class="filter-card">
-            <h5 class="fw-bold mb-3">Filters</h5>
+            <h5 class="fw-bold mb-3">{% translate "Filters" %}</h5>
             <form method="get"
                   hx-get="{% url 'jobs:jobs-list' %}"
                   hx-target="#job-list-container"
@@ -37,27 +37,27 @@
               {% if current_company %}<input type="hidden" name="company" value="{{ current_company }}" />{% endif %}
               <!-- Search -->
               <div class="mb-4">
-                <label class="form-label fw-semibold" for="id_q">Search</label>
+                <label class="form-label fw-semibold" for="id_q">{% translate "Search" %}</label>
                 <input type="text"
                        name="q"
                        id="id_q"
                        class="form-control"
-                       placeholder="Job title or keyword"
+                       placeholder="{% translate 'Job title or keyword' %}"
                        value="{{ search_query }}" />
               </div>
               <!-- Location -->
               <div class="mb-4">
-                <label class="form-label fw-semibold" for="id_location">Location</label>
+                <label class="form-label fw-semibold" for="id_location">{% translate "Location" %}</label>
                 <input type="text"
                        name="location"
                        id="id_location"
                        class="form-control"
-                       placeholder="City or remote"
+                       placeholder="{% translate 'City or remote' %}"
                        value="{{ location_query }}" />
               </div>
               <!-- Employment Type -->
               <div class="mb-4">
-                <label class="form-label fw-semibold">Employment Type</label>
+                <label class="form-label fw-semibold">{% translate "Employment Type" %}</label>
                 {% for value, label in employment_type_choices %}
                   <div class="form-check">
                     <input class="form-check-input"
@@ -72,7 +72,7 @@
               </div>
               <!-- Work Format -->
               <div class="mb-4">
-                <label class="form-label fw-semibold">Work Format</label>
+                <label class="form-label fw-semibold">{% translate "Work Format" %}</label>
                 {% for value, label in work_format_choices %}
                   <div class="form-check">
                     <input class="form-check-input"
@@ -87,7 +87,7 @@
               </div>
               <!-- Experience Level -->
               <div class="mb-4">
-                <label class="form-label fw-semibold">Experience</label>
+                <label class="form-label fw-semibold">{% translate "Experience" %}</label>
                 {% for value, label in experience_level_choices %}
                   <div class="form-check">
                     <input class="form-check-input"
@@ -102,20 +102,20 @@
               </div>
               <!-- Salary From -->
               <div class="mb-4">
-                <label class="form-label fw-semibold" for="id_salary_from">Salary From, $</label>
+                <label class="form-label fw-semibold" for="id_salary_from">{% translate "Salary From, $" %}</label>
                 <input type="number"
                        name="salary_from"
                        id="id_salary_from"
                        class="form-control"
-                       placeholder="e.g. 1000"
+                       placeholder="{% translate 'e.g. 1000' %}"
                        value="{{ current_salary_from }}" />
               </div>
-              <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+              <button type="submit" class="btn btn-primary w-100">{% translate "Apply Filters" %}</button>
               <a href="{% url 'jobs:jobs-list' %}"
                  class="btn btn-link w-100 mt-2"
                  hx-get="{% url 'jobs:jobs-list' %}"
                  hx-target="#job-list-container"
-                 hx-push-url="true">Clear All</a>
+                 hx-push-url="true">{% translate "Clear All" %}</a>
             </form>
           </div>
         </div>
@@ -124,10 +124,10 @@
           <!-- Sort and Results Count -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <p class="mb-0">
-              Showing <strong>{{ page_obj.start_index|default:0 }}-{{ page_obj.end_index|default:0 }}</strong> of <strong>{{ paginator.count|default:0 }}</strong> jobs
+              {% blocktranslate with start=page_obj.start_index|default:0 end=page_obj.end_index|default:0 count=paginator.count|default:0 %}Showing <strong>{{ start }}-{{ end }}</strong> of <strong>{{ count }}</strong> jobs{% endblocktranslate %}
             </p>
             <div class="d-flex align-items-center">
-              <label class="me-2" for="id_sort">Sort by:</label>
+              <label class="me-2" for="id_sort">{% translate "Sort by:" %}</label>
               <select class="form-select"
                       style="width: auto"
                       name="sort"

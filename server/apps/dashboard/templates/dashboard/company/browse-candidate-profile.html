@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Candidate Profile | StartJob
+  {% translate "Candidate Profile" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -14,11 +15,11 @@
       <div class="d-flex justify-content-between align-items-center">
         <a href="{% url 'dashboard:browse-candidates' %}"
            class="text-white text-decoration-none">
-          <i class="bi bi-arrow-left"></i> Back to Browse Candidates
+          <i class="bi bi-arrow-left"></i> {% translate "Back to Browse Candidates" %}
         </a>
         {% if job %}
           <div>
-            <span class="badge bg-light text-dark p-2">Matching: {{ job.title }}</span>
+            <span class="badge bg-light text-dark p-2">{% blocktranslate with job_title=job.title %}Matching: {{ job_title }}{% endblocktranslate %}</span>
           </div>
         {% endif %}
       </div>
@@ -55,7 +56,7 @@
               <div class="col-md-6">
                 <div class="info-card text-center">
                   <h3 class="fw-bold text-primary">{{ match_score }}%</h3>
-                  <small>Match Score</small>
+                  <small>{% translate "Match Score" %}</small>
                 </div>
               </div>
               <div class="col-md-6">
@@ -63,7 +64,7 @@
                   <h3 class="fw-bold {% if skill_match_level == 'High' %}text-success{% elif skill_match_level == 'Medium' %}text-warning{% else %}text-danger{% endif %}">
                     {{ skill_match_level }}
                   </h3>
-                  <small>Skill Match</small>
+                  <small>{% translate "Skill Match" %}</small>
                 </div>
               </div>
             </div>
@@ -71,21 +72,21 @@
           <!-- About -->
           {% if jobseeker.about %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">About</h5>
+              <h5 class="fw-bold mb-3">{% translate "About" %}</h5>
               <p>{{ jobseeker.about }}</p>
             </div>
           {% endif %}
           <!-- Skills -->
           {% if skills %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Skills</h5>
+              <h5 class="fw-bold mb-3">{% translate "Skills" %}</h5>
               {% for skill in skills %}<span class="skill-badge">{{ skill.name }}</span>{% endfor %}
             </div>
           {% endif %}
           <!-- Education -->
           {% if education %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Education</h5>
+              <h5 class="fw-bold mb-3">{% translate "Education" %}</h5>
               {% for edu in education %}
                 <div class="education-item">
                   <div class="d-flex justify-content-between">
@@ -106,19 +107,21 @@
           <!-- Experience -->
           {% if experience %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Experience</h5>
+              <h5 class="fw-bold mb-3">{% translate "Experience" %}</h5>
               {% for exp in experience %}
                 <div class="experience-item">
                   <div class="d-flex justify-content-between">
                     <h6 class="fw-bold mb-1">{{ exp.position }}</h6>
-                    {% if exp.is_current %}<small class="text-success">Current</small>{% endif %}
+                    {% if exp.is_current %}
+                      <small class="text-success">{% translate "Current" %}</small>
+                    {% endif %}
                   </div>
                   <p class="text-muted mb-2">
                     {{ exp.company_name }} | {{ exp.start_date|date:"M Y" }} -
                     {% if exp.end_date %}
                       {{ exp.end_date|date:"M Y" }}
                     {% else %}
-                      Present
+                      {% translate "Present" %}
                     {% endif %}
                   </p>
                   {% if exp.description %}
@@ -136,44 +139,44 @@
       <div class="col-lg-4">
         <!-- Action Buttons -->
         <div class="action-buttons mb-4">
-          <h5 class="fw-bold mb-3">Actions</h5>
+          <h5 class="fw-bold mb-3">{% translate "Actions" %}</h5>
           <div class="d-grid gap-2">
             <a href="javascript:void(0)"
                onclick="startDirectChat({{ jobseeker.pk }})"
                class="btn btn-outline-secondary">
-              <i class="bi bi-envelope"></i> Send Message
+              <i class="bi bi-envelope"></i> {% translate "Send Message" %}
             </a>
             <a href="{% url 'dashboard:candidate-resume-pdf' jobseeker.pk %}"
                class="btn btn-outline-secondary"
                target="_blank">
-              <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+              <i class="bi bi-file-earmark-pdf"></i> {% translate "Generate PDF" %}
             </a>
           </div>
         </div>
         <!-- Contact Information -->
         <div class="contact-info mb-4">
-          <h5 class="fw-bold mb-3">Contact Information</h5>
+          <h5 class="fw-bold mb-3">{% translate "Contact Information" %}</h5>
           {% if jobseeker.user.email %}
             <div class="mb-3">
-              <small class="text-muted">Email</small>
+              <small class="text-muted">{% translate "Email" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.user.email }}</p>
             </div>
           {% endif %}
           {% if jobseeker.phone %}
             <div class="mb-3">
-              <small class="text-muted">Phone</small>
+              <small class="text-muted">{% translate "Phone" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.phone }}</p>
             </div>
           {% endif %}
           {% if jobseeker.location %}
             <div class="mb-3">
-              <small class="text-muted">Location</small>
+              <small class="text-muted">{% translate "Location" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.location }}</p>
             </div>
           {% endif %}
           {% if languages %}
             <div>
-              <small class="text-muted">Languages</small>
+              <small class="text-muted">{% translate "Languages" %}</small>
               <p class="mb-2">
                 {% for lang in languages %}
                   {{ lang.name }} ({{ lang.get_proficiency_label }})

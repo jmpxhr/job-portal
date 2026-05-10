@@ -1,12 +1,13 @@
+{% load i18n %}
 <div class="tab-content" id="companyEmployerTabContent">
   <div class="tab-pane fade show active" id="overview" role="tabpanel">
     <div class="info-card mt-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="section-title mb-0">Edit Company Profile</h5>
+        <h5 class="section-title mb-0">{% translate "Edit Company Profile" %}</h5>
         <div>
           <a href="{% url 'company:company-detail' company.pk %}"
-             class="btn btn-outline-secondary me-2">Cancel</a>
-          <button type="submit" form="editProfileForm" class="btn btn-save">Save Changes</button>
+             class="btn btn-outline-secondary me-2">{% translate "Cancel" %}</a>
+          <button type="submit" form="editProfileForm" class="btn btn-save">{% translate "Save Changes" %}</button>
         </div>
       </div>
       <form id="editProfileForm"
@@ -17,31 +18,31 @@
         {% csrf_token %}
         <!-- Basic Information -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">Basic Information</h6>
+          <h6 class="fw-bold mb-3">{% translate "Basic Information" %}</h6>
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.name.id_for_label }}">Company Name</label>
+              <label class="form-label" for="{{ form.name.id_for_label }}">{% translate "Company Name" %}</label>
               {{ form.name }}
               {% if form.name.errors %}
                 {% for error in form.name.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.industry.id_for_label }}">Industry</label>
+              <label class="form-label" for="{{ form.industry.id_for_label }}">{% translate "Industry" %}</label>
               {{ form.industry }}
               {% if form.industry.errors %}
                 {% for error in form.industry.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.founded_year.id_for_label }}">Founded Year</label>
+              <label class="form-label" for="{{ form.founded_year.id_for_label }}">{% translate "Founded Year" %}</label>
               {{ form.founded_year }}
               {% if form.founded_year.errors %}
                 {% for error in form.founded_year.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.size.id_for_label }}">Company Size</label>
+              <label class="form-label" for="{{ form.size.id_for_label }}">{% translate "Company Size" %}</label>
               {{ form.size }}
               {% if form.size.errors %}
                 {% for error in form.size.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
@@ -49,7 +50,7 @@
             </div>
             <div class="col-12">
               {{ form.media }}
-              <label class="form-label" for="{{ form.description.id_for_label }}">About Company</label>
+              <label class="form-label" for="{{ form.description.id_for_label }}">{% translate "About Company" %}</label>
               {{ form.description }}
               {% if form.description.errors %}
                 {% for error in form.description.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
@@ -59,14 +60,14 @@
         </div>
         <!-- Logo & Cover -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">Logo & Cover Image</h6>
+          <h6 class="fw-bold mb-3">{% translate "Logo & Cover Image" %}</h6>
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.logo.id_for_label }}">Company Logo</label>
+              <label class="form-label" for="{{ form.logo.id_for_label }}">{% translate "Company Logo" %}</label>
               {% if company.logo %}
                 <div class="mb-2 d-flex align-items-center gap-2">
                   <img src="{{ company.logo.url }}"
-                       alt="Current logo"
+                       alt="{% translate 'Current logo' %}"
                        style="max-width: 100px;
                               max-height: 100px;
                               border-radius: 12px" />
@@ -75,7 +76,7 @@
                            name="clear_logo"
                            class="form-check-input"
                            id="id_clear_logo" />
-                    <label class="form-check-label" for="id_clear_logo">Remove logo</label>
+                    <label class="form-check-label" for="id_clear_logo">{% translate "Remove logo" %}</label>
                   </div>
                 </div>
               {% endif %}
@@ -85,11 +86,11 @@
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.cover_image.id_for_label }}">Cover Image</label>
+              <label class="form-label" for="{{ form.cover_image.id_for_label }}">{% translate "Cover Image" %}</label>
               {% if company.cover_image %}
                 <div class="mb-2 d-flex align-items-center gap-2">
                   <img src="{{ company.cover_image.url }}"
-                       alt="Current cover"
+                       alt="{% translate 'Current cover' %}"
                        style="max-width: 200px;
                               max-height: 100px;
                               border-radius: 12px" />
@@ -98,7 +99,7 @@
                            name="clear_cover_image"
                            class="form-check-input"
                            id="id_clear_cover_image" />
-                    <label class="form-check-label" for="id_clear_cover_image">Remove cover</label>
+                    <label class="form-check-label" for="id_clear_cover_image">{% translate "Remove cover" %}</label>
                   </div>
                 </div>
               {% endif %}
@@ -111,31 +112,31 @@
         </div>
         <!-- Contact Information -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">Contact Information</h6>
+          <h6 class="fw-bold mb-3">{% translate "Contact Information" %}</h6>
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.website.id_for_label }}">Website</label>
+              <label class="form-label" for="{{ form.website.id_for_label }}">{% translate "Website" %}</label>
               {{ form.website }}
               {% if form.website.errors %}
                 {% for error in form.website.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.email.id_for_label }}">Company Email</label>
+              <label class="form-label" for="{{ form.email.id_for_label }}">{% translate "Company Email" %}</label>
               {{ form.email }}
               {% if form.email.errors %}
                 {% for error in form.email.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.phone.id_for_label }}">Phone Number</label>
+              <label class="form-label" for="{{ form.phone.id_for_label }}">{% translate "Phone Number" %}</label>
               {{ form.phone }}
               {% if form.phone.errors %}
                 {% for error in form.phone.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="{{ form.headquarters.id_for_label }}">Headquarters</label>
+              <label class="form-label" for="{{ form.headquarters.id_for_label }}">{% translate "Headquarters" %}</label>
               {{ form.headquarters }}
               {% if form.headquarters.errors %}
                 {% for error in form.headquarters.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
@@ -145,7 +146,7 @@
         </div>
         <!-- Social Media -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">Social Media</h6>
+          <h6 class="fw-bold mb-3">{% translate "Social Media" %}</h6>
           <div class="row g-3">
             <div class="col-md-6">
               <div class="social-input">
@@ -169,7 +170,7 @@
         </div>
         <!-- Benefits -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">Benefits & Perks</h6>
+          <h6 class="fw-bold mb-3">{% translate "Benefits & Perks" %}</h6>
           <div class="row">
             {% for benefit in form.benefits.field.queryset %}
               <div class="col-md-4">
@@ -191,24 +192,24 @@
         </div>
         <!-- HR Contact Person -->
         <div class="mb-4">
-          <h6 class="fw-bold mb-3">HR Contact Person</h6>
+          <h6 class="fw-bold mb-3">{% translate "HR Contact Person" %}</h6>
           <div class="row g-3">
             <div class="col-md-4">
-              <label class="form-label" for="{{ form.hr_contact_name.id_for_label }}">Name</label>
+              <label class="form-label" for="{{ form.hr_contact_name.id_for_label }}">{% translate "Name" %}</label>
               {{ form.hr_contact_name }}
               {% if form.hr_contact_name.errors %}
                 {% for error in form.hr_contact_name.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-4">
-              <label class="form-label" for="{{ form.hr_contact_position.id_for_label }}">Position</label>
+              <label class="form-label" for="{{ form.hr_contact_position.id_for_label }}">{% translate "Position" %}</label>
               {{ form.hr_contact_position }}
               {% if form.hr_contact_position.errors %}
                 {% for error in form.hr_contact_position.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
               {% endif %}
             </div>
             <div class="col-md-4">
-              <label class="form-label" for="{{ form.hr_contact_email.id_for_label }}">Email</label>
+              <label class="form-label" for="{{ form.hr_contact_email.id_for_label }}">{% translate "Email" %}</label>
               {{ form.hr_contact_email }}
               {% if form.hr_contact_email.errors %}
                 {% for error in form.hr_contact_email.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
@@ -218,8 +219,8 @@
         </div>
         <div class="text-end">
           <a href="{% url 'company:company-detail' company.pk %}"
-             class="btn btn-outline-secondary me-2">Cancel</a>
-          <button type="submit" class="btn btn-save">Save Changes</button>
+             class="btn btn-outline-secondary me-2">{% translate "Cancel" %}</a>
+          <button type="submit" class="btn btn-save">{% translate "Save Changes" %}</button>
         </div>
       </form>
     </div>

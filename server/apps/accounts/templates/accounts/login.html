@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %}
-  Sign In - StartJob
+  {% translate "Sign In" %} - StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}" />
@@ -16,34 +16,36 @@
             <div class="brand-icon">
               <i class="bi bi-briefcase-fill"></i>
             </div>
-            <h2 class="fw-bold mb-3">Welcome Back!</h2>
-            <p class="mb-4">Access your account to continue your job search or manage your company's vacancies.</p>
+            <h2 class="fw-bold mb-3">{% translate "Welcome Back!" %}</h2>
+            <p class="mb-4">
+              {% translate "Access your account to continue your job search or manage your company's vacancies." %}
+            </p>
             <ul class="feature-list">
               <li>
                 <i class="bi bi-check-lg"></i>
                 <div>
-                  <strong>Track Applications</strong>
-                  <p class="mb-0 small opacity-75">Monitor your job applications in real-time</p>
+                  <strong>{% translate "Track Applications" %}</strong>
+                  <p class="mb-0 small opacity-75">{% translate "Monitor your job applications in real-time" %}</p>
                 </div>
               </li>
               <li>
                 <i class="bi bi-bell"></i>
                 <div>
-                  <strong>Job Alerts</strong>
-                  <p class="mb-0 small opacity-75">Get notified about new opportunities</p>
+                  <strong>{% translate "Job Alerts" %}</strong>
+                  <p class="mb-0 small opacity-75">{% translate "Get notified about new opportunities" %}</p>
                 </div>
               </li>
               <li>
                 <i class="bi bi-chat"></i>
                 <div>
-                  <strong>Direct Communication</strong>
-                  <p class="mb-0 small opacity-75">Connect with employers instantly</p>
+                  <strong>{% translate "Direct Communication" %}</strong>
+                  <p class="mb-0 small opacity-75">{% translate "Connect with employers instantly" %}</p>
                 </div>
               </li>
             </ul>
             <div class="mt-auto">
               <p class="mb-0 small opacity-75">
-                <i class="bi bi-shield-check"></i> Your data is secure and protected
+                <i class="bi bi-shield-check"></i> {% translate "Your data is secure and protected" %}
               </p>
             </div>
           </div>
@@ -51,8 +53,8 @@
         <!-- Right Side - Login Form -->
         <div class="col-lg-7">
           <div class="auth-right">
-            <h3 class="fw-bold mb-1">Sign In</h3>
-            <p class="text-muted mb-4">Welcome back! Please enter your details</p>
+            <h3 class="fw-bold mb-1">{% translate "Sign In" %}</h3>
+            <p class="text-muted mb-4">{% translate "Welcome back! Please enter your details" %}</p>
             {% if form.non_field_errors %}
               {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
             {% endif %}
@@ -61,10 +63,10 @@
               <button class="btn active"
                       id="candidateTab"
                       onclick="switchUserType('jobseeker')">
-                <i class="bi bi-person"></i> Candidate
+                <i class="bi bi-person"></i> {% translate "Candidate" %}
               </button>
               <button class="btn" id="employerTab" onclick="switchUserType('company')">
-                <i class="bi bi-building"></i> Employer
+                <i class="bi bi-building"></i> {% translate "Employer" %}
               </button>
             </div>
             <!-- Login Form -->
@@ -72,7 +74,7 @@
               {% csrf_token %}
               <input type="hidden" name="user_type" id="id_user_type" value="jobseeker" />
               <div class="mb-3">
-                <label class="form-label" for="{{ form.email.id_for_label }}">Email Address</label>
+                <label class="form-label" for="{{ form.email.id_for_label }}">{% translate "Email Address" %}</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
                   {{ form.email }}
@@ -80,7 +82,7 @@
                 {% for error in form.email.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
               </div>
               <div class="mb-3">
-                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+                <label class="form-label" for="{{ form.password.id_for_label }}">{% translate "Password" %}</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
                   {{ form.password }}
@@ -99,24 +101,22 @@
                          type="checkbox"
                          name="remember_me"
                          id="id_remember_me" />
-                  <label class="form-check-label" for="id_remember_me">Remember me</label>
+                  <label class="form-check-label" for="id_remember_me">{% translate "Remember me" %}</label>
                 </div>
                 <a href="{% url 'accounts:password_recovery' %}"
-                   class="text-decoration-none">Forgot password?</a>
+                   class="text-decoration-none">{% translate "Forgot password?" %}</a>
               </div>
               <button type="submit" class="btn-login mb-3">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                <i class="bi bi-box-arrow-in-right me-2"></i>{% translate "Sign In" %}
               </button>
             </form>
             <p class="text-center mb-0">
-              Don't have an account?
+              {% translate "Don't have an account?" %}
               <a href="{% url 'accounts:register' %}"
-                 class="text-primary fw-bold text-decoration-none">Sign up</a>
+                 class="text-primary fw-bold text-decoration-none">{% translate "Sign up" %}</a>
             </p>
             <p class="text-center mt-2 small text-muted">
-              By signing in, you agree to our
-              <a href="#" class="text-decoration-none">Terms</a> and
-              <a href="#" class="text-decoration-none">Privacy Policy</a>
+              {% blocktranslate %}By signing in, you agree to our <a href="#" class="text-decoration-none">Terms</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>{% endblocktranslate %}
             </p>
           </div>
         </div>

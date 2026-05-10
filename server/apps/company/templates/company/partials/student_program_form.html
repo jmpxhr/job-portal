@@ -1,9 +1,9 @@
-{% load static %}
+{% load i18n %}
 <div class="info-card mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="section-title mb-0">{{ program|default:"New Student Program" }}</h5>
+    <h5 class="section-title mb-0">{{ program|default:_("New Student Program") }}</h5>
     <a href="{% url 'company:company-detail' company.pk %}"
-       class="btn btn-outline-secondary btn-sm">Cancel</a>
+       class="btn btn-outline-secondary btn-sm">{% translate "Cancel" %}</a>
   </div>
   <form hx-post="{% if program %}{% url 'company:student-program-edit' company.pk program.pk %}{% else %}{% url 'company:student-program-create' company.pk %}{% endif %}"
         hx-target="#student-programs-content"
@@ -11,28 +11,28 @@
     {% csrf_token %}
     <div class="row g-3">
       <div class="col-12">
-        <label class="form-label" for="{{ form.title.id_for_label }}">Program Title</label>
+        <label class="form-label" for="{{ form.title.id_for_label }}">{% translate "Program Title" %}</label>
         {{ form.title }}
         {% if form.title.errors %}
           {% for error in form.title.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-12">
-        <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+        <label class="form-label" for="{{ form.description.id_for_label }}">{% translate "Description" %}</label>
         {{ form.description }}
         {% if form.description.errors %}
           {% for error in form.description.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-md-6">
-        <label class="form-label" for="{{ form.status.id_for_label }}">Status</label>
+        <label class="form-label" for="{{ form.status.id_for_label }}">{% translate "Status" %}</label>
         {{ form.status }}
         {% if form.status.errors %}
           {% for error in form.status.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
         {% endif %}
       </div>
       <div class="col-md-6">
-        <label class="form-label" for="{{ form.url.id_for_label }}">Program URL</label>
+        <label class="form-label" for="{{ form.url.id_for_label }}">{% translate "Program URL" %}</label>
         {{ form.url }}
         {% if form.url.errors %}
           {% for error in form.url.errors %}<small class="text-danger">{{ error }}</small>{% endfor %}
@@ -41,9 +41,9 @@
       <div class="col-12 text-end">
         <button type="submit" class="btn btn-save">
           {% if program %}
-            Update Program
+            {% translate "Update Program" %}
           {% else %}
-            Create Program
+            {% translate "Create Program" %}
           {% endif %}
         </button>
       </div>

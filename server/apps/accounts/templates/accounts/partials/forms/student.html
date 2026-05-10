@@ -1,16 +1,17 @@
+{% load i18n %}
 <!-- Progress Steps -->
 <div class="progress-steps">
   <div class="step completed">
     <div class="step-number">1</div>
-    <small>Account Type</small>
+    <small>{% translate "Account Type" %}</small>
   </div>
   <div class="step active">
     <div class="step-number">2</div>
-    <small>Personal Info</small>
+    <small>{% translate "Personal Info" %}</small>
   </div>
   <div class="step">
     <div class="step-number">3</div>
-    <small>Verification</small>
+    <small>{% translate "Verification" %}</small>
   </div>
 </div>
 <form hx-post="{% url 'accounts:register' %}"
@@ -25,7 +26,7 @@
         {{ field }}
         {% if field.name == 'password' %}
           <div class="password-strength bg-danger" style="width: 30%;"></div>
-          <small class="text-muted">Password strength: Weak</small>
+          <small class="text-muted">{% translate "Password strength: Weak" %}</small>
         {% endif %}
         {% if field.errors %}
           {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
@@ -34,9 +35,9 @@
     {% endfor %}
   </div>
   <div class="d-flex justify-content-around gap-2 mt-4">
-    <a class="btn btn-link mt-2" href="{% url 'accounts:register' %}"><i class="bi bi-arrow-left"></i> Back to start</a>
+    <a class="btn btn-link mt-2" href="{% url 'accounts:register' %}"><i class="bi bi-arrow-left"></i> {% translate "Back to start" %}</a>
     <button type="submit" class="btn-register w-50">
-      Create Account <i class="bi bi-arrow-right ms-2"></i>
+      {% translate "Create Account" %} <i class="bi bi-arrow-right ms-2"></i>
     </button>
   </div>
 </form>

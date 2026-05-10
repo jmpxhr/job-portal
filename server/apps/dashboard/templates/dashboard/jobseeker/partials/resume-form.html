@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-bold mb-0">Edit Resume</h4>
+  <h4 class="fw-bold mb-0">{% translate "Edit Resume" %}</h4>
   <button class="btn btn-outline-secondary btn-sm"
           hx-get="{% url 'dashboard:candidate-profile' %}"
           hx-target="#resume-content"
           hx-select="#resume-content"
-          hx-swap="innerHTML">Cancel</button>
+          hx-swap="innerHTML">{% translate "Cancel" %}</button>
 </div>
 <form hx-post="{% url 'dashboard:resume-edit' %}"
       hx-target="#resume-content"
@@ -19,13 +20,13 @@
   </div>
   <div class="d-flex gap-2">
     <button type="submit" class="btn btn-primary btn-sm">
-      <i class="bi bi-check-lg"></i> Save
+      <i class="bi bi-check-lg"></i> {% translate "Save" %}
     </button>
     <button type="button"
             class="btn btn-outline-secondary btn-sm"
             hx-get="{% url 'dashboard:candidate-profile' %}"
             hx-target="#resume-content"
             hx-select="#resume-content"
-            hx-swap="innerHTML">Cancel</button>
+            hx-swap="innerHTML">{% translate "Cancel" %}</button>
   </div>
 </form>

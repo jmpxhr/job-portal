@@ -1,5 +1,5 @@
 {% extends "container.html" %}
-{% load static %}
+{% load static i18n %}
 {% block title %}
   {{ job.title }} | StartJob
 {% endblock title %}
@@ -13,10 +13,10 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}">{% translate "Home" %}</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="{% url 'jobs:jobs-list' %}">Jobs</a>
+            <a href="{% url 'jobs:jobs-list' %}">{% translate "Jobs" %}</a>
           </li>
           <li class="breadcrumb-item active">{{ job.title }}</li>
         </ol>
@@ -51,7 +51,9 @@
                 <a class="text-primary h5 d-inline-block mb-2 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
                    href='{% url 'company:company-detail' pk=job.company.id %}'>{{ job.company.name }}</a>
                 <div class="d-flex flex-wrap gap-2">
-                  {% if job.is_student_friendly %}<span class="badge bg-primary">Student-friendly</span>{% endif %}
+                  {% if job.is_student_friendly %}
+                    <span class="badge bg-primary">{% translate "Student-friendly" %}</span>
+                  {% endif %}
                   <span class="badge bg-success">{{ job.experience_level_label }}</span>
                   <span class="badge bg-info">{{ job.work_format_label }}</span>
                 </div>
@@ -73,30 +75,30 @@
           {% endif %}
           <!-- Job Description -->
           <div class="info-card mb-4">
-            <h4 class="fw-bold mb-3">Job Description</h4>
+            <h4 class="fw-bold mb-3">{% translate "Job Description" %}</h4>
             <div class="job-description">{{ job.description|safe }}</div>
           </div>
           <!-- Additional Information -->
           <div class="info-card">
-            <h4 class="fw-bold mb-3">Additional Information</h4>
+            <h4 class="fw-bold mb-3">{% translate "Additional Information" %}</h4>
             <div class="row">
               <div class="col-md-6">
                 <p>
-                  <strong>Experience Level:</strong> {{ job.experience_level_label }}
+                  <strong>{% translate "Experience Level" %}:</strong> {{ job.experience_level_label }}
                 </p>
                 <p>
-                  <strong>Employment Type:</strong> {{ job.employment_type_label }}
+                  <strong>{% translate "Employment Type" %}:</strong> {{ job.employment_type_label }}
                 </p>
                 <p>
-                  <strong>Schedule:</strong> {{ job.schedule_label }}
+                  <strong>{% translate "Schedule" %}:</strong> {{ job.schedule_label }}
                 </p>
               </div>
               <div class="col-md-6">
                 <p>
-                  <strong>Work Format:</strong> {{ job.work_format_label }}
+                  <strong>{% translate "Work Format" %}:</strong> {{ job.work_format_label }}
                 </p>
                 <p>
-                  <strong>Start Date:</strong> Immediate
+                  <strong>{% translate "Start Date" %}:</strong> {% translate "Immediate" %}
                 </p>
               </div>
             </div>
@@ -106,36 +108,36 @@
         <div class="col-lg-4">
           <!-- Job Overview -->
           <div class="info-card mb-4">
-            <h5 class="fw-bold mb-3">Job Overview</h5>
+            <h5 class="fw-bold mb-3">{% translate "Job Overview" %}</h5>
             <div class="job-meta-item">
               <i class="bi bi-calendar3 me-2 text-primary"></i>
-              <strong>Date Posted:</strong>
+              <strong>{% translate "Date Posted" %}:</strong>
               <p class="mb-0 text-muted">{{ job.posted_at|date:"F d, Y" }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-eye me-2 text-primary"></i>
-              <strong>Views:</strong>
+              <strong>{% translate "Views" %}:</strong>
               <p class="mb-0 text-muted">{{ job.views_count }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-briefcase me-2 text-primary"></i>
-              <strong>Employment Type:</strong>
+              <strong>{% translate "Employment Type" %}:</strong>
               <p class="mb-0 text-muted">{{ job.employment_type_label }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-cash me-2 text-primary"></i>
-              <strong>Salary:</strong>
+              <strong>{% translate "Salary" %}:</strong>
               <p class="mb-0 text-muted">{{ job.salary_display }}</p>
             </div>
             <div class="job-meta-item">
               <i class="bi bi-geo-alt me-2 text-primary"></i>
-              <strong>Location:</strong>
-              <p class="mb-0 text-muted">{{ job.location|default:"Remote" }}</p>
+              <strong>{% translate "Location" %}:</strong>
+              <p class="mb-0 text-muted">{{ job.location|default:_("Remote") }}</p>
             </div>
           </div>
           <!-- Company Info -->
           <div class="info-card mb-4">
-            <h5 class="fw-bold mb-3">About Company</h5>
+            <h5 class="fw-bold mb-3">{% translate "About Company" %}</h5>
             <div class="text-center mb-3">
               <div class="company-logo-large mx-auto mb-3">
                 {% if job.company.logo %}
@@ -151,17 +153,17 @@
               </div>
               <h6 class="fw-bold">{{ job.company.name }}</h6>
               <p class="text-muted small">
-                {{ job.company.industry.name|default:"Technology" }} &bull; {{ job.company.display_size }}
+                {{ job.company.industry.name|default:_("Technology") }} &bull; {{ job.company.display_size }}
               </p>
             </div>
             <p class="small">{{ job.company.description|striptags|truncatewords:30 }}</p>
             <a href="{% url 'company:company-detail' job.company.pk %}"
-               class="btn btn-outline-primary w-100">View Company Profile</a>
+               class="btn btn-outline-primary w-100">{% translate "View Company Profile" %}</a>
           </div>
           <!-- Similar Jobs -->
           {% if similar_jobs %}
             <div class="info-card">
-              <h5 class="fw-bold mb-3">Similar Jobs</h5>
+              <h5 class="fw-bold mb-3">{% translate "Similar Jobs" %}</h5>
               {% for similar in similar_jobs %}
                 <div class="similar-job-card">
                   <div class="d-flex align-items-center mb-2">
@@ -186,10 +188,10 @@
                     </div>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small><i class="bi bi-geo-alt me-1"></i>{{ similar.location|default:"Remote" }}</small>
+                    <small><i class="bi bi-geo-alt me-1"></i>{{ similar.location|default:_("Remote") }}</small>
                     <small><i class="bi bi-cash me-1"></i>{{ similar.salary_display }}</small>
                     <a href="{% url 'jobs:jobs-detail' similar.pk %}"
-                       class="btn btn-sm btn-outline-primary">View</a>
+                       class="btn btn-sm btn-outline-primary">{% translate "View" %}</a>
                   </div>
                 </div>
               {% endfor %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
@@ -5,6 +6,7 @@
       <i class="bi bi-briefcase-fill text-primary"></i>
       <span class="fw-bold">StartJob</span>
     </a>
+    {% include 'components/language_switcher.html' %}
     <button class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -12,30 +14,30 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto me-2">
         {% if user.account_type != 2 %}
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'home' %}">Home</a>
+            <a class="nav-link active" href="{% url 'home' %}">{% translate "Home" %}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'jobs:jobs-list' %}">Jobs</a>
+            <a class="nav-link" href="{% url 'jobs:jobs-list' %}">{% translate "Jobs" %}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'company:company-list' %}">Company</a>
+            <a class="nav-link" href="{% url 'company:company-list' %}">{% translate "Company" %}</a>
           </li>
         {% elif user.account_type == 2 %}
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'home' %}">Home</a>
+            <a class="nav-link active" href="{% url 'home' %}">{% translate "Home" %}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'dashboard:manage-vacancies' %}">Jobs</a>
+            <a class="nav-link" href="{% url 'dashboard:manage-vacancies' %}">{% translate "Jobs" %}</a>
           </li>
           <li class="nav-item">
             {% if user.recruiter.company.pk %}
               <a class="nav-link"
-                 href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">Company</a>
+                 href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">{% translate "Company" %}</a>
             {% else %}
-              <a class="nav-link" href="{% url 'dashboard:employer-dashboard' %}">Company</a>
+              <a class="nav-link" href="{% url 'dashboard:employer-dashboard' %}">{% translate "Company" %}</a>
             {% endif %}
           </li>
         {% endif %}
@@ -44,7 +46,7 @@
             <a class="nav-link position-relative"
                href="javascript:void(0)"
                onclick="openChatList()">
-              <i class="bi bi-chat-dots"></i> Messages
+              <i class="bi bi-chat-dots"></i> {% translate "Messages" %}
               <span id="unread-messages-badge"
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger{% if unread_messages_count == 0 %} d-none{% endif %}"
                     style="font-size:0.65rem">{{ unread_messages_count }}</span>
@@ -67,32 +69,32 @@
               {% if user.account_type == 1 %}
                 <li>
                   <a class="dropdown-item active"
-                     href="{% url 'dashboard:candidate-profile' %}">My Profile</a>
+                     href="{% url 'dashboard:candidate-profile' %}">{% translate "My Profile" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:my-applications' %}">Applications</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:my-applications' %}">{% translate "Applications" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:saved-jobs' %}">Saved Jobs</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:saved-jobs' %}">{% translate "Saved Jobs" %}</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
               {% else %}
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:employer-dashboard' %}">Dashboard</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:employer-dashboard' %}">{% translate "Dashboard" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:post-vacancy' %}">Post a Job</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:post-vacancy' %}">{% translate "Post a Job" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:manage-vacancies' %}">Manage Jobs</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:manage-vacancies' %}">{% translate "Manage Jobs" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:applicants-list' %}">Applicants</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:applicants-list' %}">{% translate "Applicants" %}</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'dashboard:browse-candidates' %}">Browse candidates</a>
+                  <a class="dropdown-item" href="{% url 'dashboard:browse-candidates' %}">{% translate "Browse candidates" %}</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider">
@@ -100,22 +102,22 @@
                 <li>
                   {% if user.recruiter.company.pk %}
                     <a class="dropdown-item"
-                       href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">Company Profile</a>
+                       href="{% url 'company:company-detail' pk=user.recruiter.company.pk %}">{% translate "Company Profile" %}</a>
                   {% else %}
-                    <a class="dropdown-item" href="{% url 'dashboard:employer-dashboard' %}">Company Profile</a>
+                    <a class="dropdown-item" href="{% url 'dashboard:employer-dashboard' %}">{% translate "Company Profile" %}</a>
                   {% endif %}
                 </li>
               {% endif %}
               <li>
-                <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
+                <a class="dropdown-item" href="{% url 'accounts:logout' %}">{% translate "Logout" %}</a>
               </li>
             </ul>
           </li>
         {% else %}
           <div class="d-flex ms-lg-3">
             <a href="{% url 'accounts:login' %}"
-               class="btn btn-outline-primary me-2">Login</a>
-            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Register</a>
+               class="btn btn-outline-primary me-2">{% translate "Login" %}</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">{% translate "Register" %}</a>
           </div>
         {% endif %}
       </ul>

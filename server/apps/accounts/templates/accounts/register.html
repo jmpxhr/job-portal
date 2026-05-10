@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %}
-  Sign Up - StartJob
+  {% translate "Sign Up" %} - StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet" href="{% static 'accounts/css/styles.css' %}" />
@@ -13,15 +13,15 @@
         <!-- Left Side - Benefits -->
         <div class="col-lg-5">
           <div class="auth-left h-100">
-            <h2 class="fw-bold mb-4">Join StartJob Today!</h2>
-            <p class="mb-4">Create your account and start your journey towards your dream career.</p>
+            <h2 class="fw-bold mb-4">{% translate "Join StartJob Today!" %}</h2>
+            <p class="mb-4">{% translate "Create your account and start your journey towards your dream career." %}</p>
             <div class="benefit-item">
               <div class="benefit-icon">
                 <i class="bi bi-rocket-takeoff"></i>
               </div>
               <div>
-                <h5 class="fw-bold mb-1">For Students</h5>
-                <p class="mb-0 small opacity-75">Access thousands of entry-level jobs and internships</p>
+                <h5 class="fw-bold mb-1">{% translate "For Students" %}</h5>
+                <p class="mb-0 small opacity-75">{% translate "Access thousands of entry-level jobs and internships" %}</p>
               </div>
             </div>
             <div class="benefit-item">
@@ -29,8 +29,8 @@
                 <i class="bi bi-building"></i>
               </div>
               <div>
-                <h5 class="fw-bold mb-1">For Employers</h5>
-                <p class="mb-0 small opacity-75">Find the best young talent for your company</p>
+                <h5 class="fw-bold mb-1">{% translate "For Employers" %}</h5>
+                <p class="mb-0 small opacity-75">{% translate "Find the best young talent for your company" %}</p>
               </div>
             </div>
             <div class="benefit-item">
@@ -38,8 +38,8 @@
                 <i class="bi bi-graph-up"></i>
               </div>
               <div>
-                <h5 class="fw-bold mb-1">Career Growth</h5>
-                <p class="mb-0 small opacity-75">Get personalized job recommendations and career advice</p>
+                <h5 class="fw-bold mb-1">{% translate "Career Growth" %}</h5>
+                <p class="mb-0 small opacity-75">{% translate "Get personalized job recommendations and career advice" %}</p>
               </div>
             </div>
             <div class="mt-auto">
@@ -51,9 +51,9 @@
                 <i class="bi bi-star-fill text-warning"></i>
               </div>
               <p class="mt-2 mb-0 small opacity-75">
-                "Found my first job through StartJob. The process was smooth and fast!"
+                {% translate '"Found my first job through StartJob. The process was smooth and fast!"' %}
                 <br />
-                - Anna, Junior Developer
+                - {% translate "Anna, Junior Developer" %}
               </p>
             </div>
           </div>
@@ -61,42 +61,42 @@
         <!-- Right Side - Registration Form -->
         <div class="col-lg-7">
           <div class="auth-right">
-            <h3 class="fw-bold mb-1">Create Account</h3>
-            <p class="text-muted mb-4">Join our community of students and employers</p>
+            <h3 class="fw-bold mb-1">{% translate "Create Account" %}</h3>
+            <p class="text-muted mb-4">{% translate "Join our community of students and employers" %}</p>
             <div id="form-container">
               <!-- Step 1: Account Type Selection -->
               <form id="userTypeForm"
                     hx-get="{% url 'accounts:register' %}"
                     hx-target="#form-container"
                     hx-swap="innerHTML">
-                <h5 class="fw-bold mb-3">I want to join as:</h5>
+                <h5 class="fw-bold mb-3">{% translate "I want to join as:" %}</h5>
                 <div class="user-type-selector mb-4">
                   <div class="user-type-card"
                        onclick="selectUserType('jobseeker')"
                        id="jobseekerCard">
                     <i class="bi bi-mortarboard"></i>
-                    <h6 class="fw-bold mb-1">Job Seeker</h6>
-                    <small class="text-muted">Looking for job/internship</small>
+                    <h6 class="fw-bold mb-1">{% translate "Job Seeker" %}</h6>
+                    <small class="text-muted">{% translate "Looking for job/internship" %}</small>
                   </div>
                   <div class="user-type-card"
                        onclick="selectUserType('company')"
                        id="companyCard">
                     <i class="bi bi-building"></i>
-                    <h6 class="fw-bold mb-1">Company</h6>
-                    <small class="text-muted">Hiring young talent</small>
+                    <h6 class="fw-bold mb-1">{% translate "Company" %}</h6>
+                    <small class="text-muted">{% translate "Hiring young talent" %}</small>
                   </div>
                 </div>
                 <!-- Hidden input to store selected user type -->
                 <input type="hidden" name="user_type" id="user_type_input" value="" />
                 <button type="submit" class="btn-register">
-                  Continue <i class="bi bi-arrow-right ms-2"></i>
+                  {% translate "Continue" %} <i class="bi bi-arrow-right ms-2"></i>
                 </button>
               </form>
             </div>
             <p class="text-center mt-4 mb-0">
-              Already have an account?
+              {% translate "Already have an account?" %}
               <a href="{% url 'accounts:login' %}"
-                 class="text-primary fw-bold text-decoration-none">Sign in</a>
+                 class="text-primary fw-bold text-decoration-none">{% translate "Sign in" %}</a>
             </p>
           </div>
         </div>

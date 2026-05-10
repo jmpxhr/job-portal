@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>{{ jobseeker.user.get_full_name|default:jobseeker.user.email }} - Resume</title>
+    <title>{% blocktranslate with name=jobseeker.user.get_full_name|default:jobseeker.user.email %}{{ name }} - Resume{% endblocktranslate %}</title>
     <style>
     @page {
       size: A4;
@@ -107,19 +108,19 @@
     </div>
     {% if jobseeker.resume_objective %}
       <div class="section">
-        <div class="section-title">Objective</div>
+        <div class="section-title">{% translate "Objective" %}</div>
         <p>{{ jobseeker.resume_objective }}</p>
       </div>
     {% endif %}
     {% if jobseeker.about %}
       <div class="section">
-        <div class="section-title">About</div>
+        <div class="section-title">{% translate "About" %}</div>
         <p>{{ jobseeker.about }}</p>
       </div>
     {% endif %}
     {% if education_entries %}
       <div class="section">
-        <div class="section-title">Education</div>
+        <div class="section-title">{% translate "Education" %}</div>
         {% for edu in education_entries %}
           <div class="entry">
             <div class="entry-header">
@@ -137,14 +138,14 @@
     {% endif %}
     {% if experience_entries %}
       <div class="section">
-        <div class="section-title">Experience</div>
+        <div class="section-title">{% translate "Experience" %}</div>
         {% for exp in experience_entries %}
           <div class="entry">
             <div class="entry-header">
               <strong>{{ exp.position }}</strong>
               <span class="date">{{ exp.start_date|date:"M Y" }} &mdash;
                 {% if exp.is_current %}
-                  Present
+                  {% translate "Present" %}
                 {% else %}
                   {{ exp.end_date|date:"M Y" }}
                 {% endif %}
@@ -158,7 +159,7 @@
     {% endif %}
     {% if skills %}
       <div class="section">
-        <div class="section-title">Skills</div>
+        <div class="section-title">{% translate "Skills" %}</div>
         <div class="skills-list">
           {% for skill in skills %}<span class="skill-tag">{{ skill.name }}</span>{% endfor %}
         </div>
@@ -166,7 +167,7 @@
     {% endif %}
     {% if language_entries %}
       <div class="section">
-        <div class="section-title">Languages</div>
+        <div class="section-title">{% translate "Languages" %}</div>
         {% for lang in language_entries %}
           <div class="language-entry">
             <span>{{ lang.name }}</span>

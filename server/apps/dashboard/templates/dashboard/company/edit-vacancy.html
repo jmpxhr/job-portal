@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Edit Job: {{ job.title }} | StartJob
+  {% blocktranslate with title=job.title %}Edit Job: {{ title }}{% endblocktranslate %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -13,13 +14,13 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <h1 class="fw-bold mb-0">Edit Job Posting</h1>
-          <p class="text-muted mb-0">Update your job vacancy details</p>
+          <h1 class="fw-bold mb-0">{% translate "Edit Job Posting" %}</h1>
+          <p class="text-muted mb-0">{% translate "Update your job vacancy details" %}</p>
         </div>
         <div>
           <a href="{% url 'dashboard:employer-dashboard' %}"
              class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
+            <i class="bi bi-arrow-left"></i> {% translate "Back to Dashboard" %}
           </a>
         </div>
       </div>
@@ -31,7 +32,7 @@
       <div class="alert alert-success d-flex align-items-center" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>
         <div>
-          <strong>Job updated successfully!</strong> Changes are now live.
+          <strong>{% translate "Job updated successfully!" %}</strong> {% translate "Changes are now live." %}
         </div>
       </div>
     </div>
@@ -43,13 +44,12 @@
       {% if job.is_active %}
         <div class="warning-message">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <strong>Note:</strong> This job is currently active and receiving applications. Changes will be visible
-          immediately to applicants.
+          <strong>{% translate "Note" %}:</strong> {% translate "This job is currently active and receiving applications. Changes will be visible immediately to applicants." %}
         </div>
       {% else %}
         <div class="alert alert-warning">
           <i class="bi bi-info-circle me-2"></i>
-          This job is currently saved as a draft and is not visible to job seekers.
+          {% translate "This job is currently saved as a draft and is not visible to job seekers." %}
         </div>
       {% endif %}
       <div class="row">
@@ -63,23 +63,27 @@
             <!-- Job Status -->
             <div class="form-section">
               <div class="section-title">
-                <span><i class="bi bi-info-circle text-primary me-2"></i>Job Status</span>
+                <span><i class="bi bi-info-circle text-primary me-2"></i>{% translate "Job Status" %}</span>
                 {% if job.is_active %}
-                  <span class="status-badge status-active">Active</span>
+                  <span class="status-badge status-active">{% translate "Active" %}</span>
                 {% else %}
-                  <span class="status-badge" style="background: #ffc107; color: #000;">Draft</span>
+                  <span class="status-badge" style="background: #ffc107; color: #000;">{% translate "Draft" %}</span>
                 {% endif %}
               </div>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Job Status</label>
+                  <label class="form-label">{% translate "Job Status" %}</label>
                   <select class="form-select" name="job_status">
-                    <option value="active" {% if job.is_active %}selected{% endif %}>Active (Receiving applications)</option>
-                    <option value="draft" {% if not job.is_active %}selected{% endif %}>Draft (Hidden from public)</option>
+                    <option value="active" {% if job.is_active %}selected{% endif %}>
+                      {% translate "Active (Receiving applications)" %}
+                    </option>
+                    <option value="draft" {% if not job.is_active %}selected{% endif %}>
+                      {% translate "Draft (Hidden from public)" %}
+                    </option>
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Posted Date</label>
+                  <label class="form-label">{% translate "Posted Date" %}</label>
                   <input type="text"
                          class="form-control"
                          value="{{ job.posted_at|date:'F d, Y' }}"
@@ -90,11 +94,10 @@
             <!-- Basic Information -->
             <div class="form-section">
               <h5 class="section-title">
-                <i class="bi bi-info-circle text-primary me-2"></i>Basic
-                Information
+                <i class="bi bi-info-circle text-primary me-2"></i>{% translate "Basic Information" %}
               </h5>
               <div class="mb-3">
-                <label class="form-label required" for="{{ form.title.id_for_label }}">Job Title</label>
+                <label class="form-label required" for="{{ form.title.id_for_label }}">{% translate "Job Title" %}</label>
                 {{ form.title }}
                 {% if form.title.errors %}
                   <div class="invalid-feedback d-block">
@@ -105,7 +108,7 @@
               <div class="row g-3 mb-3">
                 <div class="col-md-6">
                   <label class="form-label required"
-                         for="{{ form.employment_type.id_for_label }}">Employment Type</label>
+                         for="{{ form.employment_type.id_for_label }}">{% translate "Employment Type" %}</label>
                   {{ form.employment_type }}
                   {% if form.employment_type.errors %}
                     <div class="invalid-feedback d-block">
@@ -115,7 +118,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label required"
-                         for="{{ form.experience_level.id_for_label }}">Experience Level</label>
+                         for="{{ form.experience_level.id_for_label }}">{% translate "Experience Level" %}</label>
                   {{ form.experience_level }}
                   {% if form.experience_level.errors %}
                     <div class="invalid-feedback d-block">
@@ -125,7 +128,7 @@
                 </div>
               </div>
               <div class="mb-3">
-                <label class="form-label">Work Location</label>
+                <label class="form-label">{% translate "Work Location" %}</label>
                 <div class="row g-3">
                   <div class="col-md-6">{{ form.location }}</div>
                   <div class="col-md-6">{{ form.work_format }}</div>
@@ -134,20 +137,22 @@
               <div class="mb-3">
                 <div class="row g-3 mb-3">
                   <div class="col-md-6">
-                    <label class="form-label" for="{{ form.schedule.id_for_label }}">Schedule</label>
+                    <label class="form-label" for="{{ form.schedule.id_for_label }}">{% translate "Schedule" %}</label>
                     {{ form.schedule }}
                   </div>
                   <div class="col-md-6 d-flex align-items-end">
                     <div class="form-check">
                       {{ form.is_student_friendly }}
                       <label class="form-check-label"
-                             for="{{ form.is_student_friendly.id_for_label }}">Student-friendly position</label>
+                             for="{{ form.is_student_friendly.id_for_label }}">
+                        {% translate "Student-friendly position" %}
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-                <label class="form-label">Salary Range</label>
+                <label class="form-label">{% translate "Salary Range" %}</label>
                 <div class="row g-2">
                   <div class="col-md-6">
                     {{ form.salary_min }}
@@ -172,10 +177,10 @@
             {{ form.media }}
             <div class="form-section">
               <h5 class="section-title">
-                <i class="bi bi-file-text text-primary me-2"></i>Job Description
+                <i class="bi bi-file-text text-primary me-2"></i>{% translate "Job Description" %}
               </h5>
               <div class="mb-3">
-                <label class="form-label required" for="{{ form.description.id_for_label }}">Job Description</label>
+                <label class="form-label required" for="{{ form.description.id_for_label }}">{% translate "Job Description" %}</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                   <div class="invalid-feedback d-block">
@@ -184,20 +189,20 @@
                 {% endif %}
               </div>
               <div class="mb-3">
-                <label class="form-label">Required Skills</label>
+                <label class="form-label">{% translate "Required Skills" %}</label>
                 <div class="input-group mb-2">
                   <input type="text"
                          class="form-control"
                          id="skill-input"
-                         placeholder="Type a skill and press Enter or comma to add..."
+                         placeholder="{% translate 'Type a skill and press Enter or comma to add...' %}"
                          list="skill-suggestions"
                          autocomplete="off">
-                  <button type="button" class="btn btn-outline-primary" id="skill-add-btn">Add</button>
+                  <button type="button" class="btn btn-outline-primary" id="skill-add-btn">{% translate "Add" %}</button>
                 </div>
                 <datalist id="skill-suggestions"></datalist>
                 <div id="skill-tags" class="d-flex flex-wrap gap-2 mb-2"></div>
                 {{ form.skills_text }}
-                <small class="text-muted">Type a skill name and press Enter, comma, or click Add.</small>
+                <small class="text-muted">{% translate "Type a skill name and press Enter, comma, or click Add." %}</small>
               </div>
             </div>
             <!-- Form Actions -->
@@ -206,13 +211,13 @@
                       class="btn-publish"
                       name="publish"
                       onclick="document.getElementById('id_action').value='publish'">
-                <i class="bi bi-check-circle"></i> Update Job
+                <i class="bi bi-check-circle"></i> {% translate "Update Job" %}
               </button>
               <button type="submit"
                       class="btn-save-draft"
                       name="save_draft"
                       onclick="document.getElementById('id_action').value='save_draft'">
-                <i class="bi bi-save"></i> Save as Draft
+                <i class="bi bi-save"></i> {% translate "Save as Draft" %}
               </button>
             </div>
           </form>
@@ -222,7 +227,7 @@
           <!-- Live Preview -->
           <div class="preview-card mb-4">
             <h5 class="fw-bold mb-3">
-              <i class="bi bi-eye"></i> Live Preview
+              <i class="bi bi-eye"></i> {% translate "Live Preview" %}
             </h5>
             <div class="job-preview">
               <div class="company-info d-flex align-items-center mb-3">
@@ -239,8 +244,10 @@
                   {% endif %}
                 </div>
                 <div>
-                  <h6 class="fw-bold mb-0">{{ company.name|default:"Your Company" }}</h6>
-                  <small class="text-muted">{{ company.industry.name|default:"Technology" }}</small>
+                  {% translate "Your Company" as default_company_name %}
+                  <h6 class="fw-bold mb-0">{{ company.name|default:default_company_name }}</h6>
+                  {% translate "Technology" as default_industry_name %}
+                  <small class="text-muted">{{ company.industry.name|default:default_industry_name }}</small>
                 </div>
               </div>
               <h6 class="fw-bold" id="previewTitle">{{ job.title }}</h6>
@@ -250,7 +257,8 @@
                 <span class="badge bg-info">{{ job.get_work_format_display }}</span>
               </div>
               <p class="small text-muted mb-2">
-                <i class="bi bi-geo-alt"></i> {{ job.location|default:"Remote" }}
+                {% translate "Remote" as default_location %}
+                <i class="bi bi-geo-alt"></i> {{ job.location|default:default_location }}
                 <br>
                 <i class="bi bi-cash"></i> {{ job.salary_display }}
               </p>
@@ -259,27 +267,27 @@
           <!-- Quick Actions -->
           <div class="preview-card mt-4">
             <h5 class="fw-bold mb-3">
-              <i class="bi bi-lightning"></i> Quick Actions
+              <i class="bi bi-lightning"></i> {% translate "Quick Actions" %}
             </h5>
             <div class="d-grid gap-2">
               {% if job.is_active %}
                 <button type="button"
                         class="btn btn-outline-dark"
                         onclick="document.getElementById('id_action').value='save_draft'; document.getElementById('editJobForm').submit();">
-                  <i class="bi bi-pause-circle"></i> Pause Job
+                  <i class="bi bi-pause-circle"></i> {% translate "Pause Job" %}
                 </button>
               {% else %}
                 <button type="button"
                         class="btn btn-outline-success"
                         onclick="document.getElementById('id_action').value='publish'; document.getElementById('editJobForm').submit();">
-                  <i class="bi bi-play-circle"></i> Activate Job
+                  <i class="bi bi-play-circle"></i> {% translate "Activate Job" %}
                 </button>
               {% endif %}
               <button type="button"
                       class="btn btn-outline-danger"
                       data-bs-toggle="modal"
                       data-bs-target="#deleteModal">
-                <i class="bi bi-trash"></i> Delete Permanently
+                <i class="bi bi-trash"></i> {% translate "Delete Permanently" %}
               </button>
             </div>
           </div>
@@ -292,21 +300,23 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Confirm Delete</h5>
+          <h5 class="modal-title">{% translate "Confirm Delete" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <p>Are you sure you want to delete "{{ job.title }}"? This action cannot be undone.</p>
+          <p>
+            {% blocktranslate with title=job.title %}Are you sure you want to delete "{{ title }}"? This action cannot be undone.{% endblocktranslate %}
+          </p>
           <p class="text-danger">
-            <strong>Note:</strong> All associated applications will also be deleted.
+            <strong>{% translate "Note" %}:</strong> {% translate "All associated applications will also be deleted." %}
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
           <form method="post" action="{% url 'dashboard:edit-vacancy' job.pk %}">
             {% csrf_token %}
             <input type="hidden" name="action" id="id_action" value="publish">
-            <button type="submit" class="btn btn-danger" name="delete">Delete Permanently</button>
+            <button type="submit" class="btn btn-danger" name="delete">{% translate "Delete Permanently" %}</button>
           </form>
         </div>
       </div>

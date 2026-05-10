@@ -1,25 +1,26 @@
+{% load i18n %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-bold mb-0">Profile Overview</h4>
-  <span class="text-muted">Last updated: {{ jobseeker.updated_at|timesince }} ago</span>
+  <h4 class="fw-bold mb-0">{% translate "Profile Overview" %}</h4>
+  <span class="text-muted">{% blocktranslate with ago=jobseeker.updated_at|timesince %}Last updated: {{ ago }} ago{% endblocktranslate %}</span>
 </div>
 <!-- Stats Row -->
 <div class="row g-3 mb-4">
   <div class="col-md-4 col-6">
     <div class="stat-circle">
       <h3>{{ total_applications }}</h3>
-      <small>Applications</small>
+      <small>{% translate "Applications" %}</small>
     </div>
   </div>
   <div class="col-md-4 col-6">
     <div class="stat-circle">
       <h3>{{ saved_jobs_count }}</h3>
-      <small>Saved Jobs</small>
+      <small>{% translate "Saved Jobs" %}</small>
     </div>
   </div>
   <div class="col-md-4 col-6">
     <div class="stat-circle">
       <h3>{{ accepted_count }}</h3>
-      <small>Accepted</small>
+      <small>{% translate "Accepted" %}</small>
     </div>
   </div>
 </div>
@@ -29,7 +30,7 @@
     <div class="d-flex mb-3">
       <i class="bi bi-envelope-fill text-primary me-3 fs-5"></i>
       <div>
-        <small class="text-muted">Email</small>
+        <small class="text-muted">{% translate "Email" %}</small>
         <p class="mb-0">{{ jobseeker.user.email }}</p>
       </div>
     </div>
@@ -37,7 +38,7 @@
       <div class="d-flex mb-3">
         <i class="bi bi-telephone-fill text-primary me-3 fs-5"></i>
         <div>
-          <small class="text-muted">Phone</small>
+          <small class="text-muted">{% translate "Phone" %}</small>
           <p class="mb-0">{{ jobseeker.phone }}</p>
         </div>
       </div>
@@ -48,7 +49,7 @@
       <div class="d-flex mb-3">
         <i class="bi bi-geo-alt-fill text-primary me-3 fs-5"></i>
         <div>
-          <small class="text-muted">Location</small>
+          <small class="text-muted">{% translate "Location" %}</small>
           <p class="mb-0">{{ jobseeker.location }}</p>
         </div>
       </div>
@@ -56,7 +57,7 @@
     <div class="d-flex mb-3">
       <i class="bi bi-calendar-fill text-primary me-3 fs-5"></i>
       <div>
-        <small class="text-muted">Member since</small>
+        <small class="text-muted">{% translate "Member since" %}</small>
         <p class="mb-0">{{ jobseeker.user.date_joined|date:"F Y" }}</p>
       </div>
     </div>
@@ -65,7 +66,7 @@
 <!-- About Me -->
 {% if jobseeker.about %}
   <div class="mb-4">
-    <h5 class="fw-bold mb-3">About Me</h5>
+    <h5 class="fw-bold mb-3">{% translate "About Me" %}</h5>
     <p class="text-muted">{{ jobseeker.about }}</p>
   </div>
 {% endif %}

@@ -360,4 +360,3 @@ def get_unread_count(user: 'UserType') -> int:
         user=user,
     ).aggregate(total=Sum('unread_count'))
     return result['total'] or 0
-

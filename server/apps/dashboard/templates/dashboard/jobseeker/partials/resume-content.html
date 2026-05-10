@@ -1,11 +1,12 @@
 {% load static %}
+{% load i18n %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h4 class="fw-bold mb-0">My Resume</h4>
+  <h4 class="fw-bold mb-0">{% translate "My Resume" %}</h4>
   <button class="btn btn-primary btn-sm"
           hx-get="{% url 'dashboard:resume-edit' %}"
           hx-target="#resume-content"
           hx-swap="innerHTML">
-    <i class="bi bi-pencil-square"></i> Edit Resume
+    <i class="bi bi-pencil-square"></i> {% translate "Edit Resume" %}
   </button>
 </div>
 <div class="border rounded-3 p-4 bg-light">
@@ -22,15 +23,15 @@
   <div class="row">
     <div class="col-md-8">
       {% if jobseeker.resume_objective %}
-        <h5 class="fw-bold mb-3">Objective</h5>
+        <h5 class="fw-bold mb-3">{% translate "Objective" %}</h5>
         <p class="text-muted">{{ jobseeker.resume_objective }}</p>
       {% endif %}
       {% if jobseeker.about %}
-        <h5 class="fw-bold mb-3">About</h5>
+        <h5 class="fw-bold mb-3">{% translate "About" %}</h5>
         <p class="text-muted">{{ jobseeker.about }}</p>
       {% endif %}
       {% if education_entries %}
-        <h5 class="fw-bold mb-3">Education</h5>
+        <h5 class="fw-bold mb-3">{% translate "Education" %}</h5>
         {% for edu in education_entries %}
           <div class="mb-3">
             <p class="fw-bold mb-1">{{ edu.institution_name }}</p>
@@ -39,12 +40,14 @@
               {% if edu.faculty %}| {{ edu.faculty }}{% endif %}
               {% if edu.specialization %}&mdash; {{ edu.specialization }}{% endif %}
             </p>
-            {% if edu.year_of_graduation %}<small class="text-muted">{{ edu.year_of_graduation }}</small>{% endif %}
+            {% if edu.year_of_graduation %}
+              <small class="text-muted">{% blocktranslate with year=edu.year_of_graduation %}Graduation: {{ year }}{% endblocktranslate %}</small>
+            {% endif %}
           </div>
         {% endfor %}
       {% endif %}
       {% if experience_entries %}
-        <h5 class="fw-bold mb-3 mt-4">Experience</h5>
+        <h5 class="fw-bold mb-3 mt-4">{% translate "Experience" %}</h5>
         {% for exp in experience_entries %}
           <div class="mb-3">
             <p class="fw-bold mb-1">{{ exp.position }}</p>
@@ -53,7 +56,7 @@
               <small class="text-muted">
                 &mdash; {{ exp.start_date|date:"M Y" }} &ndash;
                 {% if exp.is_current %}
-                  Present
+                  {% translate "Present" %}
                 {% else %}
                   {{ exp.end_date|date:"M Y" }}
                 {% endif %}
@@ -66,13 +69,13 @@
     </div>
     <div class="col-md-4">
       {% if skills %}
-        <h5 class="fw-bold mb-3">Skills</h5>
+        <h5 class="fw-bold mb-3">{% translate "Skills" %}</h5>
         <div class="d-flex flex-wrap gap-2 mb-4">
           {% for skill in skills %}<span class="badge bg-secondary">{{ skill.name }}</span>{% endfor %}
         </div>
       {% endif %}
       {% if language_entries %}
-        <h5 class="fw-bold mb-3">Languages</h5>
+        <h5 class="fw-bold mb-3">{% translate "Languages" %}</h5>
         {% for lang in language_entries %}
           <p class="mb-1">
             {{ lang.name }} <small class="text-muted">{{ lang.get_proficiency_label }}</small>
@@ -86,11 +89,11 @@
   <a href="{% url 'dashboard:resume-pdf' %}"
      class="btn btn-outline-primary me-2"
      target="_blank">
-    <i class="bi bi-download"></i> Download PDF
+    <i class="bi bi-download"></i> {% translate "Download PDF" %}
   </a>
   <a href="{% url 'dashboard:resume-pdf' %}"
      class="btn btn-outline-secondary"
      target="_blank">
-    <i class="bi bi-printer"></i> Print
+    <i class="bi bi-printer"></i> {% translate "Print" %}
   </a>
 </div>

@@ -2,13 +2,15 @@
 {% load i18n %}
 {% load django_htmx %}
 <!DOCTYPE html>
-<html lang="en">
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       {% block title %}
-        {{ title|default:'Start Job' }}
+        {% translate "Start Job" as start_job %}
+        {{ title|default:start_job }}
       {% endblock title %}
     </title>
     <!-- Bootstrap css -->
@@ -39,7 +41,7 @@
           <div class="modal-content">
             <div class="modal-header py-2">
               <h6 class="modal-title fw-bold" id="chatModalLabel">
-                <i class="bi bi-chat-dots"></i> Messages
+                <i class="bi bi-chat-dots"></i> {% translate "Messages" %}
               </h6>
               <button type="button"
                       class="btn-close"
@@ -49,7 +51,7 @@
             <div class="modal-body p-0" id="chat-modal-body">
               <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Loading...</span>
+                  <span class="visually-hidden">{% translate "Loading..." %}</span>
                 </div>
               </div>
             </div>
@@ -144,8 +146,8 @@
             currentView = 'list';
             disconnectChatWebSocket();
             var body = document.getElementById('chat-modal-body');
-            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-            document.getElementById('chatModalLabel').innerHTML = '<i class="bi bi-chat-dots"></i> Messages';
+            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">{% translate "Loading..." %}</span></div></div>';
+            document.getElementById('chatModalLabel').innerHTML = '<i class="bi bi-chat-dots"></i> {% translate "Messages" %}';
             getChatModal().show();
             loadChatList();
           };
@@ -168,7 +170,7 @@
             currentView = 'room';
             currentRoomPk = roomPk;
             var body = document.getElementById('chat-modal-body');
-            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">{% translate "Loading..." %}</span></div></div>';
             getChatModal().show();
 
             var xhr = new XMLHttpRequest();

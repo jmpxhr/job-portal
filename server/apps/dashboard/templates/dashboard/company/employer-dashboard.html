@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Employer Dashboard | StartJob
+  {% translate "Employer Dashboard" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -34,22 +35,22 @@
           <div class="nav flex-column">
             <a class="nav-link-custom active"
                href="{% url 'dashboard:employer-dashboard' %}">
-              <i class="bi bi-speedometer2"></i> Dashboard
+              <i class="bi bi-speedometer2"></i> {% translate "Dashboard" %}
             </a>
             <a class="nav-link-custom" href="{% url 'dashboard:post-vacancy' %}">
-              <i class="bi bi-plus-circle"></i> Post a Job
+              <i class="bi bi-plus-circle"></i> {% translate "Post a Job" %}
             </a>
             <a class="nav-link-custom" href="{% url 'dashboard:manage-vacancies' %}">
-              <i class="bi bi-briefcase"></i> Manage Jobs
+              <i class="bi bi-briefcase"></i> {% translate "Manage Jobs" %}
               <span class="badge bg-primary float-end">{{ active_jobs_count }}</span>
             </a>
             <a class="nav-link-custom" href="{% url 'dashboard:applicants-list' %}">
-              <i class="bi bi-people"></i> Applicants
+              <i class="bi bi-people"></i> {% translate "Applicants" %}
               <span class="badge bg-warning float-end">{{ pending_applicants_count }}</span>
             </a>
             <a class="nav-link-custom"
                href="{% url 'company:company-detail' pk=company.id %}">
-              <i class="bi bi-building"></i> Company Profile
+              <i class="bi bi-building"></i> {% translate "Company Profile" %}
             </a>
           </div>
           <hr>
@@ -60,12 +61,14 @@
         <!-- Welcome Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h2 class="fw-bold mb-1">Welcome back, {{ company.name }}!</h2>
-            <p class="text-muted">Here's what's happening with your job postings today.</p>
+            <h2 class="fw-bold mb-1">
+              {% blocktranslate with name=company.name %}Welcome back, {{ name }}!{% endblocktranslate %}
+            </h2>
+            <p class="text-muted">{% translate "Here's what's happening with your job postings today." %}</p>
           </div>
           <div class="d-flex gap-2">
             <a class="btn btn-primary" href="{% url 'dashboard:post-vacancy' %}">
-              <i class="bi bi-plus-circle"></i> Post New Job
+              <i class="bi bi-plus-circle"></i> {% translate "Post New Job" %}
             </a>
           </div>
         </div>
@@ -77,8 +80,8 @@
                 <i class="bi bi-briefcase"></i>
               </div>
               <h3 class="fw-bold mb-1">{{ active_jobs_count }}</h3>
-              <p class="text-muted mb-0">Active Jobs</p>
-              <small class="text-success">+{{ new_applicants_count }} new applicants this week</small>
+              <p class="text-muted mb-0">{% translate "Active Jobs" %}</p>
+              <small class="text-success">{% blocktranslate with count=new_applicants_count %}+{{ count }} new applicants this week{% endblocktranslate %}</small>
             </div>
           </div>
           <div class="col-md-4">
@@ -87,8 +90,8 @@
                 <i class="bi bi-people"></i>
               </div>
               <h3 class="fw-bold mb-1">{{ total_applicants }}</h3>
-              <p class="text-muted mb-0">Total Applicants</p>
-              <small class="text-success">+{{ new_applicants_count }} new</small>
+              <p class="text-muted mb-0">{% translate "Total Applicants" %}</p>
+              <small class="text-success">{% blocktranslate with count=new_applicants_count %}+{{ count }} new{% endblocktranslate %}</small>
             </div>
           </div>
           <div class="col-md-4">
@@ -97,7 +100,7 @@
                 <i class="bi bi-eye"></i>
               </div>
               <h3 class="fw-bold mb-1">{{ job_views_count }}</h3>
-              <p class="text-muted mb-0">Job Views</p>
+              <p class="text-muted mb-0">{% translate "Job Views" %}</p>
             </div>
           </div>
         </div>
@@ -105,19 +108,19 @@
         <div class="row g-3 mb-4">
           <div class="col-md-6">
             <div class="stat-card">
-              <h5 class="fw-bold mb-3">Application Trends</h5>
+              <h5 class="fw-bold mb-3">{% translate "Application Trends" %}</h5>
               <canvas id="applicationsChart" style="height: 250px;"></canvas>
             </div>
           </div>
           <div class="col-md-3">
             <div class="stat-card">
-              <h5 class="fw-bold mb-3">Jobs by Category</h5>
+              <h5 class="fw-bold mb-3">{% translate "Jobs by Category" %}</h5>
               <canvas id="jobsChart" style="height: 250px;"></canvas>
             </div>
           </div>
           <div class="col-md-3">
             <div class="stat-card">
-              <h5 class="fw-bold mb-3">Jobs by Skills</h5>
+              <h5 class="fw-bold mb-3">{% translate "Jobs by Skills" %}</h5>
               <canvas id="skillsChart" style="height: 250px;"></canvas>
             </div>
           </div>
@@ -126,7 +129,7 @@
         <div class="row g-3">
           <div class="col-md-7">
             <div class="recent-activity">
-              <h5 class="fw-bold mb-3">Recent Applications</h5>
+              <h5 class="fw-bold mb-3">{% translate "Recent Applications" %}</h5>
               {% for app in recent_applications %}
                 <div class="activity-item d-flex align-items-center">
                   {% if app.jobseeker.avatar %}
@@ -144,40 +147,42 @@
                   {% endif %}
                   <div class="flex-grow-1">
                     <h6 class="fw-bold mb-1">{{ app.jobseeker.user.get_full_name|default:app.jobseeker.user.email }}</h6>
-                    <small class="text-muted">Applied for {{ app.job.title }}</small>
+                    <small class="text-muted">{% blocktranslate with job_title=app.job.title %}Applied for {{ job_title }}{% endblocktranslate %}</small>
                   </div>
                   <div class="text-end">
-                    <small class="text-muted">{{ app.applied_at|timesince }} ago</small>
-                    {% if app.status == 0 %}<span class="badge-new ms-2">New</span>{% endif %}
+                    <small class="text-muted">{% blocktranslate with timesince=app.applied_at|timesince %}{{ timesince }} ago{% endblocktranslate %}</small>
+                    {% if app.status == 0 %}
+                      <span class="badge-new ms-2">{% translate "New" %}</span>
+                    {% endif %}
                   </div>
                 </div>
               {% empty %}
-                <p class="text-muted">No applications yet.</p>
+                <p class="text-muted">{% translate "No applications yet." %}</p>
               {% endfor %}
               <a href="{% url 'dashboard:applicants-list' %}"
-                 class="btn btn-link w-100 mt-2">View All Applicants</a>
+                 class="btn btn-link w-100 mt-2">{% translate "View All Applicants" %}</a>
             </div>
           </div>
           <div class="col-md-5">
             <div class="recent-activity">
-              <h5 class="fw-bold mb-3">Quick Actions</h5>
+              <h5 class="fw-bold mb-3">{% translate "Quick Actions" %}</h5>
               <a href="{% url 'dashboard:post-vacancy' %}"
                  class="quick-action-btn mb-3 d-block text-decoration-none">
                 <i class="bi bi-plus-circle fs-4"></i>
-                <h6 class="fw-bold mt-2">Post a New Job</h6>
-                <small class="text-muted">Create a new vacancy for students</small>
+                <h6 class="fw-bold mt-2">{% translate "Post a New Job" %}</h6>
+                <small class="text-muted">{% translate "Create a new vacancy for students" %}</small>
               </a>
               <a href="{% url 'dashboard:manage-vacancies' %}"
                  class="quick-action-btn mb-3 d-block text-decoration-none">
                 <i class="bi bi-pencil-square fs-4"></i>
-                <h6 class="fw-bold mt-2">Update Job Listings</h6>
-                <small class="text-muted">Edit or close existing positions</small>
+                <h6 class="fw-bold mt-2">{% translate "Update Job Listings" %}</h6>
+                <small class="text-muted">{% translate "Edit or close existing positions" %}</small>
               </a>
               <a href="{% url 'dashboard:applicants-list' %}"
                  class="quick-action-btn d-block text-decoration-none">
                 <i class="bi bi-person-check fs-4"></i>
-                <h6 class="fw-bold mt-2">Review Applications</h6>
-                <small class="text-muted">Check new candidates</small>
+                <h6 class="fw-bold mt-2">{% translate "Review Applications" %}</h6>
+                <small class="text-muted">{% translate "Check new candidates" %}</small>
               </a>
             </div>
           </div>

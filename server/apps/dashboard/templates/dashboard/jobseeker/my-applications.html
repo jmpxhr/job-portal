@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  My Applications | StartJob
+  {% translate "My Applications | StartJob" %}
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -11,8 +12,8 @@
   <!-- Page Header -->
   <section class="bg-light py-4">
     <div class="container">
-      <h1 class="fw-bold mb-0">My Applications</h1>
-      <p class="text-muted">Track and manage your job applications</p>
+      <h1 class="fw-bold mb-0">{% translate "My Applications" %}</h1>
+      <p class="text-muted">{% translate "Track and manage your job applications" %}</p>
     </div>
   </section>
   <!-- Statistics Summary -->
@@ -22,25 +23,25 @@
         <div class="col-md-3">
           <div class="stat-summary">
             <h3>{{ total_applications }}</h3>
-            <p class="text-muted mb-0">Total Applications</p>
+            <p class="text-muted mb-0">{% translate "Total Applications" %}</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="stat-summary">
             <h3>{{ pending_count }}</h3>
-            <p class="text-muted mb-0">Pending</p>
+            <p class="text-muted mb-0">{% translate "Pending" %}</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="stat-summary">
             <h3>{{ accepted_count }}</h3>
-            <p class="text-muted mb-0">Accepted</p>
+            <p class="text-muted mb-0">{% translate "Accepted" %}</p>
           </div>
         </div>
         <div class="col-md-3">
           <div class="stat-summary">
             <h3>{{ rejected_count }}</h3>
-            <p class="text-muted mb-0">Rejected</p>
+            <p class="text-muted mb-0">{% translate "Rejected" %}</p>
           </div>
         </div>
       </div>
@@ -88,10 +89,10 @@
               </div>
               <div class="col-md-2">
                 <p class="mb-1">
-                  <small>Applied: {{ application.applied_at|date:"M d, Y" }}</small>
+                  <small>{% blocktranslate with applied_date=application.applied_at|date:"M d, Y" %}Applied: {{ applied_date }}{% endblocktranslate %}</small>
                 </p>
                 <p class="mb-0">
-                  <small>📍 {{ application.job.location|default:"Remote" }}, {{ application.job.work_format_label }}</small>
+                  {% translate "Remote" as default_remote %}<small>📍 {{ application.job.location|default:default_remote }}, {{ application.job.work_format_label }}</small>
                 </p>
               </div>
               <div class="col-md-2">
@@ -101,13 +102,13 @@
                 <div class="d-flex align-items-center">
                   {% if application.status == application.StatusEnum.PENDING %}
                     <span class="timeline-dot bg-warning"></span>
-                    <small>Waiting for review</small>
+                    <small>{% translate "Waiting for review" %}</small>
                   {% elif application.status == application.StatusEnum.ACCEPTED %}
                     <span class="timeline-dot bg-success"></span>
-                    <small>Offer received</small>
+                    <small>{% translate "Offer received" %}</small>
                   {% elif application.status == application.StatusEnum.REJECTED %}
                     <span class="timeline-dot bg-danger"></span>
-                    <small>Position filled</small>
+                    <small>{% translate "Position filled" %}</small>
                   {% endif %}
                 </div>
               </div>
@@ -116,14 +117,14 @@
                   <a href="javascript:void(0)"
                      onclick="startChat({{ application.pk }})"
                      class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-chat-dots"></i> Message
+                    <i class="bi bi-chat-dots"></i> {% translate "Message" %}
                   </a>
                   <button class="btn btn-outline-primary btn-sm"
                           hx-get="{% url 'dashboard:application-detail' application.pk %}"
                           hx-target="#modal-body"
                           hx-swap="innerHTML"
                           data-bs-toggle="modal"
-                          data-bs-target="#applicationDetailModal">View Details</button>
+                          data-bs-target="#applicationDetailModal">{% translate "View Details" %}</button>
                 </div>
               </div>
             </div>
@@ -131,9 +132,9 @@
         {% empty %}
           <div class="empty-state text-center py-5">
             <i class="bi bi-file-text fs-1 text-muted"></i>
-            <h4 class="fw-bold mt-3">No applications yet</h4>
-            <p class="text-muted">Start applying to jobs you're interested in</p>
-            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary">Browse Jobs</a>
+            <h4 class="fw-bold mt-3">{% translate "No applications yet" %}</h4>
+            <p class="text-muted">{% translate "Start applying to jobs you're interested in" %}</p>
+            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary">{% translate "Browse Jobs" %}</a>
           </div>
         {% endfor %}
         <!-- Pagination -->
@@ -143,11 +144,11 @@
               {% if page_obj.has_previous %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?{% if current_status %}status={{ current_status }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                     href="?{% if current_status %}status={{ current_status }}&{% endif %}page={{ page_obj.previous_page_number }}">{% translate "Previous" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
-                  <span class="page-link">Previous</span>
+                  <span class="page-link">{% translate "Previous" %}</span>
                 </li>
               {% endif %}
               {% for num in page_obj.paginator.page_range %}
@@ -165,11 +166,11 @@
               {% if page_obj.has_next %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?{% if current_status %}status={{ current_status }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                     href="?{% if current_status %}status={{ current_status }}&{% endif %}page={{ page_obj.next_page_number }}">{% translate "Next" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
-                  <span class="page-link">Next</span>
+                  <span class="page-link">{% translate "Next" %}</span>
                 </li>
               {% endif %}
             </ul>
@@ -187,21 +188,22 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header border-0 pb-0">
-        <h4 class="fw-bold modal-title">Application Details</h4>
+        <h4 class="fw-bold modal-title">{% translate "Application Details" %}</h4>
+        {% translate "Close" as close_label %}
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"
-                aria-label="Close"></button>
+                aria-label="{{ close_label }}"></button>
       </div>
       <div class="modal-body" id="modal-body">
         <div class="text-center py-4">
           <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{% translate "Loading..." %}</span>
           </div>
         </div>
       </div>
       <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
       </div>
     </div>
   </div>

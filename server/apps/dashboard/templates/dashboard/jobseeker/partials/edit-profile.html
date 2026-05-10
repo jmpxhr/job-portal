@@ -1,25 +1,26 @@
+{% load i18n %}
 <form hx-post="{% url 'dashboard:edit-profile' %}"
       hx-target="#overview"
       hx-swap="innerHTML"
       enctype="multipart/form-data">
   {% csrf_token %}
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Edit Profile</h4>
+    <h4 class="fw-bold mb-0">{% translate "Edit Profile" %}</h4>
     <div>
       <button type="submit" class="btn btn-primary btn-sm me-2">
-        <i class="bi bi-check-lg"></i> Save
+        <i class="bi bi-check-lg"></i> {% translate "Save" %}
       </button>
       <button type="button"
               class="btn btn-outline-secondary btn-sm"
               hx-get="{% url 'dashboard:candidate-profile' %}"
               hx-target="#overview"
               hx-select="#overview"
-              hx-swap="innerHTML">Cancel</button>
+              hx-swap="innerHTML">{% translate "Cancel" %}</button>
     </div>
   </div>
   <!-- Avatar -->
   <div class="mb-3">
-    <label class="form-label fw-bold">Avatar</label>
+    <label class="form-label fw-bold">{% translate "Avatar" %}</label>
     {% if jobseeker.avatar %}
       <div class="mb-2">
         <img src="{{ jobseeker.avatar.url }}"
@@ -36,38 +37,38 @@
   <!-- Name -->
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="form-label fw-bold" for="{{ form.first_name.id_for_label }}">First Name</label>
+      <label class="form-label fw-bold" for="{{ form.first_name.id_for_label }}">{% translate "First Name" %}</label>
       {{ form.first_name }}
       {% for error in form.first_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
     <div class="col-md-6">
-      <label class="form-label fw-bold" for="{{ form.last_name.id_for_label }}">Last Name</label>
+      <label class="form-label fw-bold" for="{{ form.last_name.id_for_label }}">{% translate "Last Name" %}</label>
       {{ form.last_name }}
       {% for error in form.last_name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
   </div>
   <!-- Title -->
   <div class="mb-3">
-    <label class="form-label fw-bold" for="{{ form.title.id_for_label }}">Title</label>
+    <label class="form-label fw-bold" for="{{ form.title.id_for_label }}">{% translate "Title" %}</label>
     {{ form.title }}
     {% for error in form.title.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>
   <!-- Phone & Location -->
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="form-label fw-bold" for="{{ form.phone.id_for_label }}">Phone</label>
+      <label class="form-label fw-bold" for="{{ form.phone.id_for_label }}">{% translate "Phone" %}</label>
       {{ form.phone }}
       {% for error in form.phone.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
     <div class="col-md-6">
-      <label class="form-label fw-bold" for="{{ form.location.id_for_label }}">Location</label>
+      <label class="form-label fw-bold" for="{{ form.location.id_for_label }}">{% translate "Location" %}</label>
       {{ form.location }}
       {% for error in form.location.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
     </div>
   </div>
   <!-- About -->
   <div class="mb-3">
-    <label class="form-label fw-bold" for="{{ form.about.id_for_label }}">About Me</label>
+    <label class="form-label fw-bold" for="{{ form.about.id_for_label }}">{% translate "About Me" %}</label>
     {{ form.about }}
     {% for error in form.about.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>

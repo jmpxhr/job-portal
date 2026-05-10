@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Saved Jobs | StartJob
+  {% translate "Saved Jobs | StartJob" %}
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -13,8 +14,10 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <h1 class="fw-bold mb-0">Saved Jobs</h1>
-          <p class="text-muted mb-0">You have {{ total_saved }} saved job{{ total_saved|pluralize }}</p>
+          <h1 class="fw-bold mb-0">{% translate "Saved Jobs" %}</h1>
+          <p class="text-muted mb-0">
+            {% blocktranslate count counter=total_saved %}You have {{ counter }} saved job{% plural %}You have {{ counter }} saved jobs{% endblocktranslate %}
+          </p>
         </div>
       </div>
     </div>
@@ -25,7 +28,7 @@
       <!-- Sort and Filter -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <p class="mb-0">
-          Showing <strong>{{ page_obj.start_index }}-{{ page_obj.end_index }}</strong> of <strong>{{ total_saved }}</strong> saved job{{ total_saved|pluralize }}
+          {% blocktranslate with start=page_obj.start_index end=page_obj.end_index count counter=total_saved %}Showing <strong>{{ start }}-{{ end }}</strong> of <strong>{{ counter }}</strong> saved job{% plural %}Showing <strong>{{ start }}-{{ end }}</strong> of <strong>{{ counter }}</strong> saved jobs{% endblocktranslate %}
         </p>
         <form method="get" class="d-inline">
           <select class="form-select"
@@ -45,12 +48,14 @@
         {% partialdef job_cards inline %}
         {% for saved in saved_jobs %}
           <div class="saved-job-card">
+            {% translate "Remove from saved" as remove_title %}
+            {% translate "Are you sure you want to remove this saved job?" as confirm_remove %}
             <i class="bi bi-bookmark-x-fill remove-bookmark"
-               title="Remove from saved"
+               title="{{ remove_title }}"
                hx-delete="{% url 'dashboard:saved-jobs' saved.pk %}"
                hx-target="closest .saved-job-card"
                hx-swap="outerHTML swap:0.5s"
-               hx-confirm="Are you sure you want to remove this saved job?"></i>
+               hx-confirm="{{ confirm_remove }}"></i>
             <div class="row">
               <div class="col-md-1">
                 <div class="company-logo-small mx-auto">
@@ -71,18 +76,21 @@
                   <div>
                     <h4 class="fw-bold mb-1">{{ saved.job.title }}</h4>
                     <p class="text-primary mb-2">{{ saved.job.company.name }}</p>
-                    {% if saved.job.is_student_friendly %}<span class="badge bg-success">Student-friendly</span>{% endif %}
+                    {% if saved.job.is_student_friendly %}
+                      <span class="badge bg-success">{% translate "Student-friendly" %}</span>
+                    {% endif %}
                   </div>
                 </div>
                 <div class="row mt-2">
                   <div class="col-md-4">
-                    <small><i class="bi bi-geo-alt me-1"></i>{{ saved.job.location|default:"Remote" }}, {{ saved.job.work_format_label }}</small>
+                    {% translate "Remote" as default_remote %}
+                    <small><i class="bi bi-geo-alt me-1"></i>{{ saved.job.location|default:default_remote }}, {{ saved.job.work_format_label }}</small>
                   </div>
                   <div class="col-md-4">
                     <small><i class="bi bi-cash me-1"></i>{{ saved.job.salary_display }}</small>
                   </div>
                   <div class="col-md-4">
-                    <small><i class="bi bi-clock me-1"></i>Posted {{ saved.job.posted_at|timesince }} ago</small>
+                    <small><i class="bi bi-clock me-1"></i>{% blocktranslate with ago=saved.job.posted_at|timesince %}Posted {{ ago }} ago{% endblocktranslate %}</small>
                   </div>
                 </div>
                 <div class="mt-2">
@@ -92,7 +100,7 @@
                 </div>
                 <div class="d-flex gap-2 mt-3">
                   <a href="{% url 'jobs:jobs-detail' saved.job.pk %}"
-                     class="btn btn-primary btn-sm">View Details</a>
+                     class="btn btn-primary btn-sm">{% translate "View Details" %}</a>
                 </div>
               </div>
             </div>
@@ -100,9 +108,9 @@
         {% empty %}
           <div class="empty-state">
             <i class="bi bi-bookmark"></i>
-            <h4 class="fw-bold mt-3">No saved jobs yet</h4>
-            <p class="text-muted">Start saving jobs you're interested in</p>
-            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary">Browse Jobs</a>
+            <h4 class="fw-bold mt-3">{% translate "No saved jobs yet" %}</h4>
+            <p class="text-muted">{% translate "Start saving jobs you're interested in" %}</p>
+            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary">{% translate "Browse Jobs" %}</a>
           </div>
         {% endfor %}
         <!-- Pagination -->
@@ -112,11 +120,11 @@
               {% if page_obj.has_previous %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                     href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}">{% translate "Previous" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
-                  <span class="page-link">Previous</span>
+                  <span class="page-link">{% translate "Previous" %}</span>
                 </li>
               {% endif %}
               {% for num in page_obj.paginator.page_range %}
@@ -134,11 +142,11 @@
               {% if page_obj.has_next %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                     href="?{% if request.GET.urlencode %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}">{% translate "Next" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
-                  <span class="page-link">Next</span>
+                  <span class="page-link">{% translate "Next" %}</span>
                 </li>
               {% endif %}
             </ul>

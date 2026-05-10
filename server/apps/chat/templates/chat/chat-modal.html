@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <div class="chat-room card">
   <div class="chat-header card-header d-flex align-items-center">
     <button type="button"
             class="btn btn-sm btn-outline-secondary me-3"
             onclick="openChatList()">
-      <i class="bi bi-arrow-left"></i> Back
+      <i class="bi bi-arrow-left"></i> {% translate "Back" %}
     </button>
     <div class="d-flex align-items-center flex-grow-1">
       {% if other_user.account_type == 2 %}
@@ -45,7 +45,7 @@
         {% elif other_user.account_type == 2 %}
           <small class="text-muted">{{ other_user.recruiter.company.name }}</small>
         {% else %}
-          <small class="text-muted">Direct Message</small>
+          <small class="text-muted">{% translate "Direct Message" %}</small>
         {% endif %}
       </div>
     </div>
@@ -72,7 +72,7 @@
              name="content"
              id="chat-message-input"
              class="form-control"
-             placeholder="Type a message..."
+             placeholder="{% translate 'Type a message...' %}"
              autocomplete="off"
              required>
       <button type="submit" id="chat-send-btn" class="btn btn-primary">

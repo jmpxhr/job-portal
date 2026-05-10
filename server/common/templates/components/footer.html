@@ -1,51 +1,52 @@
+{% load i18n %}
 <!-- Footer -->
 <footer class="bg-dark text-white pt-5 pb-4">
   <div class="container">
     <div class="row">
       <div class="col-lg-3 col-md-6 mb-4">
         <h5 class="fw-bold mb-3">StartJob</h5>
-        <p>Your gateway to first job and successful career start.</p>
+        <p>{% translate "Your gateway to first job and successful career start." %}</p>
       </div>
       {% if user.account_type == 1 %}
         <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">For Candidates</h5>
+          <h5 class="fw-bold mb-3">{% translate "For Candidates" %}</h5>
           <ul class="list-unstyled">
             <li>
               <a href="{% url 'jobs:jobs-list' %}"
-                 class="text-white-50 text-decoration-none">Browse Jobs</a>
+                 class="text-white-50 text-decoration-none">{% translate "Browse Jobs" %}</a>
             </li>
             <li>
               <a href="{% url 'dashboard:candidate-profile' %}"
-                 class="text-white-50 text-decoration-none">Create Resume</a>
+                 class="text-white-50 text-decoration-none">{% translate "Create Resume" %}</a>
             </li>
             <li>
               <a href="{% url 'dashboard:saved-jobs' %}"
-                 class="text-white-50 text-decoration-none">Saved Jobs</a>
+                 class="text-white-50 text-decoration-none">{% translate "Saved Jobs" %}</a>
             </li>
           </ul>
         </div>
       {% endif %}
       {% if user.account_type == 2 %}
         <div class="col-lg-3 col-md-6 mb-4">
-          <h5 class="fw-bold mb-3">For Employers</h5>
+          <h5 class="fw-bold mb-3">{% translate "For Employers" %}</h5>
           <ul class="list-unstyled">
             <li>
               <a href="{% url 'dashboard:post-vacancy' %}"
-                 class="text-white-50 text-decoration-none">Post a Job</a>
+                 class="text-white-50 text-decoration-none">{% translate "Post a Job" %}</a>
             </li>
             <li>
               <a href="{% url 'company:company-list' %}"
-                 class="text-white-50 text-decoration-none">Browse Companies</a>
+                 class="text-white-50 text-decoration-none">{% translate "Browse Companies" %}</a>
             </li>
             <li>
               <a href="{% url 'dashboard:employer-dashboard' %}"
-                 class="text-white-50 text-decoration-none">Employer Dashboard</a>
+                 class="text-white-50 text-decoration-none">{% translate "Employer Dashboard" %}</a>
             </li>
           </ul>
         </div>
       {% endif %}
-      <div class="col-lg-3 col-md-6 mb-4">
-        <h5 class="fw-bold mb-3">Contact Info</h5>
+      <div class="col-lg col-md-6 mb-4 text-end">
+        <h5 class="fw-bold mb-3">{% translate "Contact Info" %}</h5>
         <ul class="list-unstyled">
           <li class="mb-2">
             <i class="bi bi-envelope me-2"></i>info@startjob.com
@@ -54,14 +55,12 @@
             <i class="bi bi-telephone me-2"></i>+375 29 123-45-67
           </li>
           <li class="mb-2">
-            <i class="bi bi-geo-alt me-2"></i>Minsk, Belarus
+            <i class="bi bi-geo-alt me-2"></i>{% translate "Minsk, Belarus" %}
           </li>
         </ul>
       </div>
     </div>
     <hr class="bg-secondary" />
-    <div class="text-center">
-      <p class="mb-0">2026 StartJob. All rights reserved.</p>
-    </div>
+    <div class="text-center">{% blocktranslate %}2026 StartJob. All rights reserved.{% endblocktranslate %}</div>
   </div>
 </footer>

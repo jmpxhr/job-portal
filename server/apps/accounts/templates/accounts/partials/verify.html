@@ -1,25 +1,24 @@
+{% load i18n %}
 <!-- Progress Steps -->
 <div class="progress-steps">
   <div class="step completed">
     <div class="step-number">1</div>
-    <small>Account Type</small>
+    <small>{% translate "Account Type" %}</small>
   </div>
   <div class="step completed">
     <div class="step-number">2</div>
-    <small>Personal Info</small>
+    <small>{% translate "Personal Info" %}</small>
   </div>
   <div class="step active">
     <div class="step-number">3</div>
-    <small>Verification</small>
+    <small>{% translate "Verification" %}</small>
   </div>
 </div>
 <div class="text-center">
   <i class="bi bi-envelope-check text-primary" style="font-size: 4rem;"></i>
-  <h5 class="fw-bold mt-3">Verify Your Email</h5>
+  <h5 class="fw-bold mt-3">{% translate "Verify Your Email" %}</h5>
   <p class="text-muted mb-4">
-    We've sent a verification code to
-    <br />
-    <strong>{{ email }}</strong>
+    {% blocktranslate with email=email %}We've sent a verification code to<br /><strong>{{ email }}</strong>{% endblocktranslate %}
   </p>
   {% if resend_message %}<div class="alert alert-info py-2 mb-3">{{ resend_message }}</div>{% endif %}
   {% if error %}<div class="alert alert-danger py-2 mb-3">{{ error }}</div>{% endif %}
@@ -56,17 +55,17 @@
              maxlength="1" />
     </div>
     <input type="hidden" name="otp" id="otp-hidden" />
-    <button type="submit" class="btn-register mt-3">Verify & Create Account</button>
+    <button type="submit" class="btn-register mt-3">{% translate "Verify & Create Account" %}</button>
   </form>
   <p class="small text-muted mt-3">
-    Didn't receive the code?
+    {% translate "Didn't receive the code?" %}
     <a href="#"
        hx-post="{% url 'accounts:resend_verification' %}"
        hx-target="#form-container"
        hx-swap="innerHTML"
-       class="text-decoration-none">Resend</a>
+       class="text-decoration-none">{% translate "Resend" %}</a>
   </p>
-  <a class="btn btn-link mt-2" href="{% url 'accounts:register' %}"><i class="bi bi-arrow-left"></i> Back to start</a>
+  <a class="btn btn-link mt-2" href="{% url 'accounts:register' %}"><i class="bi bi-arrow-left"></i> {% translate "Back to start" %}</a>
 </div>
 <script>
   document.getElementById('verify-form').addEventListener('submit', function (e) {

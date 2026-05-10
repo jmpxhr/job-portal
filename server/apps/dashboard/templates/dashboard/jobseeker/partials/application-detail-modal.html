@@ -1,8 +1,9 @@
 {% load static %}
+{% load i18n %}
 {% load tags %}
 <!-- Job Information -->
 <div class="job-info-section mb-4">
-  <h6 class="fw-bold mb-3">Job Information</h6>
+  <h6 class="fw-bold mb-3">{% translate "Job Information" %}</h6>
   <div class="row">
     <div class="col-md-8">
       <div class="d-flex">
@@ -22,7 +23,8 @@
           <h5 class="fw-bold mb-1">{{ application.job.title }}</h5>
           <p class="text-primary mb-2">{{ application.job.company.name }}</p>
           <div class="d-flex gap-3">
-            <small><i class="bi bi-geo-alt me-1"></i>{{ application.job.location|default:"Remote" }}, {{ application.job.work_format_label }}</small>
+            {% translate "Remote" as default_remote %}
+            <small><i class="bi bi-geo-alt me-1"></i>{{ application.job.location|default:default_remote }}, {{ application.job.work_format_label }}</small>
             <small><i class="bi bi-cash me-1"></i>{{ application.job.salary_display }}</small>
           </div>
         </div>
@@ -30,7 +32,7 @@
     </div>
     <div class="col-md-4 text-md-end">
       <a href="{% url 'jobs:jobs-detail' application.job.pk %}"
-         class="btn btn-outline-primary btn-sm">View Original Job Posting</a>
+         class="btn btn-outline-primary btn-sm">{% translate "View Original Job Posting" %}</a>
     </div>
   </div>
 </div>
@@ -39,13 +41,13 @@
   <div class="row g-3 mb-4">
     <div class="col-md-6">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Application ID</small>
+        <small class="text-muted d-block">{% translate "Application ID" %}</small>
         <p class="fw-bold mb-0">APP-{{ application.applied_at|date:"Ymd" }}-{{ application.pk }}</p>
       </div>
     </div>
     <div class="col-md-6">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Status</small>
+        <small class="text-muted d-block">{% translate "Status" %}</small>
         <p class="fw-bold mb-0">
           <span>{{ application.status_label }}</span>
         </p>
@@ -53,13 +55,15 @@
     </div>
     <div class="col-md-6">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Days Since Applied</small>
-        <p class="fw-bold mb-0">{{ application.applied_at|timesince }} ago</p>
+        <small class="text-muted d-block">{% translate "Days Since Applied" %}</small>
+        <p class="fw-bold mb-0">
+          {% blocktranslate with ago=application.applied_at|timesince %}{{ ago }} ago{% endblocktranslate %}
+        </p>
       </div>
     </div>
     <div class="col-md-6">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Applied On</small>
+        <small class="text-muted d-block">{% translate "Applied On" %}</small>
         <p class="fw-bold mb-0">{{ application.applied_at|date:"M d, Y" }}</p>
       </div>
     </div>
@@ -67,30 +71,30 @@
 </div>
 <!-- Job Skills -->
 <div class="skills-section mb-4">
-  <h6 class="fw-bold mb-3">Required Skills</h6>
+  <h6 class="fw-bold mb-3">{% translate "Required Skills" %}</h6>
   <div class="d-flex flex-wrap gap-2">
     {% for skill in application.job.skills.all %}<span class="job-tag">{{ skill.name }}</span>{% endfor %}
   </div>
 </div>
 <!-- Job Details -->
 <div class="job-details-section mb-4">
-  <h6 class="fw-bold mb-3">Job Details</h6>
+  <h6 class="fw-bold mb-3">{% translate "Job Details" %}</h6>
   <div class="row g-3">
     <div class="col-md-4">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Employment Type</small>
+        <small class="text-muted d-block">{% translate "Employment Type" %}</small>
         <p class="fw-bold mb-0">{{ application.job.employment_type_label }}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Experience Level</small>
+        <small class="text-muted d-block">{% translate "Experience Level" %}</small>
         <p class="fw-bold mb-0">{{ application.job.experience_level_label }}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="detail-card p-3 border rounded-3">
-        <small class="text-muted d-block">Schedule</small>
+        <small class="text-muted d-block">{% translate "Schedule" %}</small>
         <p class="fw-bold mb-0">{{ application.job.schedule_label }}</p>
       </div>
     </div>
@@ -99,14 +103,14 @@
 {% if application.resume %}
   <!-- Submitted Documents -->
   <div class="documents-section mb-4">
-    <h6 class="fw-bold mb-3">Submitted Documents</h6>
+    <h6 class="fw-bold mb-3">{% translate "Submitted Documents" %}</h6>
     <div class="row g-2">
       <div class="col-md-6">
         <div class="document-item p-3 border rounded-3 d-flex align-items-center">
           <i class="bi bi-file-pdf-fill text-danger fs-3 me-3"></i>
           <div class="flex-grow-1">
             <p class="fw-bold mb-0">{{ application.resume.name|filename }}</p>
-            <small class="text-muted">Uploaded {{ application.applied_at|date:"M d, Y" }}</small>
+            <small class="text-muted">{% blocktranslate with upload_date=application.applied_at|date:"M d, Y" %}Uploaded {{ upload_date }}{% endblocktranslate %}</small>
           </div>
           <a href="{{ application.resume.url }}"
              class="btn btn-sm btn-outline-secondary"><i class="bi bi-download"></i></a>
@@ -118,13 +122,13 @@
 {% if application.cover_letter %}
   <!-- Cover Letter -->
   <div class="cover-letter-section mb-4">
-    <h6 class="fw-bold mb-3">Cover Letter</h6>
+    <h6 class="fw-bold mb-3">{% translate "Cover Letter" %}</h6>
     <div class="border rounded-3 p-3 bg-light">
       <p id="cover-letter-preview">{{ application.cover_letter|truncatechars:120 }}</p>
       <p id="cover-letter-full" style="display: none;">{{ application.cover_letter }}</p>
       <button class="btn btn-link btn-sm p-0"
               onclick="document.getElementById('cover-letter-preview').style.display='none'; document.getElementById('cover-letter-full').style.display='block'; this.style.display='none';">
-        Read full cover letter
+        {% translate "Read full cover letter" %}
       </button>
     </div>
   </div>
@@ -132,10 +136,10 @@
 {% if application.employer_feedback %}
   <!-- Employer Feedback -->
   <div class="feedback-section mb-4">
-    <h6 class="fw-bold mb-3">Employer Feedback</h6>
+    <h6 class="fw-bold mb-3">{% translate "Employer Feedback" %}</h6>
     <div class="alert alert-info border-0 bg-light">
       <i class="bi bi-chat-dots-fill me-2"></i>
-      <strong>Recruiter's note:</strong>
+      <strong>{% translate "Recruiter's note" %}</strong>
       {{ application.employer_feedback }}
     </div>
   </div>

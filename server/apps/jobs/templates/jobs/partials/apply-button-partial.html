@@ -1,14 +1,15 @@
+{% load i18n %}
 {% if has_applied %}
   <button id="apply-button-container"
           class="btn btn-success btn-lg flex-grow-1"
           disabled>
-    <i class="bi bi-check-circle me-2"></i>Already Applied
+    <i class="bi bi-check-circle me-2"></i>{% translate "Already Applied" %}
   </button>
 {% else %}
   <button id="apply-button-container"
           class="btn btn-primary btn-lg flex-grow-1"
           data-bs-toggle="modal"
           data-bs-target="#applyModal">
-    <i class="bi bi-send me-2"></i>Apply Now
+    <i class="bi bi-send me-2"></i>{% translate "Apply Now" %}
   </button>
 {% endif %}

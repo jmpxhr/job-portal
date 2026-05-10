@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="tab-content" id="companyEmployerTabContent">
   <div class="tab-pane fade show active" id="overview" role="tabpanel">
     <div id="viewMode">
@@ -5,34 +6,34 @@
         <div class="col-lg-8">
           {% if company.description %}
             <div class="info-card">
-              <h5 class="section-title">About Company</h5>
+              <h5 class="section-title">{% translate "About Company" %}</h5>
               <p>{{ company.description|safe }}</p>
             </div>
           {% endif %}
           <div class="info-card">
-            <h5 class="section-title">Company Details</h5>
+            <h5 class="section-title">{% translate "Company Details" %}</h5>
             <div class="row">
               <div class="col-md-6">
                 <table class="table table-borderless">
                   {% if company.industry %}
                     <tr>
-                      <td class="text-muted">Industry:</td>
+                      <td class="text-muted">{% translate "Industry" %}:</td>
                       <td class="fw-bold">{{ company.industry.name }}</td>
                     </tr>
                   {% endif %}
                   {% if company.founded_year %}
                     <tr>
-                      <td class="text-muted">Founded:</td>
+                      <td class="text-muted">{% translate "Founded" %}:</td>
                       <td class="fw-bold">{{ company.founded_year }}</td>
                     </tr>
                   {% endif %}
                   <tr>
-                    <td class="text-muted">Company Size:</td>
+                    <td class="text-muted">{% translate "Company Size" %}:</td>
                     <td class="fw-bold">{{ company.get_size_display }}</td>
                   </tr>
                   {% if company.headquarters %}
                     <tr>
-                      <td class="text-muted">Headquarters:</td>
+                      <td class="text-muted">{% translate "Headquarters" %}:</td>
                       <td class="fw-bold">{{ company.headquarters }}</td>
                     </tr>
                   {% endif %}
@@ -42,7 +43,7 @@
                 <table class="table table-borderless">
                   {% if company.website %}
                     <tr>
-                      <td class="text-muted">Website:</td>
+                      <td class="text-muted">{% translate "Website" %}:</td>
                       <td class="fw-bold">
                         <a href="{{ company.website }}"
                            class="text-decoration-none"
@@ -53,19 +54,19 @@
                   {% endif %}
                   {% if company.email %}
                     <tr>
-                      <td class="text-muted">Email:</td>
+                      <td class="text-muted">{% translate "Email" %}:</td>
                       <td class="fw-bold">{{ company.email }}</td>
                     </tr>
                   {% endif %}
                   {% if company.phone %}
                     <tr>
-                      <td class="text-muted">Phone:</td>
+                      <td class="text-muted">{% translate "Phone" %}:</td>
                       <td class="fw-bold">{{ company.phone }}</td>
                     </tr>
                   {% endif %}
                   {% if company.linkedin_url or company.telegram_url %}
                     <tr>
-                      <td class="text-muted">Social:</td>
+                      <td class="text-muted">{% translate "Social" %}:</td>
                       <td class="fw-bold">
                         {% if company.linkedin_url %}
                           <a href="{{ company.linkedin_url }}" class="text-decoration-none me-2"><i class="bi bi-linkedin"></i></a>
@@ -83,12 +84,12 @@
         </div>
         <div class="col-lg-4">
           <div class="info-card">
-            <h5 class="section-title">Contact Person</h5>
+            <h5 class="section-title">{% translate "Contact Person" %}</h5>
             <div class="text-center">
               {% if company.hr_contact_name or company.recruiter.user.get_full_name %}
                 <h6 class="fw-bold mb-1">{{ company.hr_contact_name|default:company.recruiter.user.get_full_name }}</h6>
               {% endif %}
-              <p class="text-muted small">{{ company.hr_contact_position|default:"Recruiter" }}</p>
+              <p class="text-muted small">{{ company.hr_contact_position|default:_("Recruiter") }}</p>
               <hr />
               {% if company.hr_contact_email or company.recruiter.user.email %}
                 <p class="mb-1">
@@ -105,7 +106,7 @@
           </div>
           {% if company.benefits.exists %}
             <div class="info-card">
-              <h5 class="section-title">Benefits & Perks</h5>
+              <h5 class="section-title">{% translate "Benefits & Perks" %}</h5>
               <div class="row">
                 {% for benefit in company.benefits.all %}
                   <div class="col-md-6">
@@ -124,14 +125,16 @@
   <div class="tab-pane fade" id="jobs" role="tabpanel">
     <div class="info-card">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-        <h4 class="fw-bold mb-0">Open Positions ({{ company.open_jobs_count }})</h4>
+        <h4 class="fw-bold mb-0">
+          {% blocktranslate count counter=company.open_jobs_count %}Open Positions ({{ counter }}){% plural %}Open Positions ({{ counter }}){% endblocktranslate %}
+        </h4>
         <div class="d-flex gap-2 mt-2 mt-sm-0">
           <select class="form-select" style="width: auto;" id="jobTypeFilter">
-            <option value="">All Types</option>
+            <option value="">{% translate "All Types" %}</option>
             {% for value, label in employment_type_choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
           </select>
           {% if can_edit %}
-            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Post New Job</a>
+            <a href="{% url 'jobs:jobs-list' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> {% translate "Post New Job" %}</a>
           {% endif %}
         </div>
       </div>
@@ -143,12 +146,14 @@
               <h5 class="fw-bold mb-1">{{ job.title }}</h5>
               <p class="text-muted mb-2">{{ job.employment_type_label }} • {{ job.experience_level_label }}</p>
               <div class="d-flex flex-wrap gap-3 mb-2">
-                <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:"Remote" }}</small>
+                <small><i class="bi bi-geo-alt me-1"></i>{{ job.location|default:_("Remote") }}</small>
                 <small><i class="bi bi-cash me-1"></i>{{ job.salary_display }}</small>
               </div>
             </div>
             <div class="d-flex gap-2 align-items-center">
-              {% if job.is_student_friendly %}<span class="student-friendly-badge">Student-friendly</span>{% endif %}
+              {% if job.is_student_friendly %}
+                <span class="student-friendly-badge">{% translate "Student-friendly" %}</span>
+              {% endif %}
               {% if can_edit %}
                 <div class="job-action-buttons">
                   <button class="btn btn-outline-primary btn-sm">
@@ -163,22 +168,23 @@
           </div>
           <div class="mt-2">
             {% for skill in job.skills.all %}<span class="badge bg-light text-dark me-1">{{ skill.name }}</span>{% endfor %}
-            <small class="text-muted ms-2"><i class="bi bi-people"></i> {{ job.applicants_count }} applicant{{ job.applicants_count|pluralize }}</small>
+            {% blocktranslate count counter=job.applicants_count %}{{ counter }} applicant{% plural %}{{ counter }} applicants{% endblocktranslate %}
             <a href="{% url 'jobs:jobs-detail' job.pk %}"
-               class="btn btn-link btn-sm p-0 ms-3">View Details</a>
+               class="btn btn-link btn-sm p-0 ms-3">{% translate "View Details" %}</a>
           </div>
         </div>
       {% empty %}
         <div class="text-center py-4">
           <i class="bi bi-briefcase fs-1 text-muted"></i>
-          <h5 class="mt-3">No open positions yet</h5>
-          <p class="text-muted">Check back later for new opportunities.</p>
+          <h5 class="mt-3">{% translate "No open positions yet" %}</h5>
+          <p class="text-muted">{% translate "Check back later for new opportunities." %}</p>
         </div>
       {% endfor %}
       {% if company.open_jobs_count > 3 %}
         <div class="text-center mt-4">
+          {% blocktranslate count counter=company.open_jobs_count %}View All {{ counter }} Job{% plural %}View All {{ counter }} Jobs{% endblocktranslate %}
           <a href="{% url 'jobs:jobs-list' %}?company={{ company.pk }}"
-             class="btn btn-outline-primary">View All {{ company.open_jobs_count }} Jobs <i class="bi bi-arrow-right"></i></a>
+             class="btn btn-outline-primary"><i class="bi bi-arrow-right"></i></a>
         </div>
       {% endif %}
     </div>

@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Browse Candidates | StartJob
+  {% translate "Browse Candidates" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -30,8 +31,10 @@
   <!-- Page Header -->
   <section class="search-header">
     <div class="container">
-      <h1 class="fw-bold text-center mb-3">Find the Perfect Candidate</h1>
-      <p class="text-center mb-0 opacity-75">Browse through thousands of talented students and young specialists</p>
+      <h1 class="fw-bold text-center mb-3">{% translate "Find the Perfect Candidate" %}</h1>
+      <p class="text-center mb-0 opacity-75">
+        {% translate "Browse through thousands of talented students and young specialists" %}
+      </p>
     </div>
   </section>
   <!-- Main Content -->
@@ -44,20 +47,20 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h5 class="fw-bold mb-0">
-              {{ page_obj.paginator.count|default:0 }} candidate{{ page_obj.paginator.count|pluralize }} found
+              {% blocktranslate count counter=page_obj.paginator.count|default:0 %}{{ counter }} candidate found{% plural %}{{ counter }} candidates found{% endblocktranslate %}
             </h5>
-            <small class="text-muted">Showing {{ page_obj.start_index|default:0 }}-{{ page_obj.end_index|default:0 }} of {{ page_obj.paginator.count|default:0 }} results</small>
+            <small class="text-muted">{% blocktranslate with start=page_obj.start_index|default:0 end=page_obj.end_index|default:0 total=page_obj.paginator.count|default:0 %}Showing {{ start }}-{{ end }} of {{ total }} results{% endblocktranslate %}</small>
           </div>
           <div class="d-flex gap-3">
             <!-- Job Selector for Match Score -->
             <div>
-              <label for="job-select" class="form-label mb-0 small text-muted">Match by job</label>
+              <label for="job-select" class="form-label mb-0 small text-muted">{% translate "Match by job" %}</label>
               <select id="job-select"
                       name="job_id"
                       class="form-select"
                       style="width: 220px"
                       onchange="this.form.submit()">
-                <option value="">Select job...</option>
+                <option value="">{% translate "Select job..." %}</option>
                 {% for job in company_jobs %}
                   <option value="{{ job.pk }}"
                           {% if current_job_id == job.pk|stringformat:"s" %}selected{% endif %}>
@@ -68,7 +71,7 @@
             </div>
             <!-- Sort Dropdown -->
             <div>
-              <label for="sort-select" class="form-label mb-0 small text-muted">Sort by</label>
+              <label for="sort-select" class="form-label mb-0 small text-muted">{% translate "Sort by" %}</label>
               <select id="sort-select"
                       name="sort"
                       class="form-select"
@@ -87,23 +90,23 @@
           <!-- Filters Sidebar -->
           <div class="col-lg-3">
             <div class="filter-sidebar">
-              <h5 class="fw-bold mb-3">Filters</h5>
+              <h5 class="fw-bold mb-3">{% translate "Filters" %}</h5>
               <!-- Search -->
               <div class="filter-section">
-                <div class="filter-title">Search</div>
+                <div class="filter-title">{% translate "Search" %}</div>
                 <input type="text"
                        class="form-control mb-2"
                        name="q"
-                       placeholder="Search by name, title, about..."
+                       placeholder="{% translate 'Search by name, title, about...' %}"
                        value="{{ current_q }}">
               </div>
               <!-- Skills -->
               <div class="filter-section">
-                <div class="filter-title">Skills</div>
+                <div class="filter-title">{% translate "Skills" %}</div>
                 <input type="text"
                        id="skillSearch"
                        class="form-control mb-2"
-                       placeholder="Filter skills...">
+                       placeholder="{% translate 'Filter skills...' %}">
                 <div class="skill-search-list" id="skillList">
                   {% for skill in popular_skills %}
                     <div class="form-check skill-check {% if forloop.counter > 5 %}skill-extra{% endif %}"
@@ -123,12 +126,12 @@
                   <a href="#"
                      class="text-decoration-none small"
                      onclick="toggleSkills(event)"
-                     id="toggleSkillsLink">+ {{ popular_skills|length|add:"-5" }} more</a>
+                     id="toggleSkillsLink">{% blocktranslate with extra_count=popular_skills|length|add:"-5" %}+{{ extra_count }} more{% endblocktranslate %}</a>
                 {% endif %}
               </div>
               <!-- Education Level -->
               <div class="filter-section">
-                <div class="filter-title">Education</div>
+                <div class="filter-title">{% translate "Education" %}</div>
                 {% for value, label in education_choices %}
                   <div class="form-check">
                     <input class="form-check-input"
@@ -143,7 +146,7 @@
               </div>
               <!-- Experience Level -->
               <div class="filter-section">
-                <div class="filter-title">Experience</div>
+                <div class="filter-title">{% translate "Experience" %}</div>
                 {% for value, label in experience_choices %}
                   <div class="form-check">
                     <input class="form-check-input"
@@ -158,16 +161,16 @@
               </div>
               <!-- Location -->
               <div class="filter-section">
-                <div class="filter-title">Location</div>
+                <div class="filter-title">{% translate "Location" %}</div>
                 <input type="text"
                        class="form-control"
                        name="location"
-                       placeholder="City or remote"
+                       placeholder="{% translate 'City or remote' %}"
                        value="{{ current_location }}">
               </div>
-              <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+              <button class="btn btn-primary w-100" type="submit">{% translate "Apply Filters" %}</button>
               <a href="{% url 'dashboard:browse-candidates' %}"
-                 class="btn btn-link w-100 mt-2">Clear All</a>
+                 class="btn btn-link w-100 mt-2">{% translate "Clear All" %}</a>
             </div>
           </div>
           <!-- Candidates List -->
@@ -205,7 +208,8 @@
                               {% endwith %}
                             {% endif %}
                           </h4>
-                          <p class="text-muted mb-2">{{ jobseeker.title|default:"No title" }}</p>
+                          {% translate "No title" as no_title_default %}
+                          <p class="text-muted mb-2">{{ jobseeker.title|default:no_title_default }}</p>
                         </div>
                       </div>
                       <div class="row mt-2">
@@ -218,9 +222,9 @@
                           <small>
                             <i class="bi bi-briefcase me-1"></i>
                             {% if jobseeker.exp_count %}
-                              {{ jobseeker.exp_count }} experience{{ jobseeker.exp_count|pluralize }}
+                              {% blocktranslate count counter=jobseeker.exp_count %}{{ counter }} experience{% plural %}{{ counter }} experiences{% endblocktranslate %}
                             {% else %}
-                              No experience
+                              {% translate "No experience" %}
                             {% endif %}
                           </small>
                         </div>
@@ -245,7 +249,7 @@
                             </small>
                           {% endfor %}
                         </div>
-                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                        <span class="btn btn-sm btn-outline-primary">{% translate "View Profile" %}</span>
                       </div>
                     </div>
                   </div>
@@ -254,10 +258,10 @@
             {% empty %}
               <div class="empty-state text-center py-5">
                 <i class="bi bi-people" style="font-size: 3rem;"></i>
-                <h4 class="fw-bold mt-3">No candidates found</h4>
-                <p class="text-muted">Try adjusting your filters to find more candidates</p>
+                <h4 class="fw-bold mt-3">{% translate "No candidates found" %}</h4>
+                <p class="text-muted">{% translate "Try adjusting your filters to find more candidates" %}</p>
                 <a href="{% url 'dashboard:browse-candidates' %}"
-                   class="btn btn-primary mt-2">Clear Filters</a>
+                   class="btn btn-primary mt-2">{% translate "Clear Filters" %}</a>
               </div>
             {% endfor %}
             <!-- Pagination -->
@@ -267,11 +271,11 @@
                   {% if page_obj.has_previous %}
                     <li class="page-item">
                       <a class="page-link"
-                         href="?{% if current_q %}q={{ current_q }}&{% endif %}{% if current_location %}location={{ current_location }}&{% endif %}{% if current_sort %}sort={{ current_sort }}&{% endif %}{% if current_education_level %}education_level={{ current_education_level }}&{% endif %}{% if current_experience_level %}experience_level={{ current_experience_level }}&{% endif %}{% if current_job_id %}job_id={{ current_job_id }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+                         href="?{% if current_q %}q={{ current_q }}&{% endif %}{% if current_location %}location={{ current_location }}&{% endif %}{% if current_sort %}sort={{ current_sort }}&{% endif %}{% if current_education_level %}education_level={{ current_education_level }}&{% endif %}{% if current_experience_level %}experience_level={{ current_experience_level }}&{% endif %}{% if current_job_id %}job_id={{ current_job_id }}&{% endif %}page={{ page_obj.previous_page_number }}">{% translate "Previous" %}</a>
                     </li>
                   {% else %}
                     <li class="page-item disabled">
-                      <span class="page-link">Previous</span>
+                      <span class="page-link">{% translate "Previous" %}</span>
                     </li>
                   {% endif %}
                   {% for num in page_obj.paginator.page_range %}
@@ -289,11 +293,11 @@
                   {% if page_obj.has_next %}
                     <li class="page-item">
                       <a class="page-link"
-                         href="?{% if current_q %}q={{ current_q }}&{% endif %}{% if current_location %}location={{ current_location }}&{% endif %}{% if current_sort %}sort={{ current_sort }}&{% endif %}{% if current_education_level %}education_level={{ current_education_level }}&{% endif %}{% if current_experience_level %}experience_level={{ current_experience_level }}&{% endif %}{% if current_job_id %}job_id={{ current_job_id }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+                         href="?{% if current_q %}q={{ current_q }}&{% endif %}{% if current_location %}location={{ current_location }}&{% endif %}{% if current_sort %}sort={{ current_sort }}&{% endif %}{% if current_education_level %}education_level={{ current_education_level }}&{% endif %}{% if current_experience_level %}experience_level={{ current_experience_level }}&{% endif %}{% if current_job_id %}job_id={{ current_job_id }}&{% endif %}page={{ page_obj.next_page_number }}">{% translate "Next" %}</a>
                     </li>
                   {% else %}
                     <li class="page-item disabled">
-                      <span class="page-link">Next</span>
+                      <span class="page-link">{% translate "Next" %}</span>
                     </li>
                   {% endif %}
                 </ul>

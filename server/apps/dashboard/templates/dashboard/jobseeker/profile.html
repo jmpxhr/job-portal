@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Candidate Profile | StartJob
+  {% translate "Candidate Profile | StartJob" %}
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -12,13 +13,13 @@
   <section class="profile-header">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
-        <h1 class="fw-bold">Candidate Profile</h1>
+        <h1 class="fw-bold">{% translate "Candidate Profile" %}</h1>
         <div>
           <button class="btn btn-light me-2"
                   hx-get="{% url 'dashboard:edit-profile' %}"
                   hx-target="#overview"
                   hx-swap="innerHTML">
-            <i class="bi bi-pencil"></i> Edit Profile
+            <i class="bi bi-pencil"></i> {% translate "Edit Profile" %}
           </button>
         </div>
       </div>
@@ -44,7 +45,8 @@
           </div>
           <div class="text-center mb-4">
             <h4 class="fw-bold mb-1">{{ jobseeker.user.get_full_name|default:jobseeker.user.email }}</h4>
-            <p class="text-muted">{{ jobseeker.title|default:"Job Seeker" }}</p>
+            {% translate "Job Seeker" as default_seeker_title %}
+            <p class="text-muted">{{ jobseeker.title|default:default_seeker_title }}</p>
           </div>
           <!-- Navigation Pills -->
           <div class="nav nav-pills flex-column" id="profileTabs" role="tablist">
@@ -53,49 +55,49 @@
                     data-bs-toggle="pill"
                     data-bs-target="#overview"
                     type="button">
-              <i class="bi bi-person"></i> Overview
+              <i class="bi bi-person"></i> {% translate "Overview" %}
             </button>
             <button class="nav-link"
                     id="resume-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#resume"
                     type="button">
-              <i class="bi bi-file-text"></i> Resume
+              <i class="bi bi-file-text"></i> {% translate "Resume" %}
             </button>
             <button class="nav-link"
                     id="education-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#education"
                     type="button">
-              <i class="bi bi-mortarboard"></i> Education
+              <i class="bi bi-mortarboard"></i> {% translate "Education" %}
             </button>
             <button class="nav-link"
                     id="experience-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#experience"
                     type="button">
-              <i class="bi bi-briefcase"></i> Experience
+              <i class="bi bi-briefcase"></i> {% translate "Experience" %}
             </button>
             <button class="nav-link"
                     id="skills-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#skills"
                     type="button">
-              <i class="bi bi-stars"></i> Skills
+              <i class="bi bi-stars"></i> {% translate "Skills" %}
             </button>
             <button class="nav-link"
                     id="language-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#language"
                     type="button">
-              <i class="bi bi-translate"></i> Languages
+              <i class="bi bi-translate"></i> {% translate "Languages" %}
             </button>
             <button class="nav-link"
                     id="settings-tab"
                     data-bs-toggle="pill"
                     data-bs-target="#settings"
                     type="button">
-              <i class="bi bi-gear"></i> Settings
+              <i class="bi bi-gear"></i> {% translate "Settings" %}
             </button>
           </div>
         </div>

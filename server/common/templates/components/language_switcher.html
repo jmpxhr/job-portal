@@ -1,0 +1,39 @@
+{% load i18n %}
+<form action="{% url 'set_language' %}"
+      method="post"
+      class="nav-item dropdown">
+  {% csrf_token %}
+  <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+  <a class="nav-link dropdown-toggle"
+     href="#"
+     id="languageDropdown"
+     role="button"
+     data-bs-toggle="dropdown">
+    {% get_current_language as LANGUAGE_CODE %}
+    {% if LANGUAGE_CODE == 'ru' %}
+      🇷🇺 RU
+    {% else %}
+      🇬🇧 EN
+    {% endif %}
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end"
+      aria-labelledby="languageDropdown"
+      style="right: auto">
+    {% get_available_languages as LANGUAGES %}
+    {% for lang_code, lang_name in LANGUAGES %}
+      <li>
+        <button type="submit"
+                name="language"
+                value="{{ lang_code }}"
+                class="dropdown-item{% if lang_code == LANGUAGE_CODE %} active{% endif %}">
+          {% if lang_code == 'en' %}
+            🇬🇧
+          {% elif lang_code == 'ru' %}
+            🇷🇺
+          {% endif %}
+          {{ lang_name }}
+        </button>
+      </li>
+    {% endfor %}
+  </ul>
+</form>

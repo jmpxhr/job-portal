@@ -1,14 +1,14 @@
 {% extends 'container.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %}
-  Messages | StartJob
+  {% translate "Messages" %} | StartJob
 {% endblock title %}
 {% block content %}
   <section class="container py-4">
     <div class="row">
       <div class="col-lg-8 mx-auto">
         <h2 class="fw-bold mb-4">
-          <i class="bi bi-chat-dots"></i> Messages
+          <i class="bi bi-chat-dots"></i> {% translate "Messages" %}
         </h2>
         {% if rooms_with_data %}
           <div class="chat-list">
@@ -69,7 +69,7 @@
                       {% endif %}
                     </h6>
                     {% if item.last_message %}
-                      <small class="text-muted">{{ item.last_message.created_at|timesince }} ago</small>
+                      <small class="text-muted">{% blocktranslate with timesince=item.last_message.created_at|timesince %}{{ timesince }} ago{% endblocktranslate %}</small>
                     {% endif %}
                   </div>
                   <p class="text-muted mb-1 small">
@@ -78,7 +78,7 @@
                     {% elif item.other_user.account_type == 2 %}
                       {{ item.other_user.recruiter.company.name }}
                     {% else %}
-                      Direct Message
+                      {% translate "Direct Message" %}
                     {% endif %}
                   </p>
                   {% if item.last_message %}
@@ -95,7 +95,7 @@
         {% else %}
           <div class="text-center py-5">
             <i class="bi bi-chat-dots fs-1 text-muted"></i>
-            <p class="text-muted mt-2">No conversations yet.</p>
+            <p class="text-muted mt-2">{% translate "No conversations yet." %}</p>
           </div>
         {% endif %}
       </div>

@@ -1,7 +1,8 @@
 {% extends 'container.html' %}
 {% load static %}
+{% load i18n %}
 {% block title %}
-  Candidate Profile | StartJob
+  {% translate "Candidate Profile" %} | StartJob
 {% endblock title %}
 {% block head %}
   <link rel="stylesheet"
@@ -14,10 +15,10 @@
       <div class="d-flex justify-content-between align-items-center">
         <a href="{% url 'dashboard:applicants-list' %}"
            class="text-white text-decoration-none">
-          <i class="bi bi-arrow-left"></i> Back to Applicants
+          <i class="bi bi-arrow-left"></i> {% translate "Back to Applicants" %}
         </a>
         <div>
-          <span class="badge bg-light text-dark p-2">Applied for: {{ job.title }}</span>
+          <span class="badge bg-light text-dark p-2">{% blocktranslate with job_title=job.title %}Applied for: {{ job_title }}{% endblocktranslate %}</span>
         </div>
       </div>
     </div>
@@ -52,7 +53,7 @@
             <div class="col-md-6">
               <div class="info-card text-center">
                 <h3 class="fw-bold text-primary">{{ match_score }}%</h3>
-                <small>Match Score</small>
+                <small>{% translate "Match Score" %}</small>
               </div>
             </div>
             <div class="col-md-6">
@@ -60,7 +61,7 @@
                 <h3 class="fw-bold {% if skill_match_level == 'High' %}text-success{% elif skill_match_level == 'Medium' %}text-warning{% else %}text-danger{% endif %}">
                   {{ skill_match_level }}
                 </h3>
-                <small>Skill Match</small>
+                <small>{% translate "Skill Match" %}</small>
               </div>
             </div>
           </div>
@@ -68,7 +69,7 @@
           <div class="alert {% if application.status == 0 %}alert-info{% elif application.status == 1 %}alert-success{% else %}alert-danger{% endif %} d-flex justify-content-between align-items-center">
             <div>
               <i class="bi bi-info-circle-fill me-2"></i>
-              <strong>Current Status:</strong> {{ application.status_label }}
+              <strong>{% translate "Current Status" %}:</strong> {{ application.status_label }}
             </div>
             <form method="post"
                   action="{% url 'dashboard:update-application-status' application.pk %}"
@@ -77,30 +78,30 @@
               <select class="form-select form-select-sm"
                       name="status"
                       onchange="this.form.submit()">
-                <option value="0" {% if application.status == 0 %}selected{% endif %}>New</option>
-                <option value="1" {% if application.status == 1 %}selected{% endif %}>Accepted</option>
-                <option value="2" {% if application.status == 2 %}selected{% endif %}>Rejected</option>
+                <option value="0" {% if application.status == 0 %}selected{% endif %}>{% translate "New" %}</option>
+                <option value="1" {% if application.status == 1 %}selected{% endif %}>{% translate "Accepted" %}</option>
+                <option value="2" {% if application.status == 2 %}selected{% endif %}>{% translate "Rejected" %}</option>
               </select>
             </form>
           </div>
           <!-- About -->
           {% if jobseeker.about %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">About</h5>
+              <h5 class="fw-bold mb-3">{% translate "About" %}</h5>
               <p>{{ jobseeker.about }}</p>
             </div>
           {% endif %}
           <!-- Skills -->
           {% if skills %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Skills</h5>
+              <h5 class="fw-bold mb-3">{% translate "Skills" %}</h5>
               {% for skill in skills %}<span class="skill-badge">{{ skill.name }}</span>{% endfor %}
             </div>
           {% endif %}
           <!-- Education -->
           {% if education %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Education</h5>
+              <h5 class="fw-bold mb-3">{% translate "Education" %}</h5>
               {% for edu in education %}
                 <div class="education-item">
                   <div class="d-flex justify-content-between">
@@ -121,19 +122,21 @@
           <!-- Experience -->
           {% if experience %}
             <div class="mb-4">
-              <h5 class="fw-bold mb-3">Experience</h5>
+              <h5 class="fw-bold mb-3">{% translate "Experience" %}</h5>
               {% for exp in experience %}
                 <div class="experience-item">
                   <div class="d-flex justify-content-between">
                     <h6 class="fw-bold mb-1">{{ exp.position }}</h6>
-                    {% if exp.is_current %}<small class="text-success">Current</small>{% endif %}
+                    {% if exp.is_current %}
+                      <small class="text-success">{% translate "Current" %}</small>
+                    {% endif %}
                   </div>
                   <p class="text-muted mb-2">
                     {{ exp.company_name }} | {{ exp.start_date|date:"M Y" }} -
                     {% if exp.end_date %}
                       {{ exp.end_date|date:"M Y" }}
                     {% else %}
-                      Present
+                      {% translate "Present" %}
                     {% endif %}
                   </p>
                   {% if exp.description %}
@@ -151,42 +154,47 @@
       <div class="col-lg-4">
         <!-- Action Buttons -->
         <div class="action-buttons mb-4">
-          <h5 class="fw-bold mb-3">Actions</h5>
+          <h5 class="fw-bold mb-3">{% translate "Actions" %}</h5>
           <div class="d-grid gap-2">
             <a href="javascript:void(0)"
                onclick="startChat({{ application.pk }})"
                class="btn btn-outline-secondary">
-              <i class="bi bi-envelope"></i> Send Message
+              <i class="bi bi-envelope"></i> {% translate "Send Message" %}
             </a>
             {% if application.resume %}
               <a href="{{ application.resume.url }}"
                  class="btn btn-outline-secondary"
                  target="_blank">
-                <i class="bi bi-download"></i> Download Resume
+                <i class="bi bi-download"></i> {% translate "Download Resume" %}
               </a>
             {% else %}
               <a href="" class="btn btn-outline-secondary disabled" target="_blank">
-                <i class="bi bi-download"></i> Download Resume
+                <i class="bi bi-download"></i> {% translate "Download Resume" %}
               </a>
             {% endif %}
             <a href="{% url 'dashboard:candidate-resume-pdf' jobseeker.pk %}"
                class="btn btn-outline-secondary"
                target="_blank">
-              <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+              <i class="bi bi-file-earmark-pdf"></i> {% translate "Generate PDF" %}
             </a>
             {% if application.cover_letter %}
               <button type="button"
                       class="btn btn-outline-warning"
                       data-bs-toggle="modal"
                       data-bs-target="#coverLetterModal">
-                <i class="bi bi-envelope-paper"></i> View Cover Letter
+                <i class="bi bi-envelope-paper"></i> {% translate "View Cover Letter" %}
               </button>
             {% endif %}
             <button type="button"
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#feedbackModal">
-              <i class="bi bi-chat-text"></i> Write Feedback
+              <i class="bi bi-chat-text"></i>
+              {% if application.employer_feedback %}
+                {% translate "Update Feedback" %}
+              {% else %}
+                {% translate "Write Feedback" %}
+              {% endif %}
             </button>
             <hr>
             <div class="d-flex gap-2">
@@ -196,7 +204,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="status" value="1">
                 <button type="submit" class="btn btn-outline-success w-100">
-                  <i class="bi bi-check-circle"></i> Accept
+                  <i class="bi bi-check-circle"></i> {% translate "Accept" %}
                 </button>
               </form>
               <form method="post"
@@ -205,7 +213,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="status" value="2">
                 <button type="submit" class="btn btn-outline-danger w-100">
-                  <i class="bi bi-x-circle"></i> Reject
+                  <i class="bi bi-x-circle"></i> {% translate "Reject" %}
                 </button>
               </form>
             </div>
@@ -213,28 +221,28 @@
         </div>
         <!-- Contact Information -->
         <div class="contact-info mb-4">
-          <h5 class="fw-bold mb-3">Contact Information</h5>
+          <h5 class="fw-bold mb-3">{% translate "Contact Information" %}</h5>
           {% if jobseeker.user.email %}
             <div class="mb-3">
-              <small class="text-muted">Email</small>
+              <small class="text-muted">{% translate "Email" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.user.email }}</p>
             </div>
           {% endif %}
           {% if jobseeker.phone %}
             <div class="mb-3">
-              <small class="text-muted">Phone</small>
+              <small class="text-muted">{% translate "Phone" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.phone }}</p>
             </div>
           {% endif %}
           {% if jobseeker.location %}
             <div class="mb-3">
-              <small class="text-muted">Location</small>
+              <small class="text-muted">{% translate "Location" %}</small>
               <p class="fw-bold mb-2">{{ jobseeker.location }}</p>
             </div>
           {% endif %}
           {% if languages %}
             <div>
-              <small class="text-muted">Languages</small>
+              <small class="text-muted">{% translate "Languages" %}</small>
               <p class="mb-2">
                 {% for lang in languages %}
                   {{ lang.name }} ({{ lang.get_proficiency_label }})
@@ -258,18 +266,18 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="coverLetterModalLabel">
-              <i class="bi bi-envelope-paper me-2"></i>Cover Letter
+              <i class="bi bi-envelope-paper me-2"></i>{% translate "Cover Letter" %}
             </h5>
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                    aria-label="{% translate 'Close' %}"></button>
           </div>
           <div class="modal-body">
             <p>{{ application.cover_letter }}</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
           </div>
         </div>
       </div>
@@ -285,12 +293,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="feedbackModalLabel">
-            <i class="bi bi-chat-text me-2"></i>Employer Feedback
+            <i class="bi bi-chat-text me-2"></i>{% translate "Employer Feedback" %}
           </h5>
           <button type="button"
                   class="btn-close"
                   data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+                  aria-label="{% translate 'Close' %}"></button>
         </div>
         <form method="post"
               action="{% url 'dashboard:update-application-feedback' application.pk %}">
@@ -298,29 +306,29 @@
           <div class="modal-body">
             {% if application.employer_feedback %}
               <div class="mb-3">
-                <label class="form-label fw-bold">Current Feedback:</label>
+                <label class="form-label fw-bold">{% translate "Current Feedback" %}:</label>
                 <div class="p-3 bg-light rounded">{{ application.employer_feedback }}</div>
               </div>
             {% endif %}
             <div class="mb-3">
               <label for="feedbackText" class="form-label fw-bold">
                 {% if application.employer_feedback %}
-                  Update Feedback
+                  {% translate "Update Feedback" %}
                 {% else %}
-                  Write Feedback
+                  {% translate "Write Feedback" %}
                 {% endif %}
               </label>
               <textarea class="form-control"
                         id="feedbackText"
                         name="employer_feedback"
                         rows="5"
-                        placeholder="Write your feedback about this candidate...">{{ application.employer_feedback }}</textarea>
+                        placeholder="{% translate 'Write your feedback about this candidate...' %}">{{ application.employer_feedback }}</textarea>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
             <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-lg"></i> Save Feedback
+              <i class="bi bi-check-lg"></i> {% translate "Save Feedback" %}
             </button>
           </div>
         </form>

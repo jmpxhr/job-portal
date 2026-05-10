@@ -1,13 +1,16 @@
+{% load i18n %}
 <!-- Step 3: New Password (HTMX partial) -->
 <div id="recovery-container">
-  <h4 class="fw-bold text-center mb-2">Create New Password</h4>
-  <p class="text-muted text-center mb-4">Your new password must be different from previous passwords.</p>
+  <h4 class="fw-bold text-center mb-2">{% translate "Create New Password" %}</h4>
+  <p class="text-muted text-center mb-4">
+    {% translate "Your new password must be different from previous passwords." %}
+  </p>
   <form hx-post="{% url 'accounts:password_recovery_reset' %}"
         hx-target="#recovery-container"
         hx-swap="innerHTML">
     {% csrf_token %}
     <div class="mb-3">
-      <label class="form-label" for="id_new_password">New Password</label>
+      <label class="form-label" for="id_new_password">{% translate "New Password" %}</label>
       <div class="input-group">
         <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
         {{ form.new_password }}
@@ -20,7 +23,7 @@
       {% for error in form.new_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
     <div class="mb-4">
-      <label class="form-label" for="id_confirm_password">Confirm New Password</label>
+      <label class="form-label" for="id_confirm_password">{% translate "Confirm New Password" %}</label>
       <div class="input-group">
         <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
         {{ form.confirm_password }}
@@ -33,7 +36,7 @@
       {% for error in form.confirm_password.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
     <button type="submit" class="btn-recovery mb-3">
-      Reset Password <i class="bi bi-check-circle ms-2"></i>
+      {% translate "Reset Password" %} <i class="bi bi-check-circle ms-2"></i>
     </button>
   </form>
   <div class="text-center">
@@ -41,7 +44,7 @@
        hx-post="{% url 'accounts:password_recovery_verify' %}"
        hx-target="#recovery-container"
        hx-swap="innerHTML"
-       class="text-decoration-none"><i class="bi bi-arrow-left"></i> Back</a>
+       class="text-decoration-none"><i class="bi bi-arrow-left"></i> {% translate "Back" %}</a>
   </div>
 </div>
 <script>updateStepIndicators(3)</script>
