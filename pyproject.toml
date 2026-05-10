@@ -36,6 +36,7 @@ dev = [
   "djlint>=1.36.4",
   "types-django-filter>=25.2.0.20260408",
   "djangorestframework-stubs[compatible-mypy]>=3.16.9",
+  "django-rosetta>=0.10.3",
 ]
 
 [tool.uv]

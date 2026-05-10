@@ -18,9 +18,10 @@ Including another URLconf
 from typing import TYPE_CHECKING
 
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.admindocs import urls as admindocs_urls
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from server.apps.accounts import urls as accounts_urls
 from server.apps.chat import urls as chat_urls
@@ -35,6 +36,13 @@ if TYPE_CHECKING:
 admin.autodiscover()
 
 urlpatterns: list['URLPattern | URLResolver'] = [
+    path('i18n/', include('django.conf.urls.i18n')),
+    # django-admin:
+    path('admin/doc/', include(admindocs_urls)),
+    path('admin/', admin.site.urls),
+]
+
+urlpatterns += i18n_patterns(
     # API:
     # Accounts
     path(
@@ -61,10 +69,7 @@ urlpatterns: list['URLPattern | URLResolver'] = [
     ),
     # Index
     path('', HomePageView.as_view(), name='home'),
-    # django-admin:
-    path('admin/doc/', include(admindocs_urls)),
-    path('admin/', admin.site.urls),
-]
+)
 
 if settings.DEBUG:  # pragma: no cover
     import debug_toolbar
@@ -77,3 +82,6 @@ if settings.DEBUG:  # pragma: no cover
         # Serving media files in development only:
         *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     ]
+
+if 'rosetta' in settings.INSTALLED_APPS:
+    urlpatterns += [re_path(r'^rosetta/', include('rosetta.urls'))]

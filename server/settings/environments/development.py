@@ -26,6 +26,7 @@ INSTALLED_APPS += (
     'zeal',
     # django-query-counter:
     'query_counter',
+    'rosetta',
 )
 
 # Django debug toolbar:
