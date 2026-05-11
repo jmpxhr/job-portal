@@ -85,7 +85,7 @@ MIDDLEWARE: tuple[str, ...] = (
 
 ROOT_URLCONF = 'server.urls'
 
-LMSTUDIO_MODEL: str = config('LMSTUDIO_MODEL', default='')
+LMSTUDIO_MODEL: str | None = config('LMSTUDIO_MODEL', default=None)
 
 WSGI_APPLICATION = 'server.wsgi.application'
 ASGI_APPLICATION = 'server.asgi.application'
