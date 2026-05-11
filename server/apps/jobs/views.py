@@ -1,9 +1,19 @@
 from typing import Any, override
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Q, QuerySet
+from django.db.models import (
+    Case,
+    Count,
+    F,
+    IntegerField,
+    Q,
+    QuerySet,
+    Value,
+    When,
+)
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import DetailView, ListView
 
@@ -22,15 +32,60 @@ class JobListView(ListView[Job]):
     request: HtmxRequest  # pyrefly: ignore
 
     @override
-    def get_queryset(self) -> QuerySet[Job]:
-        queryset = (
-            Job.objects
-            .filter(is_active=True)
-            .select_related('company')
-            .prefetch_related('skills')
-        )
+    def get_queryset(self) -> QuerySet[Job]:  # noqa: C901
+        queryset = Job.objects.filter(is_active=True).select_related('company')
+
+        self.is_jobseeker = False
+        user = self.request.user
+
+        if (
+            user.is_authenticated
+            and hasattr(user, 'account_type')
+            and user.account_type == User.AccountTypeEnum.JOBSEEKER
+        ):
+            try:
+                jobseeker = JobSeeker.objects.get(user=user)
+                skill_ids = list(jobseeker.skills.values_list('id', flat=True))
+                self.is_jobseeker = True
+
+                if skill_ids:
+                    queryset = queryset.annotate(
+                        total_skills=Count('skills', distinct=True),
+                        matching_skills=Count(
+                            'skills',
+                            filter=Q(skills__in=skill_ids),
+                            distinct=True,
+                        ),
+                    ).annotate(
+                        match_score=Case(
+                            When(total_skills=0, then=Value(0)),
+                            default=F('matching_skills')
+                            * 100
+                            / F('total_skills'),
+                            output_field=IntegerField(),
+                        ),
+                    )
+                else:
+                    queryset = queryset.annotate(
+                        match_score=Value(0, output_field=IntegerField()),
+                    )
+            except JobSeeker.DoesNotExist:
+                pass
+
         self.job_filter = filters.JobFilter(self.request.GET, queryset=queryset)
-        return self.job_filter.qs
+        qs = self.job_filter.qs
+
+        if self.is_jobseeker:
+            min_match = self.request.GET.get('match_score')
+            if min_match:
+                try:
+                    min_match_int = int(min_match)
+                    if min_match_int > 0:
+                        qs = qs.filter(match_score__gte=min_match_int)
+                except (ValueError, TypeError):
+                    pass
+
+        return qs.prefetch_related('skills')
 
     @override
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -39,11 +94,14 @@ class JobListView(ListView[Job]):
         context['employment_type_choices'] = Job.EmploymentTypeEnum.choices
         context['work_format_choices'] = Job.WorkFormatEnum.choices
         context['experience_level_choices'] = Job.ExperienceLevelEnum.choices
-        context['sort_choices'] = [
-            ('recent', 'Most recent'),
-            ('salary_high', 'Salary: High to Low'),
-            ('salary_low', 'Salary: Low to High'),
+        sort_choices = [
+            ('recent', _('Most recent')),
+            ('salary_high', _('Salary: High to Low')),
+            ('salary_low', _('Salary: Low to High')),
         ]
+        if self.is_jobseeker:
+            sort_choices.append(('match_score', _('Best Match')))
+        context['sort_choices'] = sort_choices
         context['current_sort'] = self.request.GET.get('sort', 'recent')
         context['current_salary_from'] = self.request.GET.get('salary_from', '')
         context['current_employment_types'] = self.request.GET.getlist(
@@ -58,6 +116,8 @@ class JobListView(ListView[Job]):
         context['search_query'] = self.request.GET.get('q', '')
         context['location_query'] = self.request.GET.get('location', '')
         context['current_company'] = self.request.GET.get('company', '')
+        context['is_jobseeker'] = self.is_jobseeker
+        context['current_match_score'] = self.request.GET.get('match_score', '')
         return context
 
     @override

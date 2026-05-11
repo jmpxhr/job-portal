@@ -77,5 +77,6 @@ class JobFilter(django_filters.FilterSet):
             'recent': '-posted_at',
             'salary_high': '-salary_max',
             'salary_low': 'salary_min',
+            'match_score': '-match_score',
         }
         return queryset.order_by(order_map.get(value, '-posted_at'))

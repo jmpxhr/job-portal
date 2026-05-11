@@ -110,6 +110,26 @@
                        placeholder="{% translate 'e.g. 1000' %}"
                        value="{{ current_salary_from }}" />
               </div>
+              <!-- Match Score -->
+              {% if is_jobseeker %}
+                <div class="mb-4">
+                  <label class="form-label fw-semibold" for="id_match_score">{% translate "Match Score, %" %}</label>
+                  <input type="range"
+                         name="match_score"
+                         id="id_match_score"
+                         class="form-range"
+                         min="0"
+                         max="100"
+                         step="10"
+                         value="{{ current_match_score|default:'0' }}"
+                         oninput="document.getElementById('match-score-val').textContent=this.value+'%'" />
+                  <div class="d-flex justify-content-between">
+                    <small>0%</small>
+                    <small id="match-score-val">{{ current_match_score|default:'0' }}%</small>
+                    <small>100%</small>
+                  </div>
+                </div>
+              {% endif %}
               <button type="submit" class="btn btn-primary w-100">{% translate "Apply Filters" %}</button>
               <a href="{% url 'jobs:jobs-list' %}"
                  class="btn btn-link w-100 mt-2"

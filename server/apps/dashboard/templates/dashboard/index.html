@@ -47,17 +47,14 @@
             </div>
           </form>
           <!-- Popular Searches -->
+          {% comment %}
           <div class="mt-3">
             <small class="text-white-50">{% translate "Popular:" %}</small>
-            <a href="{% url 'jobs:jobs-list' %}?q=Internship"
-               class="text-white text-decoration-none me-2">{% translate "Internship" %}</a>
-            <a href="{% url 'jobs:jobs-list' %}?q=Junior+Developer"
-               class="text-white text-decoration-none me-2">{% translate "Junior Developer" %}</a>
-            <a href="{% url 'jobs:jobs-list' %}?q=Marketing+Assistant"
-               class="text-white text-decoration-none me-2">{% translate "Marketing Assistant" %}</a>
-            <a href="{% url 'jobs:jobs-list' %}?q=Student"
-               class="text-white text-decoration-none">{% translate "Student Jobs" %}</a>
+            <a href="{% url 'jobs:jobs-list' %}?q=Internship" class="text-white text-decoration-none me-2">{% translate "Internship" %}</a>
+            <a href="{% url 'jobs:jobs-list' %}?q=Junior+Developer" class="text-white text-decoration-none me-2">{% translate "Junior Developer" %}</a>
+            <a href="{% url 'jobs:jobs-list' %}?q=Student" class="text-white text-decoration-none">{% translate "Student Jobs" %}</a>
           </div>
+          {% endcomment %}
         </div>
         <div class="col-lg-6 d-none d-lg-block">
           {% translate "Hero Image" as hero_alt %}
