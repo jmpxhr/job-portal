@@ -12,6 +12,9 @@
     .advice-section { margin-bottom: 1.25rem; overflow-wrap: break-word; }
     .advice-section h6 { margin-bottom: 0.5rem; }
     .advice-section .badge { white-space: normal; word-break: break-word; text-align: left; }
+    .advice-section pre { background: #f8f9fa; padding: 0.75rem 1rem; border-radius: 0.375rem; overflow-x: auto; margin: 0.5rem 0; font-size: 0.9rem; }
+    .advice-section code { background: #e9ecef; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.9em; }
+    .advice-section pre code { background: transparent; padding: 0; }
   </style>
 {% endblock head %}
 {% block content %}
@@ -295,7 +298,7 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
            html += '<div class="advice-section card advice-suitability-' + advice.suitability + '">';
            html += '<div class="card-body">';
            html += '<h6 class="fw-bold"><i class="bi bi-chat-left-text me-2"></i>{% translate "Summary" %}</h6>';
-           html += '<p class="mb-0">' + escapeHtml(advice.summary) + '</p>';
+           html += '<p class="mb-0">' + renderMarkdown(advice.summary) + '</p>';
            html += '</div></div>';
          }
 
@@ -305,7 +308,7 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
            html += '<h6 class="fw-bold"><i class="bi bi-check-circle me-2 text-success"></i>{% translate "Matching Skills" %}</h6>';
            html += '<div class="d-flex flex-wrap gap-2">';
            advice.matching_skills.forEach(function(skill) {
-             html += '<span class="badge bg-success-subtle text-success border border-success">' + escapeHtml(skill) + '</span>';
+             html += '<span class="badge bg-success-subtle text-success border border-success">' + renderMarkdown(skill) + '</span>';
            });
            html += '</div></div></div>';
          }
@@ -316,7 +319,7 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
            html += '<h6 class="fw-bold"><i class="bi bi-x-circle me-2 text-danger"></i>{% translate "Missing Skills" %}</h6>';
            html += '<div class="d-flex flex-wrap gap-2">';
            advice.missing_skills.forEach(function(skill) {
-             html += '<span class="badge bg-danger-subtle text-danger border border-danger">' + escapeHtml(skill) + '</span>';
+             html += '<span class="badge bg-danger-subtle text-danger border border-danger">' + renderMarkdown(skill) + '</span>';
            });
            html += '</div></div></div>';
          }
@@ -327,18 +330,18 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
            html += '<h6 class="fw-bold"><i class="bi bi-trophy me-2 text-warning"></i>{% translate "Your Strengths" %}</h6>';
            html += '<ul class="mb-0">';
            advice.strengths.forEach(function(item) {
-             html += '<li>' + escapeHtml(item) + '</li>';
-           });
-           html += '</ul></div></div>';
-         }
+html += '<li>' + renderMarkdown(item) + '</li>';
+            });
+            html += '</ul></div></div>';
+          }
 
-         if (advice.areas_to_improve && advice.areas_to_improve.length > 0) {
-           html += '<div class="advice-section card">';
-           html += '<div class="card-body">';
-           html += '<h6 class="fw-bold"><i class="bi bi-arrow-up-circle me-2 text-info"></i>{% translate "Areas to Improve" %}</h6>';
-           html += '<ul class="mb-0">';
-           advice.areas_to_improve.forEach(function(item) {
-             html += '<li>' + escapeHtml(item) + '</li>';
+          if (advice.areas_to_improve && advice.areas_to_improve.length > 0) {
+            html += '<div class="advice-section card">';
+            html += '<div class="card-body">';
+            html += '<h6 class="fw-bold"><i class="bi bi-arrow-up-circle me-2 text-info"></i>{% translate "Areas to Improve" %}</h6>';
+            html += '<ul class="mb-0">';
+            advice.areas_to_improve.forEach(function(item) {
+              html += '<li>' + renderMarkdown(item) + '</li>';
            });
            html += '</ul></div></div>';
          }
@@ -349,9 +352,9 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
            html += '<h6 class="fw-bold"><i class="bi bi-lightbulb me-2 text-primary"></i>{% translate "Recommendations" %}</h6>';
            html += '<ol class="mb-0">';
            advice.recommendations.forEach(function(item) {
-             html += '<li>' + escapeHtml(item) + '</li>';
-           });
-           html += '</ol></div></div>';
+html += '<li>' + renderMarkdown(item) + '</li>';
+            });
+            html += '</ol></div></div>';
          }
 
          container.innerHTML = html;
@@ -375,11 +378,32 @@ const createUrl = '{% url "job_advice:create" job_pk=0 %}'.replace('/0/', '/' + 
          errorEl.style.display = 'block';
        }
 
-       function escapeHtml(text) {
-         const div = document.createElement('div');
-         div.appendChild(document.createTextNode(text));
-         return div.innerHTML;
-       }
+function escapeHtml(text) {
+          if (!text) return '';
+          const div = document.createElement('div');
+          div.appendChild(document.createTextNode(text));
+          return div.innerHTML;
+        }
+
+        function renderMarkdown(text) {
+          if (!text) return '';
+          let html = escapeHtml(text);
+          // Fenced code blocks: ```lang\n...\n```
+          html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(match, lang, code) {
+            return '<pre><code class="' + (lang || '') + '">' + code.trim() + '</code></pre>';
+          });
+          // Inline code: `...`
+          html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+          // Links: [text](url)
+          html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+          // Bold: **...**
+          html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+          // Italic: *...*
+          html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+          // Line breaks
+          html = html.replace(/\n/g, '<br>');
+          return html;
+        }
      })();
   </script>
 {% endif %}
