@@ -1,0 +1,40 @@
+{% load i18n %}
+<!-- AI Advice Modal -->
+<div class="modal fade"
+     id="aiAdviceModal"
+     tabindex="-1"
+     aria-labelledby="aiAdviceModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="aiAdviceModalLabel">
+          <i class="bi bi-robot me-2"></i>{% translate "AI Match Analysis" %}
+        </h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body" id="aiAdviceModalBody">
+        <!-- Spinner State -->
+        <div id="ai-advice-loading" class="text-center py-5">
+          <div class="spinner-border text-primary"
+               role="status"
+               style="width: 3rem;
+                      height: 3rem">
+            <span class="visually-hidden">{% translate "Loading..." %}</span>
+          </div>
+          <h4 class="mt-4 fw-bold">{% translate "Analyzing your profile..." %}</h4>
+          <p class="text-muted mt-2">
+            {% translate "We're comparing your skills and experience with the job requirements. This may take a moment." %}
+          </p>
+        </div>
+        <!-- Advice Content (hidden initially, populated by JS) -->
+        <div id="ai-advice-content" style="display:none;"></div>
+        <!-- Error State (hidden initially) -->
+        <div id="ai-advice-error" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>

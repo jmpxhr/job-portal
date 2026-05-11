@@ -20,11 +20,13 @@ from django.db.models import (
 from django.db.models.functions import TruncDay
 from django.http import (
     Http404,
+    HttpRequest,
     HttpResponse,
     HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views import View
@@ -83,6 +85,17 @@ class HomePageView(TemplateView):
         context['companies_count'] = Company.objects.count()
         context['students_count'] = JobSeeker.objects.count()
         return context
+
+    @override
+    def get(self, request: HttpRequest) -> HttpResponse:
+        if (
+            isinstance(request.user, User)
+            and request.user.account_type == User.AccountTypeEnum.COMPANY
+        ):
+            return HttpResponseRedirect(
+                redirect_to=reverse('dashboard:employer-dashboard'),
+            )
+        return super().get(request)
 
 
 class SavedJobsView(LoginRequiredMixin, View):

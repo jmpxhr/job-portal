@@ -60,6 +60,7 @@ INSTALLED_APPS: tuple[str, ...] = (
     'server.apps.dashboard',
     'server.apps.chat',
     'server.apps.skill_tests',
+    'server.apps.job_advice',
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
 )

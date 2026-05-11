@@ -15,7 +15,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto me-2">
-        {% if user.account_type != 2 %}
+        {% if user.account_type == 1 %}
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'home' %}">{% translate "Home" %}</a>
           </li>
@@ -23,7 +23,7 @@
             <a class="nav-link" href="{% url 'jobs:jobs-list' %}">{% translate "Jobs" %}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'company:company-list' %}">{% translate "Company" %}</a>
+            <a class="nav-link" href="{% url 'company:company-list' %}">{% translate "Companies" %}</a>
           </li>
         {% elif user.account_type == 2 %}
           <li class="nav-item">
@@ -76,6 +76,9 @@
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url 'dashboard:saved-jobs' %}">{% translate "Saved Jobs" %}</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'skill_tests:list' %}">{% translate "Verify Skills" %}</a>
                 </li>
                 <li>
                   <hr class="dropdown-divider">

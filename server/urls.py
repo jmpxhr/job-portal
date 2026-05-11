@@ -28,6 +28,7 @@ from server.apps.chat import urls as chat_urls
 from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
 from server.apps.dashboard.views import HomePageView
+from server.apps.job_advice import urls as job_advice_urls
 from server.apps.jobs import urls as jobs_urls
 from server.apps.skill_tests import urls as skill_tests_urls
 
@@ -72,6 +73,11 @@ urlpatterns += i18n_patterns(
     path(
         'skill-tests/',
         include((skill_tests_urls, 'skill_tests'), namespace='skill_tests'),
+    ),
+    # Job Advice
+    path(
+        'job-advice/',
+        include((job_advice_urls, 'job_advice'), namespace='job_advice'),
     ),
     # Index
     path('', HomePageView.as_view(), name='home'),
