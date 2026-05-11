@@ -166,12 +166,6 @@
               {% endif %}
             </div>
           </div>
-          <div class="mt-2">
-            {% for skill in job.skills.all %}<span class="badge bg-light text-dark me-1">{{ skill.name }}</span>{% endfor %}
-            {% blocktranslate count counter=job.applicants_count %}{{ counter }} applicant{% plural %}{{ counter }} applicants{% endblocktranslate %}
-            <a href="{% url 'jobs:jobs-detail' job.pk %}"
-               class="btn btn-link btn-sm p-0 ms-3">{% translate "View Details" %}</a>
-          </div>
         </div>
       {% empty %}
         <div class="text-center py-4">
