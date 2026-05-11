@@ -53,8 +53,7 @@ DIFFICULTY_PROMPTS: dict[int, str] = {
 
 class SkillTestGenerator:
     def _get_model(self) -> Any:
-        model_identifier = getattr(settings, 'LMSTUDIO_MODEL', '')
-        if model_identifier:
+        if model_identifier := settings.LMSTUDIO_MODEL:
             return lms.llm(model_identifier)
         return lms.llm()
 
