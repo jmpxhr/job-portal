@@ -239,7 +239,9 @@ class LoginView(View):
         """Handle post-login redirection based on user type."""
         redirect_map = {
             User.AccountTypeEnum.JOBSEEKER: reverse('home'),
-            User.AccountTypeEnum.COMPANY: '/employer/dashboard/',
+            User.AccountTypeEnum.COMPANY: reverse(
+                'dashboard:employer-dashboard',
+            ),
         }
         return redirect(redirect_map.get(user.account_type, '/'))
 
