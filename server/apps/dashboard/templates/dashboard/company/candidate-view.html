@@ -95,7 +95,17 @@
           {% if skills %}
             <div class="mb-4">
               <h5 class="fw-bold mb-3">{% translate "Skills" %}</h5>
-              {% for skill in skills %}<span class="skill-badge">{{ skill.name }}</span>{% endfor %}
+              {% for skill in skills %}
+                <span class="skill-badge">
+                  {{ skill.name }}
+                  {% for sv in skill_verifications %}
+                    {% if sv.skill_id == skill.id %}
+                      <i class="bi bi-patch-check-fill text-success"
+                         title="{% translate 'Verified' %}"></i>
+                    {% endif %}
+                  {% endfor %}
+                </span>
+              {% endfor %}
             </div>
           {% endif %}
           <!-- Education -->

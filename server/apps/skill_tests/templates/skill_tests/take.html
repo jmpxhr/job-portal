@@ -1,0 +1,253 @@
+{% extends 'container.html' %}
+{% load static i18n markdown %}
+{% block title %}
+  {% translate "Take Test" %} | StartJob
+{% endblock title %}
+{% block head %}
+  <style>
+    .test-question pre,
+    .test-variant pre {
+      background: #f8f9fa;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .test-question code,
+    .test-variant code {
+      background: #e9ecef;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-size: 0.9em;
+    }
+    .test-question pre code,
+    .test-variant pre code {
+      background: transparent;
+      padding: 0;
+    }
+  </style>
+{% endblock head %}
+{% block content %}
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">{% translate "Skill Test" %}: {{ skill_test.skill.name }}</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">{% translate "Home" %}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'skill_tests:list' %}">{% translate "Skill Tests" %}</a>
+          </li>
+          <li class="breadcrumb-item active">{{ skill_test.skill.name }}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          {% if skill_test.status == 0 %}
+            <!-- PENDING: Show spinner -->
+            <div id="test-loading" class="text-center py-5">
+              <div class="spinner-border text-primary"
+                   role="status"
+                   style="width: 3rem;
+                          height: 3rem">
+                <span class="visually-hidden">{% translate "Loading..." %}</span>
+              </div>
+              <h4 class="mt-4 fw-bold">{% translate "Generating your test questions..." %}</h4>
+              <p class="text-muted mt-2">{% translate "This may take a moment. Please wait." %}</p>
+            </div>
+            <div id="test-form" style="display:none;">
+              <!-- Will be populated by JavaScript -->
+            </div>
+          {% elif skill_test.status == 2 %}
+            <!-- FAILED: Show error with retry -->
+            <div class="card">
+              <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-triangle text-danger"
+                   style="font-size: 3rem"></i>
+                <h4 class="mt-3">{% translate "Test Generation Failed" %}</h4>
+                <p class="text-muted">
+                  {% translate "We couldn't generate your test. This might be because LM Studio is not running." %}
+                </p>
+                {% if skill_test.error_message %}<p class="text-muted small">{{ skill_test.error_message }}</p>{% endif %}
+                <form method="post" action="{% url 'skill_tests:retry' skill_test.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary mt-2">
+                    <i class="bi bi-arrow-clockwise"></i> {% translate "Try Again" %}
+                  </button>
+                </form>
+                <a href="{% url 'skill_tests:list' %}"
+                   class="btn btn-outline-secondary mt-2">
+                  <i class="bi bi-arrow-left"></i> {% translate "Back to Skills" %}
+                </a>
+              </div>
+            </div>
+          {% elif skill_test.status == 1 and skill_test.questions %}
+            <!-- READY: Show the form -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0">
+                    {{ skill_test.skill.name }}
+                    <span class="badge bg-info">{{ skill_test.get_difficulty_display }}</span>
+                  </h5>
+                  <span class="text-muted">{% translate "Questions" %}: {{ skill_test.questions|length }}</span>
+                </div>
+              </div>
+            </div>
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h6 class="fw-bold mb-3 test-question">{{ forloop.counter }}. {{ field.label|render_markdown }}</h6>
+                    <div class="ps-3">
+                      {% for choice in field.field.choices %}
+                        <div class="form-check mb-2">
+                          <input type="radio"
+                                 name="{{ field.html_name }}"
+                                 value="{{ choice.0 }}"
+                                 class="form-check-input"
+                                 id="{{ field.html_name }}_{{ forloop.counter }}"
+                                 required />
+                          <label class="form-check-label test-variant"
+                                 for="{{ field.html_name }}_{{ forloop.counter }}">
+                            {{ choice.1|render_markdown }}
+                          </label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary w-100 btn-lg">
+                <i class="bi bi-check-circle"></i> {% translate "Submit Answers" %}
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  {% if skill_test.status == 0 %}
+    <script>
+    (function() {
+      const testId = {{ skill_test.pk }};
+      const pollInterval = {{ poll_interval }};
+      const statusUrl = `{% url 'skill_tests:status' pk=skill_test.pk %}`;
+      const retryUrl = `{% url 'skill_tests:retry' pk=skill_test.pk %}`;
+      const csrfToken = '{{ csrf_token }}';
+      const skillName = '{{ skill_test.skill.name|escapejs }}';
+      const difficultyLabel = '{{ skill_test.get_difficulty_display|escapejs }}';
+      const questionLabel = '{% translate "Questions" %}';
+      const submitLabel = '{% translate "Submit Answers" %}';
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+      }
+
+      function renderMarkdown(text) {
+        if (!text) return '';
+        let html = escapeHtml(text);
+        // Fenced code blocks: ```lang\n...\n```
+        html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(match, lang, code) {
+          return '<pre><code class="' + (lang || '') + '">' + code.trim() + '</code></pre>';
+        });
+        // Inline code: `...`
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // Bold: **...**
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        // Italic: *...*
+        html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+        return html;
+      }
+
+      function renderForm(data) {
+        const loadingEl = document.getElementById('test-loading');
+        const formContainer = document.getElementById('test-form');
+        if (loadingEl) loadingEl.style.display = 'none';
+
+        const questions = data.questions;
+        let html = '';
+        html += '<div class="card mb-3"><div class="card-body">';
+        html += '<div class="d-flex justify-content-between align-items-center">';
+        html += '<h5 class="mb-0">' + skillName + ' ';
+        html += '<span class="badge bg-info">' + difficultyLabel + '</span></h5>';
+        html += '<span class="text-muted">' + questionLabel + ': ' + questions.length + '</span>';
+        html += '</div></div></div>';
+
+        html += '<form method="post">';
+        html += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrfToken + '">';
+
+        questions.forEach(function(q, i) {
+          html += '<div class="card mb-3"><div class="card-body">';
+          html += '<h6 class="fw-bold mb-3 test-question">' + (i + 1) + '. ' + renderMarkdown(q.question) + '</h6>';
+          html += '<div class="ps-3">';
+          q.variants.forEach(function(variant, vi) {
+            html += '<div class="form-check mb-2">';
+            html += '<input type="radio" name="question_' + i + '" value="' + vi + '" class="form-check-input" id="id_question_' + i + '_' + vi + '" required>';
+            html += '<label class="form-check-label test-variant" for="id_question_' + i + '_' + vi + '">' + renderMarkdown(variant) + '</label>';
+            html += '</div>';
+          });
+          html += '</div></div></div>';
+        });
+
+        html += '<button type="submit" class="btn btn-primary w-100 btn-lg">';
+        html += '<i class="bi bi-check-circle"></i> ' + submitLabel + '</button>';
+        html += '</form>';
+
+        formContainer.innerHTML = html;
+        formContainer.style.display = 'block';
+      }
+
+      function renderError(data) {
+        const loadingEl = document.getElementById('test-loading');
+        if (loadingEl) loadingEl.style.display = 'none';
+        const formContainer = document.getElementById('test-form');
+
+        let html = '<div class="card"><div class="card-body text-center py-5">';
+        html += '<i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>';
+        html += '<h4 class="mt-3">{% translate "Test Generation Failed" %}</h4>';
+        html += '<p class="text-muted">{% translate "We could not generate your test." %}</p>';
+        if (data.error) {
+          html += '<p class="text-muted small">' + escapeHtml(data.error) + '</p>';
+        }
+        html += '<form method="post" action="' + retryUrl + '">';
+        html += '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrfToken + '">';
+        html += '<button type="submit" class="btn btn-primary mt-2"><i class="bi bi-arrow-clockwise"></i> {% translate "Try Again" %}</button>';
+        html += '</form>';
+        html += '<a href="/skill-tests/" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left"></i> {% translate "Back to Skills" %}</a>';
+        html += '</div></div>';
+
+        formContainer.innerHTML = html;
+        formContainer.style.display = 'block';
+      }
+
+      function pollStatus() {
+        fetch(statusUrl)
+          .then(function(response) { return response.json(); })
+          .then(function(data) {
+            if (data.status === 'ready') {
+              clearInterval(pollTimer);
+              renderForm(data);
+            } else if (data.status === 'failed') {
+              clearInterval(pollTimer);
+              renderError(data);
+            }
+          })
+          .catch(function() {});
+      }
+
+      var pollTimer = setInterval(pollStatus, pollInterval);
+      pollStatus();
+    })();
+    </script>
+  {% endif %}
+{% endblock content %}

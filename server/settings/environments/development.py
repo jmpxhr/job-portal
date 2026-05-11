@@ -68,3 +68,9 @@ ZEAL_LOGGER = logging.getLogger('django')
 ZEAL_ALLOWLIST = [
     {'model': 'admin.*'},
 ]
+
+
+SILENCED_SYSTEM_CHECKS = [
+    'django_prose_editor.W001',
+    'django_prose_editor.W004',
+]

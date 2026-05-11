@@ -12,15 +12,17 @@ if TYPE_CHECKING:
 
 
 class ChatRoom(TimeStampModelMixin):
-    application: models.OneToOneField['JobApplication'] = models.OneToOneField(
-        'jobs.JobApplication',
-        on_delete=models.CASCADE,
-        related_name='chat_room',
-        verbose_name=_('application'),
-        null=True,
-        blank=True,
+    application: models.OneToOneField['JobApplication | None'] = (
+        models.OneToOneField(
+            'jobs.JobApplication',
+            on_delete=models.CASCADE,
+            related_name='chat_room',
+            verbose_name=_('application'),
+            null=True,
+            blank=True,
+        )
     )
-    jobseeker_user: models.ForeignKey['UserType'] = models.ForeignKey(
+    jobseeker_user: models.ForeignKey['UserType | None'] = models.ForeignKey(
         'accounts.User',
         on_delete=models.CASCADE,
         related_name='direct_chat_rooms_as_jobseeker',
@@ -28,7 +30,7 @@ class ChatRoom(TimeStampModelMixin):
         null=True,
         blank=True,
     )
-    recruiter_user: models.ForeignKey['UserType'] = models.ForeignKey(
+    recruiter_user: models.ForeignKey['UserType | None'] = models.ForeignKey(
         'accounts.User',
         on_delete=models.CASCADE,
         related_name='direct_chat_rooms_as_recruiter',
@@ -40,7 +42,7 @@ class ChatRoom(TimeStampModelMixin):
     @override
     def __str__(self) -> str:
         if self.application_id:  # pyrefly: ignore
-            return f'ChatRoom[{self.application_id}]'  # pyrefly: ignore
+            return f'ChatRoom[{self.application_id}]'
         return f'ChatRoom[direct:{self.jobseeker_user_id}-{self.recruiter_user_id}]'  # pyrefly: ignore  # noqa: E501
 
     @property

@@ -23,7 +23,9 @@
             <p class="text-primary mb-2">{{ job.company.name }}</p>
           </div>
           <span class="job-type-badge badge-{{ job.employment_type_label|lower|cut:" "|cut:"-" }}">{{ job.employment_type_label }}</span>
-          {% if is_jobseeker %}<span class="badge {% if job.match_score >= 80 %}bg-success{% elif job.match_score >= 60 %}bg-info{% elif job.match_score >= 40 %}bg-warning{% else %}bg-secondary{% endif %}">{{ job.match_score }}%</span>{% endif %}
+          {% if is_jobseeker %}
+            <span class="badge {% if job.match_score >= 80 %}bg-success{% elif job.match_score >= 60 %}bg-info{% elif job.match_score >= 40 %}bg-warning{% else %}bg-secondary{% endif %}">{{ job.match_score }}%</span>
+          {% endif %}
         </div>
         <div class="row mt-2">
           <div class="col-md-4 col-6">

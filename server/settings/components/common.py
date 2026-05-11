@@ -59,6 +59,7 @@ INSTALLED_APPS: tuple[str, ...] = (
     'server.apps.jobs',
     'server.apps.dashboard',
     'server.apps.chat',
+    'server.apps.skill_tests',
     *DJANGO_APPS,
     *THIRD_PARTY_APPS,
 )
@@ -82,6 +83,8 @@ MIDDLEWARE: tuple[str, ...] = (
 )
 
 ROOT_URLCONF = 'server.urls'
+
+LMSTUDIO_MODEL: str = config('LMSTUDIO_MODEL', default='')
 
 WSGI_APPLICATION = 'server.wsgi.application'
 ASGI_APPLICATION = 'server.asgi.application'

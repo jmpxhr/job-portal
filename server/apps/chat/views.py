@@ -38,20 +38,21 @@ _select_related_direct = (
 
 def _get_other_user(room: ChatRoom, user: 'UserType') -> 'UserType':
     if room.application_id:  # pyrefly: ignore
-        if user == room.application.jobseeker.user:  # pyrefly: ignore
-            return room.application.job.company.recruiter.user  # pyrefly: ignore
-        return room.application.jobseeker.user  # pyrefly: ignore
+        if user == room.application.jobseeker.user:  # type: ignore[union-attr] # pyrefly: ignore
+            return room.application.job.company.recruiter.user  # type: ignore[union-attr]  # pyrefly: ignore
+        return room.application.jobseeker.user  # type: ignore[union-attr] # pyrefly: ignore
     if user == room.jobseeker_user:
+        # pyrefly: ignore [bad-return]
         return room.recruiter_user  # type: ignore[return-value]
     return room.jobseeker_user  # type: ignore[return-value]
 
 
 def _user_has_room_access(room: ChatRoom, user: 'UserType') -> bool:
     if room.application_id:  # pyrefly: ignore
-        if user == room.application.jobseeker.user:  # pyrefly: ignore
+        if user == room.application.jobseeker.user:  # type: ignore[union-attr]# pyrefly: ignore
             return True
         try:
-            return user == room.application.job.company.recruiter.user  # pyrefly: ignore
+            return user == room.application.job.company.recruiter.user  # type: ignore[union-attr] # pyrefly: ignore
         except Exception:
             return False
     return user in {room.jobseeker_user, room.recruiter_user}
@@ -208,7 +209,7 @@ class ChatRoomView(LoginRequiredMixin, View):
         messages = room.messages.select_related('sender').order_by('created_at')  # pyrefly: ignore
 
         other_user = _get_other_user(room, user)
-        job = room.application.job if room.application_id else None  # pyrefly: ignore
+        job = room.application.job if room.application_id else None  # type: ignore[union-attr]  # pyrefly: ignore
 
         return render(
             request,

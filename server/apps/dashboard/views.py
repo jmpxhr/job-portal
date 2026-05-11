@@ -26,6 +26,7 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import TemplateView
 from weasyprint import HTML
@@ -53,6 +54,7 @@ from server.apps.dashboard.forms import (
     SkillAddForm,
 )
 from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
+from server.apps.skill_tests.models import SkillVerification
 from server.common.types import (
     AuthenticatedHtmxRequest,
     AuthenticatedHttpRequest,
@@ -514,8 +516,13 @@ class ExperienceDeleteView(LoginRequiredMixin, View):
 
 
 def _skill_list_context(jobseeker: JobSeeker) -> dict[str, Any]:
+
+    verifications = SkillVerification.objects.filter(
+        jobseeker=jobseeker,
+    ).select_related('skill')
     return {
         'skills': jobseeker.skills.all().order_by('name'),
+        'skill_verifications': verifications,
     }
 
 
@@ -917,9 +924,10 @@ class EmployerDashboardView(LoginRequiredMixin, View):
             .order_by('-count')[:10]
         )
         jobs_by_skill_labels = json.dumps([
-            entry['name'] for entry in skills_qs
+            entry['name']  # type: ignore[index]
+            for entry in skills_qs
         ])
-        jobs_by_skill_data = json.dumps([entry['count'] for entry in skills_qs])
+        jobs_by_skill_data = json.dumps([entry['count'] for entry in skills_qs])  # type: ignore[index]
 
         job_views_count = (
             company.jobs.aggregate(  # pyrefly: ignore
@@ -1176,10 +1184,10 @@ class ApplicantsListView(LoginRequiredMixin, View):
     paginate_by = 10
 
     STATUS_CHOICES: list[tuple[str, str]] = [
-        ('', 'All'),
-        ('0', 'New'),
-        ('2', 'Accepted'),
-        ('3', 'Rejected'),
+        ('', _('All')),
+        ('0', _('New')),
+        ('2', _('Accepted')),
+        ('3', _('Rejected')),
     ]
 
     def get_company(self, user: User) -> Company | None:
@@ -1396,6 +1404,10 @@ class CandidateView(LoginRequiredMixin, View):
         languages = jobseeker.languages.all().order_by('name')
         skills = jobseeker.skills.all().order_by('name')
 
+        skill_verifications = SkillVerification.objects.filter(
+            jobseeker=jobseeker,
+        ).select_related('skill')
+
         context = {
             'application': application,
             'jobseeker': jobseeker,
@@ -1406,6 +1418,7 @@ class CandidateView(LoginRequiredMixin, View):
             'experience': experience,
             'languages': languages,
             'skills': skills,
+            'skill_verifications': skill_verifications,
             'status_choices': JobApplication.StatusEnum.choices,
         }
 
@@ -1466,6 +1479,10 @@ class BrowseCandidateProfileView(LoginRequiredMixin, View):
 
         skills = jobseeker.skills.all().order_by('name')
 
+        skill_verifications = SkillVerification.objects.filter(
+            jobseeker=jobseeker,
+        ).select_related('skill')
+
         context = {
             'jobseeker': jobseeker,
             'job': job,
@@ -1475,6 +1492,7 @@ class BrowseCandidateProfileView(LoginRequiredMixin, View):
             'experience': experience,
             'languages': languages,
             'skills': skills,
+            'skill_verifications': skill_verifications,
             'company': company,
         }
 
@@ -1486,17 +1504,17 @@ class BrowseCandidatesView(LoginRequiredMixin, View):
     paginate_by = 12
 
     SORT_CHOICES: list[tuple[str, str]] = [
-        ('recent', 'Most Recent'),
-        ('name', 'Name (A-Z)'),
-        ('match_score', 'Match Score'),
+        ('recent', _('Most Recent')),
+        ('name', _('Name (A-Z)')),
+        ('match_score', _('Match Score')),
     ]
 
     EXPERIENCE_CHOICES: list[tuple[str, str]] = [
-        ('0', "Doesn't matter"),
-        ('1', 'No experience'),
-        ('2', 'From 1 year to 3 years'),
-        ('3', 'From 3 to 6 years'),
-        ('4', 'More than 6 years'),
+        ('0', _("Doesn't matter")),
+        ('1', _('No experience')),
+        ('2', _('From 1 year to 3 years')),
+        ('3', _('From 3 to 6 years')),
+        ('4', _('More than 6 years')),
     ]
 
     def get_company(self, user: User) -> Company | None:

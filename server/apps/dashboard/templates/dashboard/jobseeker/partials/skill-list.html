@@ -2,18 +2,34 @@
 {% load i18n %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h4 class="fw-bold mb-0">{% translate "Skills" %}</h4>
-  <button class="btn btn-outline-primary btn-sm"
-          hx-get="{% url 'dashboard:skill-add' %}"
-          hx-target="#skills-content"
-          hx-swap="innerHTML">
-    <i class="bi bi-plus-lg"></i> {% translate "Add Skill" %}
-  </button>
+  <div>
+    <a href="{% url 'skill_tests:list' %}"
+       class="btn btn-outline-success btn-sm me-2">
+      <i class="bi bi-patch-check"></i> {% translate "Verify Skills" %}
+    </a>
+    <button class="btn btn-outline-primary btn-sm"
+            hx-get="{% url 'dashboard:skill-add' %}"
+            hx-target="#skills-content"
+            hx-swap="innerHTML">
+      <i class="bi bi-plus-lg"></i> {% translate "Add Skill" %}
+    </button>
+  </div>
 </div>
 {% if skills %}
   <div class="d-flex flex-wrap gap-2 mb-3">
     {% for skill in skills %}
       <div class="skill-badge d-inline-flex align-items-center">
         {{ skill.name }}
+        {% if skill_verifications %}
+          {% for sv in skill_verifications %}
+            {% if sv.skill_id == skill.id %}
+              <span class="badge bg-success ms-1"
+                    title="{% translate 'Verified' %} - {{ sv.best_score }}%">
+                <i class="bi bi-patch-check"></i>
+              </span>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
         {% blocktranslate with skill_name=skill.name asvar confirm_msg %}Remove "{{ skill_name }}" from your skills?{% endblocktranslate %}
         <button class="btn btn-sm p-0 ms-1"
                 hx-delete="{% url 'dashboard:skill-remove' skill.pk %}"

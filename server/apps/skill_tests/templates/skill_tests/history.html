@@ -1,0 +1,92 @@
+{% extends 'container.html' %}
+{% load static i18n %}
+{% block title %}
+  {% translate "Test History" %} | StartJob
+{% endblock title %}
+{% block content %}
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">{% translate "Test History" %}</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">{% translate "Home" %}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'skill_tests:list' %}">{% translate "Skill Tests" %}</a>
+          </li>
+          <li class="breadcrumb-item active">{% translate "History" %}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+  <section class="py-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">{% translate "Your Test Attempts" %}</h4>
+        <a href="{% url 'skill_tests:list' %}" class="btn btn-primary">
+          <i class="bi bi-plus-lg"></i> {% translate "Take New Test" %}
+        </a>
+      </div>
+      {% if attempts %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>{% translate "Skill" %}</th>
+                <th>{% translate "Difficulty" %}</th>
+                <th>{% translate "Score" %}</th>
+                <th>{% translate "Status" %}</th>
+                <th>{% translate "Date" %}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for attempt in attempts %}
+                <tr>
+                  <td>
+                    <strong>{{ attempt.skill_test.skill.name }}</strong>
+                    {% if attempt.skill_test.skill_id in verification_map %}
+                      <span class="badge bg-success ms-1">
+                        <i class="bi bi-patch-check"></i> {% translate "Verified" %}
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <span class="badge bg-info">{{ attempt.skill_test.get_difficulty_display }}</span>
+                  </td>
+                  <td>
+                    <strong>{{ attempt.score }}%</strong>
+                  </td>
+                  <td>
+                    {% if attempt.passed %}
+                      <span class="badge bg-success">{% translate "Passed" %}</span>
+                    {% else %}
+                      <span class="badge bg-danger">{% translate "Failed" %}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-muted">{{ attempt.created_at|date:"N j, Y" }}</td>
+                  <td>
+                    <a href="{% url 'skill_tests:result' attempt.pk %}"
+                       class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-5">
+          <i class="bi bi-clipboard-check fs-1 text-muted"></i>
+          <h5 class="mt-3 text-muted">{% translate "No test attempts yet" %}</h5>
+          <p class="text-muted">{% translate "Take a skill test to verify your abilities" %}</p>
+          <a href="{% url 'skill_tests:list' %}" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-lg"></i> {% translate "Choose a Skill" %}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock content %}

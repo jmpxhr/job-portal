@@ -29,6 +29,7 @@ from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
 from server.apps.dashboard.views import HomePageView
 from server.apps.jobs import urls as jobs_urls
+from server.apps.skill_tests import urls as skill_tests_urls
 
 if TYPE_CHECKING:
     from django.urls import URLPattern, URLResolver
@@ -66,6 +67,11 @@ urlpatterns += i18n_patterns(
     path(
         'dashboard/',
         include((dashboard_url, 'dashboard'), namespace='dashboard'),
+    ),
+    # Skill Tests
+    path(
+        'skill-tests/',
+        include((skill_tests_urls, 'skill_tests'), namespace='skill_tests'),
     ),
     # Index
     path('', HomePageView.as_view(), name='home'),

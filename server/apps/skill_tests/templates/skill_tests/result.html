@@ -1,0 +1,107 @@
+{% extends 'container.html' %}
+{% load static i18n markdown %}
+{% block title %}
+  {% translate "Test Results" %} | StartJob
+{% endblock title %}
+{% block head %}
+  <style>
+    .question-review pre {
+      background: #f8f9fa;
+      padding: 0.75rem 1rem;
+      border-radius: 0.375rem;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .question-review code {
+      background: #e9ecef;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-size: 0.9em;
+    }
+    .question-review pre code {
+      background: transparent;
+      padding: 0;
+    }
+  </style>
+{% endblock head %}
+{% block content %}
+  <section class="bg-light py-4">
+    <div class="container">
+      <h1 class="fw-bold mb-0">{% translate "Test Results" %}</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">{% translate "Home" %}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'skill_tests:list' %}">{% translate "Skill Tests" %}</a>
+          </li>
+          <li class="breadcrumb-item active">{% translate "Results" %}</li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+  <section class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body text-center py-4">
+              {% if attempt.passed %}
+                <div class="mb-3">
+                  <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="text-success">{% translate "Congratulations! You Passed!" %}</h2>
+              {% else %}
+                <div class="mb-3">
+                  <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="text-danger">{% translate "Not Passed" %}</h2>
+              {% endif %}
+              <div class="display-4 fw-bold my-3">{{ attempt.score }}%</div>
+              <p class="text-muted">
+                {% translate "Skill" %}: <strong>{{ skill_test.skill.name }}</strong>
+                &middot;
+                {% translate "Difficulty" %}: <strong>{{ skill_test.get_difficulty_display }}</strong>
+              </p>
+              <p class="text-muted">{% translate "Passing score" %}: 70%</p>
+            </div>
+          </div>
+          <h4 class="fw-bold mb-3">{% translate "Question Review" %}</h4>
+          {% for result in question_results %}
+            <div class="card mb-3 border-{% if result.is_correct %}success{% else %}danger{% endif %} question-review">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h6 class="fw-bold mb-2">{{ forloop.counter }}. {{ result.question|render_markdown }}</h6>
+                  {% if result.is_correct %}
+                    <span class="badge bg-success"><i class="bi bi-check"></i></span>
+                  {% else %}
+                    <span class="badge bg-danger"><i class="bi bi-x"></i></span>
+                  {% endif %}
+                </div>
+                <div class="ps-3">
+                  {% for variant in result.variants %}
+                    <div class="{% if forloop.counter0 == result.correct_index %}text-success fw-bold{% endif %}{% if result.chosen_index is not None and forloop.counter0 == result.chosen_index and result.chosen_index != result.correct_index %} text-danger text-decoration-line-through{% endif %}">
+                      {{ forloop.counter0|add:"1" }}. {{ variant|render_markdown }}
+                      {% if forloop.counter0 == result.correct_index %}<i class="bi bi-check-circle"></i>{% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          <div class="d-flex gap-3 mt-4">
+            <a href="{% url 'skill_tests:list' %}" class="btn btn-primary">
+              <i class="bi bi-arrow-left"></i> {% translate "Back to Skills" %}
+            </a>
+            <a href="{% url 'skill_tests:history' %}"
+               class="btn btn-outline-secondary">
+              <i class="bi bi-clock-history"></i> {% translate "View History" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

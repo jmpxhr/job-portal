@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-11 15:29+0300\n"
-"PO-Revision-Date: 2026-05-11 15:39+0300\n"
+"POT-Creation-Date: 2026-05-11 19:04+0300\n"
+"PO-Revision-Date: 2026-05-11 19:05+0300\n"
 "Last-Translator:   <admin@admin.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -67,7 +67,7 @@ msgstr ""
 msgid "date joined"
 msgstr "дата регистрации"
 
-#: server/apps/accounts/models.py:118 server/apps/chat/models.py:93
+#: server/apps/accounts/models.py:118 server/apps/chat/models.py:95
 msgid "user"
 msgstr "пользователь"
 
@@ -115,6 +115,7 @@ msgstr "цель резюме"
 #: server/apps/accounts/models.py:183 server/apps/accounts/models.py:219
 #: server/apps/accounts/models.py:272 server/apps/accounts/models.py:302
 #: server/apps/jobs/models.py:176 server/apps/jobs/models.py:242
+#: server/apps/skill_tests/models.py:91 server/apps/skill_tests/models.py:132
 msgid "job seeker"
 msgstr "соискатель"
 
@@ -199,6 +200,7 @@ msgid "Native"
 msgstr "Родной"
 
 #: server/apps/accounts/models.py:275 server/apps/accounts/models.py:293
+#: server/apps/skill_tests/models.py:54
 msgid "language"
 msgstr "язык"
 
@@ -594,56 +596,56 @@ msgstr "Уже есть аккаунт?"
 msgid "Sign in"
 msgstr "Войти"
 
-#: server/apps/chat/models.py:19
+#: server/apps/chat/models.py:20
 msgid "application"
 msgstr "заявка"
 
-#: server/apps/chat/models.py:27
+#: server/apps/chat/models.py:29
 msgid "jobseeker user"
 msgstr "пользователь-соискатель"
 
-#: server/apps/chat/models.py:35
+#: server/apps/chat/models.py:37
 msgid "recruiter user"
 msgstr "пользователь-рекрутер"
 
-#: server/apps/chat/models.py:57 server/apps/chat/models.py:66
-#: server/apps/chat/models.py:99
+#: server/apps/chat/models.py:59 server/apps/chat/models.py:68
+#: server/apps/chat/models.py:101
 msgid "chat room"
 msgstr "чат-комната"
 
-#: server/apps/chat/models.py:58
+#: server/apps/chat/models.py:60
 msgid "chat rooms"
 msgstr "чат-комнаты"
 
-#: server/apps/chat/models.py:72
+#: server/apps/chat/models.py:74
 msgid "sender"
 msgstr "отправитель"
 
-#: server/apps/chat/models.py:74
+#: server/apps/chat/models.py:76
 msgid "content"
 msgstr "содержание"
 
-#: server/apps/chat/models.py:75
+#: server/apps/chat/models.py:77
 msgid "is read"
 msgstr "прочитано"
 
-#: server/apps/chat/models.py:84
+#: server/apps/chat/models.py:86
 msgid "chat message"
 msgstr "сообщение чата"
 
-#: server/apps/chat/models.py:85
+#: server/apps/chat/models.py:87
 msgid "chat messages"
 msgstr "сообщения чата"
 
-#: server/apps/chat/models.py:101
+#: server/apps/chat/models.py:103
 msgid "unread count"
 msgstr "количество непрочитанных"
 
-#: server/apps/chat/models.py:112
+#: server/apps/chat/models.py:114
 msgid "chat notification"
 msgstr "уведомление чата"
 
-#: server/apps/chat/models.py:113
+#: server/apps/chat/models.py:115
 msgid "chat notifications"
 msgstr "уведомления чата"
 
@@ -820,6 +822,7 @@ msgid "Search"
 msgstr "Поиск"
 
 #: server/apps/company/templates/company/company-list.html:81
+#: server/apps/dashboard/views.py:1187
 msgid "All"
 msgstr "Все"
 
@@ -892,8 +895,8 @@ msgstr "Попробуйте изменить параметры поиска и
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:151
 #: server/apps/dashboard/templates/dashboard/jobseeker/saved-jobs.html:123
 #: server/apps/dashboard/templates/dashboard/jobseeker/saved-jobs.html:127
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:69
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:73
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:71
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:75
 msgid "Previous"
 msgstr "Предыдущая"
 
@@ -909,8 +912,8 @@ msgstr "Предыдущая"
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:173
 #: server/apps/dashboard/templates/dashboard/jobseeker/saved-jobs.html:145
 #: server/apps/dashboard/templates/dashboard/jobseeker/saved-jobs.html:149
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:97
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:101
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:99
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:103
 msgid "Next"
 msgstr "Следующая"
 
@@ -922,7 +925,7 @@ msgstr "Редактировать профиль компании"
 #: server/apps/company/templates/company/partials/company_edit_form.html:222
 #: server/apps/company/templates/company/partials/student_program_confirm_delete.html:21
 #: server/apps/company/templates/company/partials/student_program_form.html:6
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:329
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:339
 #: server/apps/dashboard/templates/dashboard/company/edit-vacancy.html:315
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/edit-profile.html:18
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/education-form.html:16
@@ -993,8 +996,8 @@ msgid "Remove cover"
 msgstr "Удалить обложку"
 
 #: server/apps/company/templates/company/partials/company_edit_form.html:115
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:158
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:224
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:168
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:234
 msgid "Contact Information"
 msgstr "Контактная информация"
 
@@ -1039,8 +1042,8 @@ msgstr "Должность"
 
 #: server/apps/company/templates/company/partials/company_edit_form.html:212
 #: server/apps/company/templates/company/partials/company_view.html:57
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:161
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:227
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:171
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:237
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/profile-overview.html:33
 msgid "Email"
 msgstr "Email"
@@ -1054,8 +1057,8 @@ msgid "Founded"
 msgstr "Основана"
 
 #: server/apps/company/templates/company/partials/company_view.html:63
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:167
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:233
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:177
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:243
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/edit-profile.html:59
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/profile-overview.html:41
 msgid "Phone"
@@ -1102,7 +1105,7 @@ msgstr "Разместить вакансию"
 #: server/apps/jobs/models.py:52
 #: server/apps/jobs/templates/jobs/job-details.html:135
 #: server/apps/jobs/templates/jobs/job-details.html:191
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:30
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:32
 msgid "Remote"
 msgstr "Удалённо"
 
@@ -1119,7 +1122,7 @@ msgstr[3] "%(counter)s заявителей"
 #: server/apps/dashboard/templates/dashboard/index.html:140
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:127
 #: server/apps/dashboard/templates/dashboard/jobseeker/saved-jobs.html:103
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:48
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:50
 msgid "View Details"
 msgstr "Подробнее"
 
@@ -1173,6 +1176,7 @@ msgstr "Описание"
 
 #: server/apps/company/templates/company/partials/student_program_form.html:28
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/application-detail-modal.html:50
+#: server/apps/skill_tests/templates/skill_tests/history.html:39
 msgid "Status"
 msgstr "Статус"
 
@@ -1268,6 +1272,7 @@ msgstr "Оценка совпадения"
 #: server/apps/dashboard/templates/dashboard/company/applicants-list.html:124
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:81
 #: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:155
+#: server/apps/dashboard/views.py:1188
 msgid "New"
 msgstr "Новый"
 
@@ -1275,14 +1280,14 @@ msgstr "Новый"
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:82
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:38
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/profile-overview.html:23
-#: server/apps/jobs/models.py:163
+#: server/apps/dashboard/views.py:1189 server/apps/jobs/models.py:163
 msgid "Accepted"
 msgstr "Принят"
 
 #: server/apps/dashboard/templates/dashboard/company/applicants-list.html:128
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:83
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:44
-#: server/apps/jobs/models.py:164
+#: server/apps/dashboard/views.py:1190 server/apps/jobs/models.py:164
 msgid "Rejected"
 msgstr "Отклонён"
 
@@ -1319,6 +1324,7 @@ msgstr "Совпадение: %(job_title)s"
 
 #: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:59
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:56
+#: server/apps/dashboard/views.py:1509
 msgid "Match Score"
 msgstr "Оценка совпадения"
 
@@ -1335,8 +1341,16 @@ msgid "About"
 msgstr "О себе"
 
 #: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:89
-#: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:134
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:104
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:27
+#: server/apps/skill_tests/templates/skill_tests/history.html:51
+#: server/apps/skill_tests/templates/skill_tests/list.html:57
+msgid "Verified"
+msgstr "Подтверждён"
+
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:99
+#: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:134
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:114
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/education-form.html:10
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/education-list.html:4
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/resume-content.html:34
@@ -1345,9 +1359,9 @@ msgstr "О себе"
 msgid "Education"
 msgstr "Образование"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:110
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:120
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:149
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:125
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:135
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/experience-form.html:10
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/resume-content.html:50
 #: server/apps/dashboard/templates/dashboard/jobseeker/profile.html:79
@@ -1356,38 +1370,38 @@ msgstr "Образование"
 msgid "Experience"
 msgstr "Опыт работы"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:116
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:131
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:126
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:141
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/experience-list.html:18
 msgid "Current"
 msgstr "Текущее"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:124
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:139
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:134
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:149
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/experience-list.html:41
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/resume-content.html:59
 #: server/apps/dashboard/templates/dashboard/jobseeker/resume-pdf.html:148
 msgid "Present"
 msgstr "Настоящее время"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:142
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:157
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:152
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:167
 msgid "Actions"
 msgstr "Действия"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:147
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:162
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:157
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:172
 msgid "Send Message"
 msgstr "Отправить сообщение"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:152
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:178
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:162
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:188
 msgid "Generate PDF"
 msgstr "Создать PDF"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:173
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:183
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:164
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:239
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:249
 #: server/apps/dashboard/templates/dashboard/company/post-vacancy.html:196
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/edit-profile.html:64
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/profile-overview.html:52
@@ -1396,8 +1410,8 @@ msgstr "Создать PDF"
 msgid "Location"
 msgstr "Местоположение"
 
-#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:179
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:245
+#: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:189
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:255
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/language-list.html:4
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/resume-content.html:78
 #: server/apps/dashboard/templates/dashboard/jobseeker/profile.html:93
@@ -1490,7 +1504,7 @@ msgstr[2] "%(counter)s опытов"
 msgstr[3] "%(counter)s опытов"
 
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:227
-#: server/apps/jobs/models.py:46
+#: server/apps/dashboard/views.py:1514 server/apps/jobs/models.py:46
 msgid "No experience"
 msgstr "Без опыта"
 
@@ -1519,42 +1533,42 @@ msgstr "Отклик на: %(job_title)s"
 msgid "Current Status"
 msgstr "Текущий статус"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:168
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:172
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:178
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:182
 msgid "Download Resume"
 msgstr "Скачать резюме"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:185
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:195
 msgid "View Cover Letter"
 msgstr "Просмотр сопроводительного письма"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:194
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:316
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:204
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:326
 msgid "Update Feedback"
 msgstr "Обновить отзыв"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:196
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:318
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:206
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:328
 msgid "Write Feedback"
 msgstr "Написать отзыв"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:207
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:217
 msgid "Accept"
 msgstr "Принять"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:216
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:226
 msgid "Reject"
 msgstr "Отклонить"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:269
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:279
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/application-detail-modal.html:125
 #: server/apps/jobs/templates/jobs/partials/apply-form-partial.html:12
 msgid "Cover Letter"
 msgstr "Сопроводительное письмо"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:274
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:280
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:301
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:284
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:290
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:311
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:192
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:206
 #: server/apps/jobs/templates/jobs/partials/apply-modal-partial.html:16
@@ -1562,20 +1576,20 @@ msgstr "Сопроводительное письмо"
 msgid "Close"
 msgstr "Закрыть"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:296
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:306
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/application-detail-modal.html:139
 msgid "Employer Feedback"
 msgstr "Отзыв работодателя"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:309
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:319
 msgid "Current Feedback"
 msgstr "Текущий отзыв"
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:325
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:335
 msgid "Write your feedback about this candidate..."
 msgstr "Напишите ваш отзыв об этом кандидате..."
 
-#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:331
+#: server/apps/dashboard/templates/dashboard/company/candidate-view.html:341
 msgid "Save Feedback"
 msgstr "Сохранить отзыв"
 
@@ -2051,23 +2065,6 @@ msgstr "Название вакансии или ключевое слово"
 msgid "City or region"
 msgstr "Город или регион"
 
-#: server/apps/dashboard/templates/dashboard/index.html:51
-msgid "Popular:"
-msgstr "Популярное:"
-
-#: server/apps/dashboard/templates/dashboard/index.html:53
-#: server/apps/jobs/models.py:63
-msgid "Internship"
-msgstr "Стажировка"
-
-#: server/apps/dashboard/templates/dashboard/index.html:55
-msgid "Junior Developer"
-msgstr "Junior Developer"
-
-#: server/apps/dashboard/templates/dashboard/index.html:57
-msgid "Student Jobs"
-msgstr "Вакансии для студентов"
-
 #: server/apps/dashboard/templates/dashboard/index.html:61
 msgid "Hero Image"
 msgstr "Главное изображение"
@@ -2152,7 +2149,7 @@ msgid "Total Applications"
 msgstr "Всего заявок"
 
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:32
-#: server/apps/jobs/models.py:162
+#: server/apps/jobs/models.py:162 server/apps/skill_tests/models.py:22
 msgid "Pending"
 msgstr "На рассмотрении"
 
@@ -2197,6 +2194,7 @@ msgid "Application Details"
 msgstr "Детали заявки"
 
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:201
+#: server/apps/skill_tests/templates/skill_tests/take.html:59
 #: server/common/templates/base.html:54 server/common/templates/base.html:149
 #: server/common/templates/base.html:173
 msgid "Loading..."
@@ -2434,20 +2432,24 @@ msgstr ""
 msgid "Save Skills"
 msgstr "Сохранить навыки"
 
-#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:9
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:8
+msgid "Verify Skills"
+msgstr "Подтвердить навыки"
+
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:14
 msgid "Add Skill"
 msgstr "Добавить навык"
 
-#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:17
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:33
 #, python-format
 msgid "Remove \"%(skill_name)s\" from your skills?"
 msgstr "Удалить «%(skill_name)s» из ваших навыков?"
 
-#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:31
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:47
 msgid "No skills added yet"
 msgstr "Пока нет добавленных навыков"
 
-#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:32
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/skill-list.html:48
 msgid "Add your skills to showcase your expertise"
 msgstr "Добавьте ваши навыки, чтобы показать свою экспертизу"
 
@@ -2519,6 +2521,32 @@ msgstr "Пока нет сохранённых вакансий"
 msgid "Start saving jobs you're interested in"
 msgstr "Начните сохранять интересующие вас вакансии"
 
+#: server/apps/dashboard/views.py:1507
+#| msgid "Most recent"
+msgid "Most Recent"
+msgstr "По дате"
+
+#: server/apps/dashboard/views.py:1508
+#| msgid "Name A-Z"
+msgid "Name (A-Z)"
+msgstr "Имя А-Я"
+
+#: server/apps/dashboard/views.py:1513 server/apps/jobs/models.py:45
+msgid "Doesn't matter"
+msgstr "Не важно"
+
+#: server/apps/dashboard/views.py:1515 server/apps/jobs/models.py:47
+msgid "From 1 year to 3 years"
+msgstr "От 1 года до 3 лет"
+
+#: server/apps/dashboard/views.py:1516 server/apps/jobs/models.py:48
+msgid "From 3 to 6 years"
+msgstr "От 3 до 6 лет"
+
+#: server/apps/dashboard/views.py:1517 server/apps/jobs/models.py:49
+msgid "More than 6 years"
+msgstr "Более 6 лет"
+
 #: server/apps/jobs/models.py:23
 msgid "name"
 msgstr "название"
@@ -2527,25 +2555,10 @@ msgstr "название"
 msgid "slug"
 msgstr "slug"
 
-#: server/apps/jobs/models.py:39
+#: server/apps/jobs/models.py:39 server/apps/skill_tests/models.py:32
+#: server/apps/skill_tests/models.py:138
 msgid "skill"
 msgstr "навык"
-
-#: server/apps/jobs/models.py:45
-msgid "Doesn't matter"
-msgstr "Не важно"
-
-#: server/apps/jobs/models.py:47
-msgid "From 1 year to 3 years"
-msgstr "От 1 года до 3 лет"
-
-#: server/apps/jobs/models.py:48
-msgid "From 3 to 6 years"
-msgstr "От 3 до 6 лет"
-
-#: server/apps/jobs/models.py:49
-msgid "More than 6 years"
-msgstr "Более 6 лет"
 
 #: server/apps/jobs/models.py:53
 msgid "Hybrid"
@@ -2570,6 +2583,10 @@ msgstr "Полная занятость"
 #: server/apps/jobs/models.py:62
 msgid "Part-time"
 msgstr "Частичная занятость"
+
+#: server/apps/jobs/models.py:63
+msgid "Internship"
+msgstr "Стажировка"
 
 #: server/apps/jobs/models.py:69
 msgid "company"
@@ -2666,6 +2683,11 @@ msgstr "просмотры вакансий"
 
 #: server/apps/jobs/templates/jobs/job-details.html:16
 #: server/apps/jobs/templates/jobs/jobs-list.html:17
+#: server/apps/skill_tests/templates/skill_tests/history.html:13
+#: server/apps/skill_tests/templates/skill_tests/list.html:13
+#: server/apps/skill_tests/templates/skill_tests/result.html:35
+#: server/apps/skill_tests/templates/skill_tests/start.html:13
+#: server/apps/skill_tests/templates/skill_tests/take.html:38
 #: server/common/templates/components/nav.html:20
 #: server/common/templates/components/nav.html:30
 msgid "Home"
@@ -2717,12 +2739,11 @@ msgstr "напр. 1000"
 
 #: server/apps/jobs/templates/jobs/jobs-list.html:116
 #, python-format
-#| msgid "Match Score"
 msgid "Match Score, %%"
-msgstr "Оценка соответствия, %"
+msgstr "Оценка соответствия, %%"
 
 #: server/apps/jobs/templates/jobs/jobs-list.html:147
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:109
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:111
 #, python-format
 msgid ""
 "Showing <strong>%(start)s-%(end)s</strong> of <strong>%(count)s</strong> "
@@ -2774,16 +2795,16 @@ msgstr "Заявка отправлена!"
 msgid "Your application for %(title)s has been sent."
 msgstr "Ваша заявка на %(title)s отправлена."
 
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:36
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:38
 #, python-format
 msgid "Posted %(timesince)s ago"
 msgstr "Опубликовано %(timesince)s назад"
 
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:44
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:46
 msgid "General"
 msgstr "Общее"
 
-#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:56
+#: server/apps/jobs/templates/jobs/partials/jobs-list-partial.html:58
 msgid "No jobs found matching your criteria."
 msgstr "Не найдено вакансий по вашим критериям."
 
@@ -2802,6 +2823,323 @@ msgstr "По возрастанию зарплаты"
 #: server/apps/jobs/views.py:103
 msgid "Best Match"
 msgstr "По соответствию"
+
+#: server/apps/skill_tests/models.py:16
+msgid "Easy"
+msgstr "Лёгкий"
+
+#: server/apps/skill_tests/models.py:17
+msgid "Medium"
+msgstr "Средний"
+
+#: server/apps/skill_tests/models.py:18
+msgid "Hard"
+msgstr "Сложный"
+
+#: server/apps/skill_tests/models.py:23
+msgid "Ready"
+msgstr "Готов"
+
+#: server/apps/skill_tests/models.py:24
+#: server/apps/skill_tests/templates/skill_tests/history.html:65
+msgid "Failed"
+msgstr "Провален"
+
+#: server/apps/skill_tests/models.py:37 server/apps/skill_tests/models.py:143
+msgid "difficulty"
+msgstr "сложность"
+
+#: server/apps/skill_tests/models.py:42
+msgid "status"
+msgstr "статус"
+
+#: server/apps/skill_tests/models.py:45
+msgid "questions"
+msgstr "вопросы"
+
+#: server/apps/skill_tests/models.py:49
+msgid ""
+"Structured test questions: [{\"question\": str, \"variants\": [str], "
+"\"correct_index\": int}]"
+msgstr ""
+"Структурированные вопросы теста: [{\"question\": str, \"variants\": [str], "
+"\"correct_index\": int}]"
+
+#: server/apps/skill_tests/models.py:57
+msgid "Language code for test questions (e.g. \"en\", \"ru\")"
+msgstr "Код языка для вопросов теста (напр. «en», «ru»)"
+
+#: server/apps/skill_tests/models.py:60
+msgid "error message"
+msgstr "сообщение об ошибке"
+
+#: server/apps/skill_tests/models.py:65
+msgid "expires at"
+msgstr "истекает"
+
+#: server/apps/skill_tests/models.py:77 server/apps/skill_tests/models.py:97
+msgid "skill test"
+msgstr "тест навыка"
+
+#: server/apps/skill_tests/models.py:78
+msgid "skill tests"
+msgstr "тесты навыков"
+
+#: server/apps/skill_tests/models.py:100
+msgid "answers"
+msgstr "ответы"
+
+#: server/apps/skill_tests/models.py:101
+msgid "{\"question_index\": chosen_variant_index}"
+msgstr "{\"question_index\": chosen_variant_index}"
+
+#: server/apps/skill_tests/models.py:104
+msgid "score"
+msgstr "оценка"
+
+#: server/apps/skill_tests/models.py:105
+msgid "Percentage score (0-100)"
+msgstr "Процентная оценка (0-100)"
+
+#: server/apps/skill_tests/models.py:108
+msgid "passed"
+msgstr "пройден"
+
+#: server/apps/skill_tests/models.py:120
+msgid "skill test attempt"
+msgstr "попытка теста навыка"
+
+#: server/apps/skill_tests/models.py:121
+msgid "skill test attempts"
+msgstr "попытки тестов навыков"
+
+#: server/apps/skill_tests/models.py:146
+msgid "best score"
+msgstr "лучший результат"
+
+#: server/apps/skill_tests/models.py:147
+msgid "Highest score achieved for this skill"
+msgstr "Наивысший результат для этого навыка"
+
+#: server/apps/skill_tests/models.py:150
+msgid "verified at"
+msgstr "подтверждено"
+
+#: server/apps/skill_tests/models.py:164
+msgid "skill verification"
+msgstr "подтверждение навыка"
+
+#: server/apps/skill_tests/models.py:165
+msgid "skill verifications"
+msgstr "подтверждения навыков"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:4
+#: server/apps/skill_tests/templates/skill_tests/history.html:9
+msgid "Test History"
+msgstr "История тестов"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:16
+#: server/apps/skill_tests/templates/skill_tests/list.html:4
+#: server/apps/skill_tests/templates/skill_tests/list.html:9
+#: server/apps/skill_tests/templates/skill_tests/list.html:15
+#: server/apps/skill_tests/templates/skill_tests/result.html:38
+#: server/apps/skill_tests/templates/skill_tests/start.html:16
+#: server/apps/skill_tests/templates/skill_tests/take.html:41
+msgid "Skill Tests"
+msgstr "Тесты навыков"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:18
+msgid "History"
+msgstr "История"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:26
+msgid "Your Test Attempts"
+msgstr "Ваши попытки тестирования"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:28
+msgid "Take New Test"
+msgstr "Пройти новый тест"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:36
+#: server/apps/skill_tests/templates/skill_tests/result.html:64
+msgid "Skill"
+msgstr "Навык"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:37
+#: server/apps/skill_tests/templates/skill_tests/result.html:66
+msgid "Difficulty"
+msgstr "Сложность"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:38
+msgid "Score"
+msgstr "Результат"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:40
+msgid "Date"
+msgstr "Дата"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:63
+msgid "Passed"
+msgstr "Пройден"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:83
+msgid "No test attempts yet"
+msgstr "Пока нет попыток тестирования"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:84
+msgid "Take a skill test to verify your abilities"
+msgstr "Пройдите тест навыка, чтобы подтвердить свои способности"
+
+#: server/apps/skill_tests/templates/skill_tests/history.html:86
+msgid "Choose a Skill"
+msgstr "Выбрать навык"
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:29
+msgid "Search skills..."
+msgstr "Поиск навыков..."
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:40
+msgid "My Test History"
+msgstr "Моя история тестов"
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:54
+#, python-format
+msgid "Best score: %(score)s%%"
+msgstr "Лучший результат: %(score)s%%"
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:66
+#: server/apps/skill_tests/templates/skill_tests/take.html:4
+msgid "Take Test"
+msgstr "Пройти тест"
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:74
+msgid "No skills found"
+msgstr "Навыки не найдены"
+
+#: server/apps/skill_tests/templates/skill_tests/list.html:75
+msgid "Try a different search term"
+msgstr "Попробуйте другой поисковый запрос"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:4
+#: server/apps/skill_tests/templates/skill_tests/result.html:31
+msgid "Test Results"
+msgstr "Результаты теста"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:40
+msgid "Results"
+msgstr "Результаты"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:55
+msgid "Congratulations! You Passed!"
+msgstr "Поздравляем! Вы прошли!"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:60
+msgid "Not Passed"
+msgstr "Не пройден"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:68
+msgid "Passing score"
+msgstr "Проходной балл"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:71
+msgid "Question Review"
+msgstr "Обзор вопросов"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:96
+#: server/apps/skill_tests/templates/skill_tests/start.html:40
+#: server/apps/skill_tests/templates/skill_tests/take.html:86
+#: server/apps/skill_tests/templates/skill_tests/take.html:226
+msgid "Back to Skills"
+msgstr "Назад к навыкам"
+
+#: server/apps/skill_tests/templates/skill_tests/result.html:100
+msgid "View History"
+msgstr "Смотреть историю"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:4
+#, python-format
+msgid "Test: %(skill_name)s"
+msgstr "Тест: %(skill_name)s"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:9
+msgid "Start Skill Test"
+msgstr "Начать тест навыка"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:37
+#, python-format
+msgid ""
+"You recently took a test for this skill. You can retake it after "
+"%(cooldown)s."
+msgstr ""
+"Вы недавно проходили тест по этому навыку. Вы сможете пройти его снова через"
+" %(cooldown)s."
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:44
+msgid "Choose a difficulty level for your test on"
+msgstr "Выберите уровень сложности для теста по"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:47
+msgid "5 multiple-choice questions"
+msgstr "5 вопросов с вариантами ответов"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:48
+#, python-format
+msgid "70%% minimum to pass"
+msgstr "70%% минимум для прохождения"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:49
+msgid "One attempt per skill per week"
+msgstr "Одна попытка на навык в неделю"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:54
+msgid "Difficulty Level"
+msgstr "Уровень сложности"
+
+#: server/apps/skill_tests/templates/skill_tests/start.html:58
+msgid "Start Test"
+msgstr "Начать тест"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:34
+msgid "Skill Test"
+msgstr "Тест навыка"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:61
+msgid "Generating your test questions..."
+msgstr "Генерация вопросов теста..."
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:62
+msgid "This may take a moment. Please wait."
+msgstr "Это может занять некоторое время. Пожалуйста, подождите."
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:73
+#: server/apps/skill_tests/templates/skill_tests/take.html:217
+msgid "Test Generation Failed"
+msgstr "Сбой генерации теста"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:75
+msgid ""
+"We couldn't generate your test. This might be because LM Studio is not "
+"running."
+msgstr "Не удалось сгенерировать тест. Возможно, LM Studio не запущена."
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:81
+#: server/apps/skill_tests/templates/skill_tests/take.html:224
+msgid "Try Again"
+msgstr "Попробовать снова"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:99
+#: server/apps/skill_tests/templates/skill_tests/take.html:147
+msgid "Questions"
+msgstr "Вопросы"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:129
+#: server/apps/skill_tests/templates/skill_tests/take.html:148
+msgid "Submit Answers"
+msgstr "Отправить ответы"
+
+#: server/apps/skill_tests/templates/skill_tests/take.html:218
+msgid "We could not generate your test."
+msgstr "Не удалось сгенерировать ваш тест."
 
 #: server/common/templates/base.html:12
 msgid "Start Job"
@@ -2855,13 +3193,22 @@ msgstr "Войти"
 msgid "Register"
 msgstr "Регистрация"
 
-#: server/settings/components/common.py:141
+#: server/settings/components/common.py:144
 msgid "English"
 msgstr "Английский"
 
-#: server/settings/components/common.py:142
+#: server/settings/components/common.py:145
 msgid "Russian"
 msgstr "Русский"
+
+#~ msgid "Popular:"
+#~ msgstr "Популярное:"
+
+#~ msgid "Junior Developer"
+#~ msgstr "Junior Developer"
+
+#~ msgid "Student Jobs"
+#~ msgstr "Вакансии для студентов"
 
 #~ msgid "Marketing Assistant"
 #~ msgstr "Marketing Assistant"

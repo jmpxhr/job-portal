@@ -22,8 +22,9 @@ class Industry(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'industries'
+        verbose_name = _('Industry')
+        verbose_name_plural = _('Industries')
         ordering = ['name']
-        verbose_name_plural = 'Industries'
 
 
 class Benefit(models.Model):
@@ -40,6 +41,8 @@ class Benefit(models.Model):
 
     class Meta(TypedModelMeta):
         db_table = 'benefits'
+        verbose_name = _('Benefit')
+        verbose_name_plural = _('Benefits')
         ordering = ['name']
 
 
