@@ -66,7 +66,7 @@ class JobAdviceCreateView(LoginRequiredMixin, View):
             status=JobAdviceStatusEnum.FAILED,
         ).delete()
 
-        language = getattr(request, 'LANGUAGE_CODE', 'en')
+        language = jobseeker.lang or getattr(request, 'LANGUAGE_CODE', 'en')
         advice = JobAdvice.objects.create(
             jobseeker=jobseeker,
             job=job,

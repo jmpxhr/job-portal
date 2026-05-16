@@ -72,4 +72,11 @@
     {{ form.about }}
     {% for error in form.about.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
   </div>
+  <!-- Language -->
+  <div class="mb-3">
+    <label class="form-label fw-bold" for="{{ form.lang.id_for_label }}">{% translate "Advice Language" %}</label>
+    {{ form.lang }}
+    {% for error in form.lang.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+    <small class="text-muted">{% translate "Language used for AI-generated job advice and match analysis." %}</small>
+  </div>
 </form>

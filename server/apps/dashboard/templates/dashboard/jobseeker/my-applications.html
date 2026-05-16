@@ -97,6 +97,9 @@
               </div>
               <div class="col-md-2">
                 <span class="status-badge {{ application.status_css_class }}">{{ application.status_label }}</span>
+                {% if application.is_auto_applied %}
+                  <span class="badge bg-info ms-1" title="{% translate 'Automatically applied by active search' %}"><i class="bi bi-robot"></i> {% translate "Auto" %}</span>
+                {% endif %}
               </div>
               <div class="col-md-2">
                 <div class="d-flex align-items-center">

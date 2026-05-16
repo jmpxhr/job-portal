@@ -128,6 +128,9 @@
                       {% translate "Rejected" %}
                     {% endif %}
                   </span>
+                  {% if app.is_auto_applied %}
+                    <span class="badge bg-info ms-1" title="{% translate 'Automatically applied' %}"><i class="bi bi-robot"></i> {% translate "Auto" %}</span>
+                  {% endif %}
                 </div>
                 <div class="col-md-2 text-end">
                   <a href="{% url 'dashboard:candidate-view' app.pk %}"

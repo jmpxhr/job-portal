@@ -50,6 +50,9 @@
         <small class="text-muted d-block">{% translate "Status" %}</small>
         <p class="fw-bold mb-0">
           <span>{{ application.status_label }}</span>
+          {% if application.is_auto_applied %}
+            <span class="badge bg-info ms-1" title="{% translate 'Automatically applied by active search' %}"><i class="bi bi-robot"></i> {% translate "Auto" %}</span>
+          {% endif %}
         </p>
       </div>
     </div>

@@ -45,6 +45,7 @@ from server.apps.accounts.models import (
 from server.apps.company.models import Company
 from server.apps.dashboard import const
 from server.apps.dashboard.forms import (
+    ActiveSearchSettingsForm,
     ChangePasswordForm,
     EducationForm,
     ExperienceForm,
@@ -55,6 +56,7 @@ from server.apps.dashboard.forms import (
     ResumeForm,
     SkillAddForm,
 )
+from server.apps.job_advice.tasks import auto_match_jobseeker
 from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
 from server.apps.skill_tests.models import SkillVerification
 from server.common.types import (
@@ -138,10 +140,10 @@ class SavedJobsView(LoginRequiredMixin, View):
             'total_saved': total_saved,
             'current_sort': request.GET.get('sort', 'recent'),
             'sort_choices': [
-                ('recent', 'Recently Saved'),
-                ('oldest', 'Oldest First'),
-                ('salary_high', 'Salary: High to Low'),
-                ('salary_low', 'Salary: Low to High'),
+                ('recent', _('Recently Saved')),
+                ('oldest', _('Oldest First')),
+                ('salary_high', _('Salary: High to Low')),
+                ('salary_low', _('Salary: Low to High')),
             ],
         }
 
@@ -179,10 +181,10 @@ class MyApplicationsView(LoginRequiredMixin, View):
     paginate_by = 5
 
     STATUS_CHOICES: list[tuple[str, str]] = [
-        ('', 'All Applications'),
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
+        ('', _('All Applications')),
+        ('pending', _('Pending')),
+        ('accepted', _('Accepted')),
+        ('rejected', _('Rejected')),
     ]
 
     STATUS_FILTER_MAP: dict[str, int] = {
@@ -309,6 +311,9 @@ class CandidateProfileView(LoginRequiredMixin, View):
         context.update(_resume_context(jobseeker))
         context['form'] = PrivacySettingsForm(instance=jobseeker)
         context['password_form'] = ChangePasswordForm(user=request.user)
+        context['active_search_form'] = ActiveSearchSettingsForm(
+            instance=jobseeker,
+        )
 
         return render(request, self.template_name, context)
 
@@ -855,6 +860,41 @@ class ChangePasswordView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class ActiveSearchSettingsView(LoginRequiredMixin, View):
+    template_name = 'dashboard/jobseeker/partials/settings-active-search.html'
+
+    def get_jobseeker(self, user: Any) -> JobSeeker:
+        return get_object_or_404(JobSeeker, user=user)
+
+    def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        form = ActiveSearchSettingsForm(instance=jobseeker)
+        context = {'active_search_form': form, 'jobseeker': jobseeker}
+        return render(request, self.template_name, context)
+
+    def post(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
+        jobseeker = self.get_jobseeker(request.user)
+        was_active = jobseeker.is_active_search
+        form = ActiveSearchSettingsForm(
+            request.POST,
+            instance=jobseeker,
+        )
+        if form.is_valid():
+            form.save()
+            if not was_active and jobseeker.is_active_search:
+                auto_match_jobseeker.enqueue(jobseeker.pk)
+            form = ActiveSearchSettingsForm(instance=jobseeker)
+            context = {
+                'active_search_form': form,
+                'jobseeker': jobseeker,
+                'success': True,
+            }
+            return render(request, self.template_name, context)
+
+        context = {'active_search_form': form, 'jobseeker': jobseeker}
+        return render(request, self.template_name, context)
+
+
 class EmployerDashboardView(LoginRequiredMixin, View):
     template_name = 'dashboard/company/employer-dashboard.html'
 
@@ -1055,16 +1095,16 @@ class ManageVacanciesView(LoginRequiredMixin, View):
     paginate_by = 5
 
     STATUS_CHOICES: list[tuple[str, str]] = [
-        ('', 'All Statuses'),
-        ('active', 'Active'),
-        ('draft', 'Draft'),
+        ('', _('All Statuses')),
+        ('active', _('Active')),
+        ('draft', _('Draft')),
     ]
 
     EMPLOYMENT_TYPE_CHOICES: list[tuple[str, str]] = [
-        ('', 'All Types'),
-        ('0', 'Full-time'),
-        ('1', 'Part-time'),
-        ('2', 'Internship'),
+        ('', _('All Types')),
+        ('0', _('Full-time')),
+        ('1', _('Part-time')),
+        ('2', _('Internship')),
     ]
 
     def get_company(self, user: User) -> Company | None:

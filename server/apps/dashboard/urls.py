@@ -114,6 +114,11 @@ urlpatterns = [
         name='settings-password',
     ),
     path(
+        'jobseeker/settings/active-search/',
+        views.ActiveSearchSettingsView.as_view(),
+        name='settings-active-search',
+    ),
+    path(
         'company/',
         views.EmployerDashboardView.as_view(),
         name='employer-dashboard',

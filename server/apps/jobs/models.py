@@ -191,6 +191,14 @@ class JobApplication(TimeStampModelMixin):
         blank=True,
         default='',
     )
+    is_auto_applied = models.BooleanField(
+        _('auto applied'),
+        default=False,
+        help_text=_(
+            'Whether this application was created automatically '
+            'by the active search feature.',
+        ),
+    )
     applied_at = models.DateTimeField(_('applied at'), auto_now_add=True)
 
     @override

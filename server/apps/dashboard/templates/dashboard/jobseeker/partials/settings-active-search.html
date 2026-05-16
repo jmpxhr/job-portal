@@ -1,0 +1,42 @@
+{% load i18n %}
+<h5 class="fw-bold mb-3">{% translate "Active Search" %}</h5>
+{% if success %}
+  <div class="alert alert-success border-0 bg-light mb-3">
+    <i class="bi bi-check-circle-fill me-2 text-success"></i>{% translate "Active search settings saved." %}
+  </div>
+{% endif %}
+<form hx-post="{% url 'dashboard:settings-active-search' %}"
+      hx-target="#settings-active-search"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <div class="form-check form-switch mb-3">
+    {{ active_search_form.is_active_search }}
+    <label class="form-check-label"
+           for="{{ active_search_form.is_active_search.id_for_label }}">{{ active_search_form.is_active_search.label }}</label>
+  </div>
+  {% for error in active_search_form.is_active_search.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  <p class="text-muted small mb-3">
+    {% translate "When enabled, the system will automatically analyze matching jobs and apply on your behalf based on your threshold setting." %}
+  </p>
+  <div class="mb-3">
+    <label class="form-label fw-bold"
+           for="{{ active_search_form.auto_apply_threshold.id_for_label }}">{{ active_search_form.auto_apply_threshold.label }}</label>
+    {{ active_search_form.auto_apply_threshold }}
+    {% for error in active_search_form.auto_apply_threshold.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold"
+           for="{{ active_search_form.lang.id_for_label }}">{{ active_search_form.lang.label }}</label>
+    {{ active_search_form.lang }}
+    {% for error in active_search_form.lang.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-bold"
+           for="{{ active_search_form.auto_apply_cover_letter.id_for_label }}">{{ active_search_form.auto_apply_cover_letter.label }}</label>
+    {{ active_search_form.auto_apply_cover_letter }}
+    {% for error in active_search_form.auto_apply_cover_letter.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+  </div>
+  <button type="submit" class="btn btn-primary btn-sm mt-2">
+    <i class="bi bi-rocket-takeoff"></i> {% translate "Save Active Search Settings" %}
+  </button>
+</form>

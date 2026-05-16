@@ -173,6 +173,49 @@ class JobSeeker(TimeStampModelMixin):
         blank=True,
         default='',
     )
+    is_active_search = models.BooleanField(
+        _('active search'),
+        default=False,
+        help_text=_(
+            'When enabled, the system automatically finds matching jobs and applies.',  # noqa: E501
+        ),
+    )
+    auto_apply_threshold = models.CharField(
+        _('auto apply threshold'),
+        max_length=10,
+        default='high',
+        choices=[
+            ('high', _('High — only auto-apply for high suitability matches')),
+            (
+                'medium',
+                _(
+                    'Medium — auto-apply for medium and high suitability matches',  # noqa: E501
+                ),
+            ),
+        ],
+        help_text=_(
+            'Minimum suitability level for automatic application: '
+            '"high" or "medium".',
+        ),
+    )
+    auto_apply_cover_letter = models.TextField(
+        _('auto apply cover letter'),
+        blank=True,
+        default='',
+        help_text=_(
+            'Default cover letter used when auto-applying to jobs.',
+        ),
+    )
+    lang = models.CharField(
+        _('language'),
+        max_length=10,
+        default='en',
+        choices=[
+            ('en', _('English')),
+            ('ru', _('Russian')),
+        ],
+        help_text=_('Preferred language for AI-generated job advice.'),
+    )
 
     @override
     def __str__(self) -> str:

@@ -2,6 +2,7 @@ from typing import override
 
 from django import forms
 from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 from django_prose_editor.fields import ProseEditorFormField
 
 from server.apps.accounts.models import (
@@ -33,7 +34,7 @@ class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
 
     class Meta:
         model = JobSeeker
-        fields = ('title', 'phone', 'location', 'about', 'avatar')
+        fields = ('title', 'phone', 'location', 'about', 'avatar', 'lang')
         widgets = {
             'title': forms.TextInput(
                 attrs={
@@ -62,6 +63,9 @@ class JobSeekerProfileForm(forms.ModelForm[JobSeeker]):
             ),
             'avatar': forms.FileInput(
                 attrs={'class': 'form-control'},
+            ),
+            'lang': forms.Select(
+                attrs={'class': 'form-select'},
             ),
         }
 
@@ -241,6 +245,44 @@ class SkillAddForm(forms.Form):
                     f'Skill "{name[:20]}..." is too long (max 100 characters).',
                 )
         return names
+
+
+class ActiveSearchSettingsForm(forms.ModelForm[JobSeeker]):
+    auto_apply_threshold = forms.ChoiceField(
+        choices=JobSeeker._meta.get_field('auto_apply_threshold').choices,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Auto-apply threshold'),
+    )
+    lang = forms.ChoiceField(
+        choices=JobSeeker._meta.get_field('lang').choices,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Advice language'),
+    )
+
+    class Meta:
+        model = JobSeeker
+        fields = (
+            'is_active_search',
+            'auto_apply_threshold',
+            'auto_apply_cover_letter',
+            'lang',
+        )
+        widgets = {
+            'is_active_search': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'},
+            ),
+            'auto_apply_cover_letter': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': _('Enter a default cover letter for auto-applications...'),
+                },
+            ),
+        }
+        labels = {
+            'is_active_search': _('Active search (auto-match and auto-apply)'),
+            'auto_apply_cover_letter': _('Default cover letter for auto-applications'),
+        }
 
 
 class PrivacySettingsForm(forms.ModelForm[JobSeeker]):
