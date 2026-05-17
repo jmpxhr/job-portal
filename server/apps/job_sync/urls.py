@@ -9,12 +9,12 @@ urlpatterns = [
         name='external-source',
     ),
     path(
-        'company/<int:pk>/sync/',
+        'company/<int:pk>/sync/<int:source_id>/',
         views.SyncJobsView.as_view(),
         name='sync-jobs',
     ),
     path(
-        'company/<int:pk>/sync/status/',
+        'company/<int:pk>/sync/<int:source_id>/status/',
         views.SyncStatusView.as_view(),
         name='sync-status',
     ),

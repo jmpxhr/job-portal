@@ -28,4 +28,6 @@ def get_parser(source_type: int) -> BaseParser | None:
 def get_source_type_from_url(url: str) -> int | None:
     if 'praca.by' in url:
         return SourceTypeEnum.PRACA_BY
+    if 'career.habr.com' in url:
+        return SourceTypeEnum.CAREER_HABR_COM
     return None

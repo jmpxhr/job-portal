@@ -26,17 +26,17 @@
     {% if external_source.sync_status == 1 %}
       <script>
         setTimeout(function() {
-          htmx.trigger('#sync-status-section', 'getSyncStatus');
+          htmx.trigger('#sync-status-{{ external_source.pk }}', 'getSyncStatus');
         }, 3000);
       </script>
-      <div hx-get="{% url 'job_sync:sync-status' company.pk %}"
+      <div hx-get="{% url 'job_sync:sync-status' company.pk external_source.pk %}"
            hx-trigger="getSyncStatus"
-           hx-target="#sync-status-section"
+           hx-target="#sync-status-{{ external_source.pk }}"
            hx-swap="innerHTML">
       </div>
     {% endif %}
   </div>
-  {% if total_count > 0 and external_source.sync_status == 2 %}
+  {% if total_count is not None and total_count > 0 and external_source.sync_status == 2 %}
     <div class="mt-2">
       <small class="text-muted">
         {% blocktranslate count counter=synced_count %}{{ counter }} job synced{% plural %}{{ counter }} jobs synced{% endblocktranslate %}

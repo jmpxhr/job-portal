@@ -87,11 +87,13 @@ class CompanyDetailView(View):
             request.user,  # pyrefly: ignore
         )
 
-        external_source = None
+        external_sources = []
         if can_edit:
-            external_source = ExternalSourceModel.objects.filter(
-                company=company,
-            ).first()
+            external_sources = list(
+                ExternalSourceModel.objects.filter(
+                    company=company,
+                ).order_by('source_type'),
+            )
 
         open_jobs = (
             Job.objects
@@ -107,7 +109,7 @@ class CompanyDetailView(View):
             'can_edit': can_edit,
             'open_jobs': open_jobs,
             'employment_type_choices': Job.EmploymentTypeEnum.choices,
-            'external_source': external_source,
+            'external_sources': external_sources,
         }
         return render(request, const.COMPANY_DETAIL, context)
 

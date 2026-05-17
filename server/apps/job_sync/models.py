@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class SourceTypeEnum(models.IntegerChoices):
     PRACA_BY = 0, 'praca.by'
+    CAREER_HABR_COM = 1, 'career.habr.com'
 
 
 class SyncStatusEnum(models.IntegerChoices):
