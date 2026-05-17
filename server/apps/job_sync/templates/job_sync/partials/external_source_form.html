@@ -1,0 +1,66 @@
+{% load i18n %}
+<div id="external-source-section" class="info-card mt-4">
+  <h5 class="section-title mb-3">
+    <i class="bi bi-cloud-download me-2"></i>{% translate "External Job Sources" %}
+  </h5>
+
+  {% if error %}
+    <div class="alert alert-danger py-2">{{ error }}</div>
+  {% endif %}
+
+  {% if success %}
+    <div class="alert alert-success py-2">{{ success }}</div>
+  {% endif %}
+
+  <form hx-post="{% url 'job_sync:external-source' company.pk %}"
+        hx-target="#external-source-section"
+        hx-swap="innerHTML">
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-9">
+        <label class="form-label" for="external-url-input">{% translate "External URL" %}</label>
+        <input type="url"
+               class="form-control"
+               id="external-url-input"
+               name="external_url"
+               value="{{ external_source.external_url|default:'' }}"
+               placeholder="https://praca.by/catalogue/vacancies/organization/..."
+               required />
+        <div class="form-text">{% translate "Paste your company page URL from an external job board (currently supported: praca.by)" %}</div>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-save w-100">
+          <i class="bi bi-link-45deg me-1"></i>{% translate "Save Source" %}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  {% if external_source %}
+    <div class="mt-3 pt-3 border-top">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="badge bg-info">{{ external_source.get_source_type_display }}</span>
+          <a href="{{ external_source.external_url }}"
+             class="ms-2 text-decoration-none"
+             target="_blank"
+             rel="noopener">{{ external_source.external_url }}</a>
+        </div>
+        <button class="btn btn-outline-primary btn-sm"
+                hx-post="{% url 'job_sync:sync-jobs' company.pk %}"
+                hx-target="#sync-status-section"
+                hx-swap="innerHTML">
+          <i class="bi bi-arrow-repeat me-1"></i>{% translate "Sync Jobs" %}
+        </button>
+      </div>
+      <div id="sync-status-section" class="mt-3">
+        {% include 'job_sync/partials/sync_status.html' %}
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center py-3 mt-2">
+      <i class="bi bi-cloud-plus fs-4 text-muted"></i>
+      <p class="text-muted small mb-0">{% translate "No external source configured. Add a URL above to sync jobs." %}</p>
+    </div>
+  {% endif %}
+</div>

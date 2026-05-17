@@ -1107,6 +1107,12 @@ class ManageVacanciesView(LoginRequiredMixin, View):
         ('2', _('Internship')),
     ]
 
+    SOURCE_CHOICES: list[tuple[str, str]] = [
+        ('', _('All Sources')),
+        ('original', _('Original')),
+        ('external', _('External')),
+    ]
+
     def get_company(self, user: User) -> Company | None:
         try:
             return user.recruiter.company  # pyrefly: ignore
@@ -1118,6 +1124,16 @@ class ManageVacanciesView(LoginRequiredMixin, View):
             Job.objects
             .filter(company=company)
             .annotate(applications_count=Count('applications'))
+            .annotate(
+                is_external=Case(
+                    When(
+                        external_jobs__isnull=False,
+                        then=Value(1),
+                    ),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                ),
+            )
             .order_by('-posted_at')
         )
 
@@ -1127,21 +1143,48 @@ class ManageVacanciesView(LoginRequiredMixin, View):
         status: str,
         employment_type: str,
         q: str,
+        source: str = '',
     ) -> QuerySet[Job]:
-        if status == 'active':
-            qs = qs.filter(is_active=True)
-        elif status == 'draft':
-            qs = qs.filter(is_active=False)
-
-        if employment_type:
-            with contextlib.suppress(ValueError):
-                qs = qs.filter(employment_type=int(employment_type))
-
+        qs = self._filter_by_status(qs, status)
+        qs = self._filter_by_employment_type(qs, employment_type)
+        qs = self._filter_by_source(qs, source)
         if q:
             qs = qs.filter(
                 Q(title__icontains=q) | Q(description__icontains=q),
             )
+        return qs
 
+    @staticmethod
+    def _filter_by_status(
+        qs: QuerySet[Job],
+        status: str,
+    ) -> QuerySet[Job]:
+        if status == 'active':
+            return qs.filter(is_active=True)
+        if status == 'draft':
+            return qs.filter(is_active=False)
+        return qs
+
+    @staticmethod
+    def _filter_by_employment_type(
+        qs: QuerySet[Job],
+        employment_type: str,
+    ) -> QuerySet[Job]:
+        if not employment_type:
+            return qs
+        with contextlib.suppress(ValueError):
+            return qs.filter(employment_type=int(employment_type))
+        return qs
+
+    @staticmethod
+    def _filter_by_source(
+        qs: QuerySet[Job],
+        source: str,
+    ) -> QuerySet[Job]:
+        if source == 'original':
+            return qs.filter(is_external=0)  # type: ignore[misc]
+        if source == 'external':
+            return qs.filter(is_external=1)  # type: ignore[misc]
         return qs
 
     def get(self, request: AuthenticatedHtmxRequest) -> HttpResponse:
@@ -1152,9 +1195,24 @@ class ManageVacanciesView(LoginRequiredMixin, View):
         status_filter = request.GET.get('status', '')
         employment_type_filter = request.GET.get('employment_type', '')
         q_filter = request.GET.get('q', '').strip()
+        source_filter = request.GET.get('source', '')
 
-        base_qs = Job.objects.filter(company=company).annotate(
-            applications_count=Count('applications'),
+        base_qs = (
+            Job.objects
+            .filter(company=company)
+            .annotate(
+                applications_count=Count('applications'),
+            )
+            .annotate(
+                is_external=Case(
+                    When(
+                        external_jobs__isnull=False,
+                        then=Value(1),
+                    ),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                ),
+            )
         )
 
         active_count = base_qs.filter(is_active=True).count()
@@ -1169,6 +1227,7 @@ class ManageVacanciesView(LoginRequiredMixin, View):
             status_filter,
             employment_type_filter,
             q_filter,
+            source_filter,
         )
 
         paginator = Paginator(filtered_qs, self.paginate_by)
@@ -1186,8 +1245,10 @@ class ManageVacanciesView(LoginRequiredMixin, View):
             'current_status': status_filter,
             'current_employment_type': employment_type_filter,
             'current_q': q_filter,
+            'current_source': source_filter,
             'status_choices': self.STATUS_CHOICES,
             'employment_type_choices': self.EMPLOYMENT_TYPE_CHOICES,
+            'source_choices': self.SOURCE_CHOICES,
         }
 
         if request.htmx:

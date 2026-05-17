@@ -10,4 +10,4 @@ class ChatConfig(AppConfig):
 
     @override
     def ready(self) -> None:
-        from server.apps.chat import signals  # noqa: F401, PLC0415
+        from server.apps.chat import signals  # noqa: F401

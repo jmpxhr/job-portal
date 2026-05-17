@@ -49,6 +49,10 @@
               <span class="badge bg-warning float-end">{{ pending_applicants_count }}</span>
             </a>
             <a class="nav-link-custom"
+               href="{% url 'company:company-detail' pk=company.id %}#sync">
+              <i class="bi bi-cloud-download"></i> {% translate "Sync Jobs" %}
+            </a>
+            <a class="nav-link-custom"
                href="{% url 'company:company-detail' pk=company.id %}">
               <i class="bi bi-building"></i> {% translate "Company Profile" %}
             </a>

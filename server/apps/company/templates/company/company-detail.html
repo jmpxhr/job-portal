@@ -84,10 +84,34 @@
           {% if company.student_programs.count %}({{ company.student_programs.count }}){% endif %}
         </button>
       </li>
+      {% if can_edit %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link"
+                  id="sync-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#sync"
+                  type="button"
+                  role="tab">
+            <i class="bi bi-cloud-download me-1"></i>{% translate "Sync Jobs" %}
+          </button>
+        </li>
+      {% endif %}
     </ul>
     <!-- Tab Content -->
     <div id="companyContent">
       {% include 'company/partials/company_view.html' with student_programs=company.student_programs.all %}
     </div>
   </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var hash = window.location.hash;
+      if (hash) {
+        var tabBtn = document.querySelector('[data-bs-target="' + hash + '"]');
+        if (tabBtn) {
+          var tab = new bootstrap.Tab(tabBtn);
+          tab.show();
+        }
+      }
+    });
+  </script>
 {% endblock content %}

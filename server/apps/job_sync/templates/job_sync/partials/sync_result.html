@@ -1,0 +1,13 @@
+{% load i18n %}
+<div id="sync-result">
+  {% if error %}
+    <div class="alert alert-warning py-2">
+      <i class="bi bi-exclamation-triangle me-1"></i>{{ error }}
+    </div>
+  {% else %}
+    <div class="alert alert-success py-2">
+      <i class="bi bi-check-circle me-1"></i>{% translate "Job sync started. This may take a few minutes." %}
+    </div>
+  {% endif %}
+  {% include 'job_sync/partials/sync_status.html' %}
+</div>

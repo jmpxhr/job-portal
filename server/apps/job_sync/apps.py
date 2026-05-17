@@ -3,11 +3,11 @@ from typing import override
 from django.apps import AppConfig
 
 
-class JobsConfig(AppConfig):
+class JobSyncConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'server.apps.jobs'
-    verbose_name = 'Jobs'
+    name = 'server.apps.job_sync'
+    verbose_name = 'Job Sync'
 
     @override
     def ready(self) -> None:
-        from server.apps.jobs import signals  # noqa: F401
+        import server.apps.job_sync.parsers.praca_by  # noqa: F401

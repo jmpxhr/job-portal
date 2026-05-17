@@ -13,6 +13,7 @@ from server.apps.company.services import (
     CompanyService,
     StudentProgramService,
 )
+from server.apps.job_sync.models import ExternalSource as ExternalSourceModel
 from server.apps.jobs.models import Job
 from server.common.types import HtmxRequest
 
@@ -86,6 +87,12 @@ class CompanyDetailView(View):
             request.user,  # pyrefly: ignore
         )
 
+        external_source = None
+        if can_edit:
+            external_source = ExternalSourceModel.objects.filter(
+                company=company,
+            ).first()
+
         open_jobs = (
             Job.objects
             .filter(company=company, is_active=True)
@@ -100,6 +107,7 @@ class CompanyDetailView(View):
             'can_edit': can_edit,
             'open_jobs': open_jobs,
             'employment_type_choices': Job.EmploymentTypeEnum.choices,
+            'external_source': external_source,
         }
         return render(request, const.COMPANY_DETAIL, context)
 

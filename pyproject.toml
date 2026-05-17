@@ -24,6 +24,8 @@ dependencies = [
   "pydantic>=2.13.4",
   "lmstudio>=1.5.0",
   "markdown>=3.10.2",
+  "httpx>=0.28.1",
+  "beautifulsoup4>=4.13.4",
 ]
 
 [dependency-groups]
@@ -113,6 +115,7 @@ ignore = [
   "ERA001",  # Found commented-out code,
   "RUF012",  # Mutable default value for class attribute
   "S101",    # Use of `assert` detected
+  "PLC0415", # import-outside-top-level
 ]
 
 # Plugin configs:

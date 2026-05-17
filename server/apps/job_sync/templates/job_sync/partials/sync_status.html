@@ -1,0 +1,50 @@
+{% load i18n %}
+{% if external_source %}
+  <div class="card card-body bg-light p-3">
+    <div class="d-flex align-items-center">
+      {% if external_source.sync_status == 0 %}
+        <i class="bi bi-circle text-secondary me-2"></i>
+      {% elif external_source.sync_status == 1 %}
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      {% elif external_source.sync_status == 2 %}
+        <i class="bi bi-check-circle text-success me-2"></i>
+      {% elif external_source.sync_status == 3 %}
+        <i class="bi bi-exclamation-circle text-danger me-2"></i>
+      {% endif %}
+      <div>
+        <strong>{% translate "Sync Status" %}:</strong> {{ external_source.get_sync_status_display }}
+        {% if external_source.last_synced_at %}
+          <br />
+          <small class="text-muted">
+            {% translate "Last synced" %}: {{ external_source.last_synced_at|date:"d M Y, H:i" }}
+          </small>
+        {% endif %}
+      </div>
+    </div>
+    {% if external_source.sync_status == 1 %}
+      <script>
+        setTimeout(function() {
+          htmx.trigger('#sync-status-section', 'getSyncStatus');
+        }, 3000);
+      </script>
+      <div hx-get="{% url 'job_sync:sync-status' company.pk %}"
+           hx-trigger="getSyncStatus"
+           hx-target="#sync-status-section"
+           hx-swap="innerHTML">
+      </div>
+    {% endif %}
+  </div>
+  {% if total_count > 0 and external_source.sync_status == 2 %}
+    <div class="mt-2">
+      <small class="text-muted">
+        {% blocktranslate count counter=synced_count %}{{ counter }} job synced{% plural %}{{ counter }} jobs synced{% endblocktranslate %}
+      </small>
+    </div>
+  {% endif %}
+{% else %}
+  <div class="text-center py-2">
+    <small class="text-muted">{% translate "No sync data available." %}</small>
+  </div>
+{% endif %}

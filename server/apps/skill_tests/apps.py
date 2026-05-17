@@ -10,4 +10,4 @@ class SkillTestsConfig(AppConfig):
 
     @override
     def ready(self) -> None:
-        from server.apps.skill_tests import signals  # noqa: F401, PLC0415
+        from server.apps.skill_tests import signals  # noqa: F401

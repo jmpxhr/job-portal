@@ -74,7 +74,7 @@ def generate_job_advice(advice_id: int) -> None:
 
 
 def _try_auto_apply(advice: JobAdvice) -> None:
-    from server.apps.jobs.models import JobApplication  # noqa: PLC0415
+    from server.apps.jobs.models import JobApplication
 
     jobseeker = advice.jobseeker
     if not jobseeker.is_active_search:
@@ -114,8 +114,8 @@ def _try_auto_apply(advice: JobAdvice) -> None:
 
 @task
 def auto_match_jobseeker(jobseeker_id: int) -> None:
-    from server.apps.accounts.models import JobSeeker  # noqa: PLC0415
-    from server.apps.jobs.models import Job, JobApplication  # noqa: PLC0415
+    from server.apps.accounts.models import JobSeeker
+    from server.apps.jobs.models import Job, JobApplication
 
     try:
         jobseeker = JobSeeker.objects.get(pk=jobseeker_id)
@@ -158,8 +158,8 @@ def auto_match_jobseeker(jobseeker_id: int) -> None:
 
 @task
 def auto_match_new_job(job_id: int) -> None:
-    from server.apps.accounts.models import JobSeeker  # noqa: PLC0415
-    from server.apps.jobs.models import Job  # noqa: PLC0415
+    from server.apps.accounts.models import JobSeeker
+    from server.apps.jobs.models import Job
 
     try:
         job = Job.objects.get(pk=job_id)

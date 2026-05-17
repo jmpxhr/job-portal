@@ -51,7 +51,7 @@
       <div class="filter-bar">
         <form method="get" action="">
           <div class="row g-3">
-            <div class="col-md-3">
+            <div class="col-md-2">
               <select class="form-select" name="status">
                 {% for value, label in status_choices %}
                   <option value="{{ value }}"
@@ -59,11 +59,19 @@
                 {% endfor %}
               </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <select class="form-select" name="employment_type">
                 {% for value, label in employment_type_choices %}
                   <option value="{{ value }}"
                           {% if current_employment_type == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-2">
+              <select class="form-select" name="source">
+                {% for value, label in source_choices %}
+                  <option value="{{ value }}"
+                          {% if current_source == value %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -86,7 +94,7 @@
           <i class="bi bi-inbox fs-1 text-muted"></i>
           <h4 class="mt-3">{% translate "No jobs found" %}</h4>
           <p class="text-muted">
-            {% if current_q or current_status or current_employment_type %}
+            {% if current_q or current_status or current_employment_type or current_source %}
               {% translate "Try adjusting your filters or" %}
               <a href="{% url 'dashboard:manage-vacancies' %}">{% translate "clear all filters" %}</a>.
             {% else %}
@@ -112,7 +120,11 @@
                 </span>
               </div>
               <div class="col-lg-4">
-                <h5 class="fw-bold mb-1">{{ job.title }}</h5>
+                <h5 class="fw-bold mb-1">{{ job.title }}
+                  {% if job.is_external %}
+                    <span class="badge bg-info ms-1">{% translate "External" %}</span>
+                  {% endif %}
+                </h5>
                 <p class="text-muted mb-0 small">
                   <i class="bi bi-geo-alt"></i>
                   {% if job.location %}
@@ -231,7 +243,7 @@
               {% if page_obj.has_previous %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{% translate "Previous" %}</a>
+                     href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_source %}&source={{ current_source }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{% translate "Previous" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
@@ -246,14 +258,14 @@
                 {% else %}
                   <li class="page-item">
                     <a class="page-link"
-                       href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{{ num }}</a>
+                       href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_source %}&source={{ current_source }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{{ num }}</a>
                   </li>
                 {% endif %}
               {% endfor %}
               {% if page_obj.has_next %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{% translate "Next" %}</a>
+                     href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_employment_type %}&employment_type={{ current_employment_type }}{% endif %}{% if current_source %}&source={{ current_source }}{% endif %}{% if current_q %}&q={{ current_q }}{% endif %}">{% translate "Next" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">

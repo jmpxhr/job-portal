@@ -29,6 +29,7 @@ from server.apps.company import urls as company_urls
 from server.apps.dashboard import urls as dashboard_url
 from server.apps.dashboard.views import HomePageView
 from server.apps.job_advice import urls as job_advice_urls
+from server.apps.job_sync import urls as job_sync_urls
 from server.apps.jobs import urls as jobs_urls
 from server.apps.skill_tests import urls as skill_tests_urls
 
@@ -78,6 +79,10 @@ urlpatterns += i18n_patterns(
     path(
         'job-advice/',
         include((job_advice_urls, 'job_advice'), namespace='job_advice'),
+    ),
+    path(
+        'job-sync/',
+        include((job_sync_urls, 'job_sync'), namespace='job_sync'),
     ),
     # Index
     path('', HomePageView.as_view(), name='home'),
