@@ -57,6 +57,7 @@ from server.apps.dashboard.forms import (
     SkillAddForm,
 )
 from server.apps.job_advice.tasks import auto_match_jobseeker
+from server.apps.job_sync.models import SourceTypeEnum
 from server.apps.jobs.models import Job, JobApplication, SavedJob, Skill
 from server.apps.skill_tests.models import SkillVerification
 from server.common.types import (
@@ -916,8 +917,18 @@ class EmployerDashboardView(LoginRequiredMixin, View):
 
         base_app_qs = JobApplication.objects.filter(job__company=company)
         total_applicants = base_app_qs.count()
+        total_auto = base_app_qs.filter(is_auto_applied=True).count()
+        total_manual = base_app_qs.filter(is_auto_applied=False).count()
         new_applicants_count = base_app_qs.filter(
             applied_at__gte=week_ago,
+        ).count()
+        new_auto_count = base_app_qs.filter(
+            applied_at__gte=week_ago,
+            is_auto_applied=True,
+        ).count()
+        new_manual_count = base_app_qs.filter(
+            applied_at__gte=week_ago,
+            is_auto_applied=False,
         ).count()
         pending_applicants_count = base_app_qs.filter(
             status=JobApplication.StatusEnum.PENDING,
@@ -929,27 +940,49 @@ class EmployerDashboardView(LoginRequiredMixin, View):
         ).order_by('-applied_at')[:5]
 
         thirty_days_ago = now - timedelta(days=30)
-        trends_qs = (
+        tz = timezone.get_current_timezone()
+        auto_trends_qs = (
             base_app_qs
-            .filter(applied_at__gte=thirty_days_ago)
-            .annotate(day=TruncDay('applied_at'))
+            .filter(applied_at__gte=thirty_days_ago, is_auto_applied=True)
+            .annotate(day=TruncDay('applied_at', tzinfo=tz))
             .values('day')
             .annotate(count=Count('id'))
             .order_by('day')
         )
-        trend_days = {
-            entry['day'].date(): entry['count'] for entry in trends_qs
+        auto_trend_days = {
+            entry['day'].astimezone(tz).date(): entry['count']
+            for entry in auto_trends_qs
+        }
+        manual_trends_qs = (
+            base_app_qs
+            .filter(applied_at__gte=thirty_days_ago, is_auto_applied=False)
+            .annotate(day=TruncDay('applied_at', tzinfo=tz))
+            .values('day')
+            .annotate(count=Count('id'))
+            .order_by('day')
+        )
+        manual_trend_days = {
+            entry['day'].astimezone(tz).date(): entry['count']
+            for entry in manual_trends_qs
         }
         trend_labels = []
-        trend_data = []
-        current = thirty_days_ago.date()
-        end = now.date()
+        total_trend_data = []
+        auto_trend_data = []
+        manual_trend_data = []
+        current = thirty_days_ago.astimezone(tz).date()
+        end = now.astimezone(tz).date()
         while current <= end:
             trend_labels.append(current.strftime('%b %d'))
-            trend_data.append(trend_days.get(current, 0))
+            a = auto_trend_days.get(current, 0)
+            m = manual_trend_days.get(current, 0)
+            total_trend_data.append(a + m)
+            auto_trend_data.append(a)
+            manual_trend_data.append(m)
             current += timedelta(days=1)
         application_trends_labels = json.dumps(trend_labels)
-        application_trends_data = json.dumps(trend_data)
+        application_trends_data = json.dumps(total_trend_data)
+        application_trends_auto_data = json.dumps(auto_trend_data)
+        application_trends_manual_data = json.dumps(manual_trend_data)
 
         emp_type_labels_map = {
             k: str(v) for k, v in Job.EmploymentTypeEnum.choices
@@ -989,20 +1022,65 @@ class EmployerDashboardView(LoginRequiredMixin, View):
             or 0
         )
 
+        original_jobs_count = company.jobs.filter(  # pyrefly: ignore
+            is_active=True,
+            external_jobs__isnull=True,
+        ).count()
+        external_jobs_count = (
+            company.jobs  # pyrefly: ignore
+            .filter(is_active=True, external_jobs__isnull=False)
+            .distinct()
+            .count()
+        )
+
+        job_source_labels_list = [str(_('Original'))]
+        job_source_data_list = [original_jobs_count]
+        source_colors = ['#667eea']
+        for st in SourceTypeEnum:
+            count = (
+                company.jobs  # pyrefly: ignore
+                .filter(
+                    is_active=True,
+                    external_jobs__source_type=st,
+                )
+                .distinct()
+                .count()
+            )
+            job_source_labels_list.append(str(st.label))
+            job_source_data_list.append(count)
+            source_colors.append(
+                '#17a2b8' if st == SourceTypeEnum.PRACA_BY else '#48bb78',
+            )
+
+        job_source_labels = json.dumps(job_source_labels_list)
+        job_source_data = json.dumps(job_source_data_list)
+        job_source_colors = json.dumps(source_colors)
+
         context = {
             'company': company,
             'active_jobs_count': active_jobs_count,
             'total_applicants': total_applicants,
+            'total_auto': total_auto,
+            'total_manual': total_manual,
             'new_applicants_count': new_applicants_count,
+            'new_auto_count': new_auto_count,
+            'new_manual_count': new_manual_count,
             'pending_applicants_count': pending_applicants_count,
             'job_views_count': job_views_count,
             'recent_applications': recent_applications,
             'application_trends_labels': application_trends_labels,
             'application_trends_data': application_trends_data,
+            'application_trends_auto_data': application_trends_auto_data,
+            'application_trends_manual_data': application_trends_manual_data,
             'jobs_by_category_labels': jobs_by_category_labels,
             'jobs_by_category_data': jobs_by_category_data,
             'jobs_by_skill_labels': jobs_by_skill_labels,
             'jobs_by_skill_data': jobs_by_skill_data,
+            'original_jobs_count': original_jobs_count,
+            'external_jobs_count': external_jobs_count,
+            'job_source_labels': job_source_labels,
+            'job_source_data': job_source_data,
+            'job_source_colors': job_source_colors,
         }
         return render(request, self.template_name, context)
 
@@ -1304,6 +1382,12 @@ class ApplicantsListView(LoginRequiredMixin, View):
         ('3', _('Rejected')),
     ]
 
+    APPLY_TYPE_CHOICES: list[tuple[str, str]] = [
+        ('', _('All')),
+        ('auto', _('Auto')),
+        ('manual', _('Manual')),
+    ]
+
     def get_company(self, user: User) -> Company | None:
         try:
             return user.recruiter.company  # pyrefly: ignore
@@ -1326,6 +1410,7 @@ class ApplicantsListView(LoginRequiredMixin, View):
 
         job_filter = request.GET.get('job_id', '').strip()
         status_filter = request.GET.get('status', '').strip()
+        apply_type_filter = request.GET.get('apply_type', '').strip()
 
         base_qs = (
             JobApplication.objects
@@ -1334,14 +1419,29 @@ class ApplicantsListView(LoginRequiredMixin, View):
             .prefetch_related('jobseeker__skills', 'job__skills')
         )
 
-        filtered_qs = base_qs
+        qs_without_apply_type = base_qs
         if job_filter:
             with contextlib.suppress(ValueError):
-                filtered_qs = filtered_qs.filter(job_id=int(job_filter))
+                qs_without_apply_type = qs_without_apply_type.filter(
+                    job_id=int(job_filter),
+                )
 
         if status_filter:
             with contextlib.suppress(ValueError):
-                filtered_qs = filtered_qs.filter(status=int(status_filter))
+                qs_without_apply_type = qs_without_apply_type.filter(
+                    status=int(status_filter),
+                )
+
+        auto_count = qs_without_apply_type.filter(is_auto_applied=True).count()
+        manual_count = qs_without_apply_type.filter(
+            is_auto_applied=False,
+        ).count()
+
+        filtered_qs = qs_without_apply_type
+        if apply_type_filter == 'auto':
+            filtered_qs = filtered_qs.filter(is_auto_applied=True)
+        elif apply_type_filter == 'manual':
+            filtered_qs = filtered_qs.filter(is_auto_applied=False)
 
         filtered_qs = filtered_qs.order_by('-applied_at')
 
@@ -1385,11 +1485,15 @@ class ApplicantsListView(LoginRequiredMixin, View):
                 'new': new_count,
                 'accepted': accepted_count,
                 'rejected': rejected_count,
+                'auto': auto_count,
+                'manual': manual_count,
             },
             'jobs_list': jobs_list,
             'current_job': job_filter,
             'current_status': status_filter,
+            'current_apply_type': apply_type_filter,
             'status_choices': self.STATUS_CHOICES,
+            'apply_type_choices': self.APPLY_TYPE_CHOICES,
         }
 
         if request.htmx:

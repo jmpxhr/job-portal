@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-18 00:54+0300\n"
-"PO-Revision-Date: 2026-05-18 00:56+0300\n"
+"POT-Creation-Date: 2026-05-18 01:48+0300\n"
+"PO-Revision-Date: 2026-05-18 02:00+0300\n"
 "Last-Translator:   <admin@admin.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -709,7 +709,8 @@ msgstr "Сообщения"
 
 #: server/apps/chat/templates/chat/chat-list-partial.html:67
 #: server/apps/chat/templates/chat/chat-list.html:72
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:157
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:172
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:178
 #, python-format
 msgid "%(timesince)s ago"
 msgstr "%(timesince)s назад"
@@ -891,7 +892,7 @@ msgid "Search"
 msgstr "Поиск"
 
 #: server/apps/company/templates/company/company-list.html:81
-#: server/apps/dashboard/views.py:1301
+#: server/apps/dashboard/views.py:1376 server/apps/dashboard/views.py:1383
 msgid "All"
 msgstr "Все"
 
@@ -939,7 +940,7 @@ msgstr[2] "%(counter)s открытых вакансий"
 msgstr[3] "%(counter)s открытых вакансий"
 
 #: server/apps/company/templates/company/company-list.html:155
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:138
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:179
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:252
 msgid "View Profile"
 msgstr "Просмотр профиля"
@@ -954,8 +955,8 @@ msgstr "Попробуйте изменить параметры поиска и
 
 #: server/apps/company/templates/company/company-list.html:178
 #: server/apps/company/templates/company/company-list.html:182
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:175
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:179
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:215
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:219
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:274
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:278
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:246
@@ -971,8 +972,8 @@ msgstr "Предыдущая"
 
 #: server/apps/company/templates/company/company-list.html:201
 #: server/apps/company/templates/company/company-list.html:205
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:197
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:201
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:237
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:241
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:296
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:300
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:268
@@ -1155,7 +1156,7 @@ msgstr[2] "Открытых позиций (%(counter)s)"
 msgstr[3] "Открытых позиций (%(counter)s)"
 
 #: server/apps/company/templates/company/partials/company_view.html:133
-#: server/apps/dashboard/views.py:1104
+#: server/apps/dashboard/views.py:1179
 msgid "All Types"
 msgstr "Все типы"
 
@@ -1303,13 +1304,13 @@ msgid "Default cover letter for auto-applications"
 msgstr "Стандартное сопроводительное письмо для авто-откликов"
 
 #: server/apps/dashboard/templates/dashboard/company/applicants-list.html:5
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:15
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:14
 #: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:48
 #: server/common/templates/components/nav.html:97
 msgid "Applicants"
 msgstr "Кандидаты"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:16
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:15
 msgid "Review and manage candidate applications"
 msgstr "Просмотр и управление заявками кандидатов"
 
@@ -1332,72 +1333,77 @@ msgstr[2] "%(title)s (%(counter)s заявителей)"
 msgstr[3] "%(title)s (%(counter)s заявителей)"
 
 #: server/apps/dashboard/templates/dashboard/company/applicants-list.html:39
+msgid "Apply Type"
+msgstr "Тип отклика"
+
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:40
+msgid "Apply type filter"
+msgstr "Применить фильтры"
+
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:65
 msgid "Filter by Status"
 msgstr "Фильтр по статусу"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:73
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:66
+msgid "Status filter"
+msgstr "Статус"
+
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:100
 msgid "No applicants found"
 msgstr "Кандидаты не найдены"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:76
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:103
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:98
 msgid "Try adjusting your filters or"
 msgstr "Попробуйте изменить фильтры или"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:77
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:104
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:99
 msgid "clear all filters"
 msgstr "сбросить все фильтры"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:79
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:106
 msgid "Applicants will appear here once candidates apply to your jobs."
 msgstr ""
 "Кандидаты появятся здесь, когда соискатели откликнутся на ваши вакансии."
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:112
-#, python-format
-msgid "Applied %(timesince)s ago"
-msgstr "Откликнулся %(timesince)s назад"
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:150
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:244
+#: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:101
+#: server/apps/dashboard/templates/dashboard/jobseeker/partials/application-detail-modal.html:54
+#: server/apps/dashboard/views.py:1384
+msgid "Auto"
+msgstr "Авто"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:119
-msgid "Match score"
-msgstr "Оценка совпадения"
-
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:124
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:153
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:81
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:159
-#: server/apps/dashboard/views.py:1302
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:180
+#: server/apps/dashboard/views.py:1377
 msgid "New"
 msgstr "Новый"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:126
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:155
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:82
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:38
 #: server/apps/dashboard/templates/dashboard/jobseeker/partials/profile-overview.html:23
-#: server/apps/dashboard/views.py:186 server/apps/dashboard/views.py:1303
+#: server/apps/dashboard/views.py:187 server/apps/dashboard/views.py:1378
 #: server/apps/jobs/models.py:163
 msgid "Accepted"
 msgstr "Принят"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:128
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:157
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:83
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:44
-#: server/apps/dashboard/views.py:187 server/apps/dashboard/views.py:1304
+#: server/apps/dashboard/views.py:188 server/apps/dashboard/views.py:1379
 #: server/apps/jobs/models.py:164
 msgid "Rejected"
 msgstr "Отклонён"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:132
-msgid "Automatically applied"
-msgstr "Автоматический отклик"
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:166
+msgid "Match"
+msgstr "Совпадение навыков"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:132
-#: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:101
-#: server/apps/dashboard/templates/dashboard/jobseeker/partials/application-detail-modal.html:54
-msgid "Auto"
-msgstr "Авто"
-
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:152
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:193
 #: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:82
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:105
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:97
@@ -1408,7 +1414,7 @@ msgstr "Авто"
 msgid "Skills"
 msgstr "Навыки"
 
-#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:158
+#: server/apps/dashboard/templates/dashboard/company/applicants-list.html:198
 #, python-format
 msgid "+%(extra)s more"
 msgstr "+%(extra)s ещё"
@@ -1430,7 +1436,7 @@ msgstr "Совпадение: %(job_title)s"
 
 #: server/apps/dashboard/templates/dashboard/company/browse-candidate-profile.html:59
 #: server/apps/dashboard/templates/dashboard/company/candidate-view.html:56
-#: server/apps/dashboard/views.py:1623
+#: server/apps/dashboard/views.py:1724
 msgid "Match Score"
 msgstr "Оценка совпадения"
 
@@ -1610,7 +1616,7 @@ msgstr[2] "%(counter)s опытов"
 msgstr[3] "%(counter)s опытов"
 
 #: server/apps/dashboard/templates/dashboard/company/browse-candidates.html:227
-#: server/apps/dashboard/views.py:1628 server/apps/jobs/models.py:46
+#: server/apps/dashboard/views.py:1729 server/apps/jobs/models.py:46
 msgid "No experience"
 msgstr "Без опыта"
 
@@ -1750,13 +1756,13 @@ msgstr "Статус вакансии"
 
 #: server/apps/dashboard/templates/dashboard/company/edit-vacancy.html:68
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:116
-#: server/apps/dashboard/views.py:1099
+#: server/apps/dashboard/views.py:1174
 msgid "Active"
 msgstr "Активна"
 
 #: server/apps/dashboard/templates/dashboard/company/edit-vacancy.html:70
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:118
-#: server/apps/dashboard/views.py:1100
+#: server/apps/dashboard/views.py:1175
 msgid "Draft"
 msgstr "Черновик"
 
@@ -1876,7 +1882,7 @@ msgid "Technology"
 msgstr "Технологии"
 
 #: server/apps/dashboard/templates/dashboard/company/edit-vacancy.html:270
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:172
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:193
 msgid "Quick Actions"
 msgstr "Быстрые действия"
 
@@ -1962,69 +1968,93 @@ msgstr "+%(count)s новых заявителей на этой неделе"
 msgid "Total Applicants"
 msgstr "Всего заявителей"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:98
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:99
 #, python-format
-msgid "+%(count)s new"
-msgstr "+%(count)s новых"
+msgid "%(manual)s manual / %(auto)s auto"
+msgstr ""
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:107
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:109
 msgid "Job Views"
 msgstr "Просмотры вакансий"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:115
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:118
+#| msgid "external jobs"
+msgid "External Jobs"
+msgstr "Внешние вакансии"
+
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:119
+#| msgid "external sources"
+msgid "Synced from external sources"
+msgstr "Синхронизировано из внешних источников"
+
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:127
 msgid "Application Trends"
 msgstr "Тренды заявок"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:121
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:136
+#| msgid "All Sources"
+msgid "Job Sources"
+msgstr "Источники вакансий"
+
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:142
 msgid "Jobs by Category"
 msgstr "Вакансии по категориям"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:127
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:148
 msgid "Jobs by Skills"
 msgstr "Вакансии по навыкам"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:136
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:157
 msgid "Recent Applications"
 msgstr "Последние заявки"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:154
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:175
 #, python-format
 msgid "Applied for %(job_title)s"
 msgstr "Отклик на %(job_title)s"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:164
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:185
 msgid "No applications yet."
 msgstr "Пока нет заявок."
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:167
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:188
 msgid "View All Applicants"
 msgstr "Все кандидаты"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:176
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:197
 #: server/apps/dashboard/templates/dashboard/company/post-vacancy.html:5
 #: server/apps/dashboard/templates/dashboard/company/post-vacancy.html:17
 msgid "Post a New Job"
 msgstr "Разместить новую вакансию"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:177
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:198
 msgid "Create a new vacancy for students"
 msgstr "Создайте новую вакансию для студентов"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:182
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:203
 msgid "Update Job Listings"
 msgstr "Обновить список вакансий"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:183
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:204
 msgid "Edit or close existing positions"
 msgstr "Редактировать или закрыть существующие позиции"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:188
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:209
 msgid "Review Applications"
 msgstr "Просмотреть заявки"
 
-#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:189
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:210
 msgid "Check new candidates"
 msgstr "Проверить новых кандидатов"
+
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:230
+msgid "Total"
+msgstr "Общий"
+
+#: server/apps/dashboard/templates/dashboard/company/employer-dashboard.html:237
+#: server/apps/dashboard/views.py:1385
+msgid "Manual"
+msgstr "Ручной"
 
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:18
 msgid "View, edit and manage your job postings"
@@ -2051,8 +2081,7 @@ msgid "Get started by posting your first job."
 msgstr "Начните с размещения вашей первой вакансии."
 
 #: server/apps/dashboard/templates/dashboard/company/manage-vacancies.html:125
-#: server/apps/dashboard/views.py:1113
-#| msgid "External URL"
+#: server/apps/dashboard/views.py:1188
 msgid "External"
 msgstr "Внешний URL"
 
@@ -2271,7 +2300,7 @@ msgid "Total Applications"
 msgstr "Всего заявок"
 
 #: server/apps/dashboard/templates/dashboard/jobseeker/my-applications.html:32
-#: server/apps/dashboard/views.py:185 server/apps/job_advice/models.py:16
+#: server/apps/dashboard/views.py:186 server/apps/job_advice/models.py:16
 #: server/apps/job_sync/models.py:28 server/apps/jobs/models.py:162
 #: server/apps/skill_tests/models.py:22
 msgid "Pending"
@@ -2672,72 +2701,71 @@ msgstr "Пока нет сохранённых вакансий"
 msgid "Start saving jobs you're interested in"
 msgstr "Начните сохранять интересующие вас вакансии"
 
-#: server/apps/dashboard/views.py:143
+#: server/apps/dashboard/views.py:144
 msgid "Recently Saved"
 msgstr "Недавно сохранённые"
 
-#: server/apps/dashboard/views.py:144
+#: server/apps/dashboard/views.py:145
 msgid "Oldest First"
 msgstr "Сначала старые"
 
-#: server/apps/dashboard/views.py:145 server/apps/jobs/views.py:99
+#: server/apps/dashboard/views.py:146 server/apps/jobs/views.py:99
 msgid "Salary: High to Low"
 msgstr "По убыванию зарплаты"
 
-#: server/apps/dashboard/views.py:146 server/apps/jobs/views.py:100
+#: server/apps/dashboard/views.py:147 server/apps/jobs/views.py:100
 msgid "Salary: Low to High"
 msgstr "По возрастанию зарплаты"
 
-#: server/apps/dashboard/views.py:184
+#: server/apps/dashboard/views.py:185
 msgid "All Applications"
 msgstr "Все заявки"
 
-#: server/apps/dashboard/views.py:1098
-msgid "All Statuses"
-msgstr "Все статусы"
-
-#: server/apps/dashboard/views.py:1105 server/apps/jobs/models.py:61
-msgid "Full-time"
-msgstr "Полная занятость"
-
-#: server/apps/dashboard/views.py:1106 server/apps/jobs/models.py:62
-msgid "Part-time"
-msgstr "Частичная занятость"
-
-#: server/apps/dashboard/views.py:1107 server/apps/jobs/models.py:63
-msgid "Internship"
-msgstr "Стажировка"
-
-#: server/apps/dashboard/views.py:1111
-#| msgid "All Statuses"
-msgid "All Sources"
-msgstr "Все ресурсы"
-
-#: server/apps/dashboard/views.py:1112
+#: server/apps/dashboard/views.py:1033 server/apps/dashboard/views.py:1187
 msgid "Original"
 msgstr "Оригинальные"
 
-#: server/apps/dashboard/views.py:1621
+#: server/apps/dashboard/views.py:1173
+msgid "All Statuses"
+msgstr "Все статусы"
+
+#: server/apps/dashboard/views.py:1180 server/apps/jobs/models.py:61
+msgid "Full-time"
+msgstr "Полная занятость"
+
+#: server/apps/dashboard/views.py:1181 server/apps/jobs/models.py:62
+msgid "Part-time"
+msgstr "Частичная занятость"
+
+#: server/apps/dashboard/views.py:1182 server/apps/jobs/models.py:63
+msgid "Internship"
+msgstr "Стажировка"
+
+#: server/apps/dashboard/views.py:1186
+msgid "All Sources"
+msgstr "Все ресурсы"
+
+#: server/apps/dashboard/views.py:1722
 msgid "Most Recent"
 msgstr "По дате"
 
-#: server/apps/dashboard/views.py:1622
+#: server/apps/dashboard/views.py:1723
 msgid "Name (A-Z)"
 msgstr "Имя А-Я"
 
-#: server/apps/dashboard/views.py:1627 server/apps/jobs/models.py:45
+#: server/apps/dashboard/views.py:1728 server/apps/jobs/models.py:45
 msgid "Doesn't matter"
 msgstr "Не важно"
 
-#: server/apps/dashboard/views.py:1629 server/apps/jobs/models.py:47
+#: server/apps/dashboard/views.py:1730 server/apps/jobs/models.py:47
 msgid "From 1 year to 3 years"
 msgstr "От 1 года до 3 лет"
 
-#: server/apps/dashboard/views.py:1630 server/apps/jobs/models.py:48
+#: server/apps/dashboard/views.py:1731 server/apps/jobs/models.py:48
 msgid "From 3 to 6 years"
 msgstr "От 3 до 6 лет"
 
-#: server/apps/dashboard/views.py:1631 server/apps/jobs/models.py:49
+#: server/apps/dashboard/views.py:1732 server/apps/jobs/models.py:49
 msgid "More than 6 years"
 msgstr "Более 6 лет"
 
@@ -2884,9 +2912,6 @@ msgid "External URL"
 msgstr "Внешний URL"
 
 #: server/apps/job_sync/templates/job_sync/partials/external_source_form.html:28
-#| msgid ""
-#| "Paste your company page URL from an external job board (currently supported:"
-#| " praca.by)"
 msgid ""
 "Paste your company page URL from an external job board (supported: praca.by,"
 " career.habr.com)"
@@ -2895,17 +2920,14 @@ msgstr ""
 "(поддерживается: praca.by, career.habr.com)"
 
 #: server/apps/job_sync/templates/job_sync/partials/external_source_form.html:32
-#| msgid "Save Source"
 msgid "Add Source"
 msgstr "Добавить источник"
 
 #: server/apps/job_sync/templates/job_sync/partials/external_source_form.html:53
-#| msgid "Synced"
 msgid "Sync"
 msgstr "Синхронизировано"
 
 #: server/apps/job_sync/templates/job_sync/partials/external_source_form.html:64
-#| msgid "No external source configured. Add a URL above to sync jobs."
 msgid "No external sources configured. Add a URL above to sync jobs."
 msgstr ""
 "Внешний источник не настроен. Добавьте URL выше для синхронизации вакансий."
@@ -3602,6 +3624,20 @@ msgstr "Войти"
 #: server/common/templates/components/nav.html:123
 msgid "Register"
 msgstr "Регистрация"
+
+#, python-format
+#~ msgid "+%(count)s new"
+#~ msgstr "+%(count)s новых"
+
+#, python-format
+#~ msgid "Applied %(timesince)s ago"
+#~ msgstr "Откликнулся %(timesince)s назад"
+
+#~ msgid "Match score"
+#~ msgstr "Оценка совпадения"
+
+#~ msgid "Automatically applied"
+#~ msgstr "Автоматический отклик"
 
 #, python-format
 #~ msgid "%(counter)s applicant"

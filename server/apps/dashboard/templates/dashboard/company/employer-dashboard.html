@@ -78,8 +78,8 @@
         </div>
         <!-- Statistics Cards -->
         <div class="row g-3 mb-4">
-          <div class="col-md-4">
-            <div class="stat-card">
+          <div class="col-md-3">
+            <div class="stat-card h-100">
               <div class="stat-icon bg-primary bg-opacity-10 text-primary">
                 <i class="bi bi-briefcase"></i>
               </div>
@@ -88,18 +88,20 @@
               <small class="text-success">{% blocktranslate with count=new_applicants_count %}+{{ count }} new applicants this week{% endblocktranslate %}</small>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="stat-card">
+          <div class="col-md-3">
+            <div class="stat-card h-100">
               <div class="stat-icon bg-success bg-opacity-10 text-success">
                 <i class="bi bi-people"></i>
               </div>
               <h3 class="fw-bold mb-1">{{ total_applicants }}</h3>
               <p class="text-muted mb-0">{% translate "Total Applicants" %}</p>
-              <small class="text-success">{% blocktranslate with count=new_applicants_count %}+{{ count }} new{% endblocktranslate %}</small>
+              <small class="text-muted">
+                {% blocktranslate with manual=total_manual auto=total_auto %}{{ manual }} manual / {{ auto }} auto{% endblocktranslate %}
+              </small>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="stat-card">
+          <div class="col-md-3">
+            <div class="stat-card h-100">
               <div class="stat-icon bg-warning bg-opacity-10 text-warning">
                 <i class="bi bi-eye"></i>
               </div>
@@ -107,23 +109,42 @@
               <p class="text-muted mb-0">{% translate "Job Views" %}</p>
             </div>
           </div>
+          <div class="col-md-3">
+            <div class="stat-card h-100">
+              <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-cloud-download"></i>
+              </div>
+              <h3 class="fw-bold mb-1">{{ external_jobs_count }}</h3>
+              <p class="text-muted mb-0">{% translate "External Jobs" %}</p>
+              <small class="text-muted">{% translate "Synced from external sources" %}</small>
+            </div>
+          </div>
         </div>
-        <!-- Charts Row -->
+        <!-- Application Trends - full row -->
         <div class="row g-3 mb-4">
-          <div class="col-md-6">
+          <div class="col-12">
             <div class="stat-card">
               <h5 class="fw-bold mb-3">{% translate "Application Trends" %}</h5>
               <canvas id="applicationsChart" style="height: 250px;"></canvas>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="stat-card">
+        </div>
+        <!-- Doughnut Charts Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="stat-card h-100">
+              <h5 class="fw-bold mb-3">{% translate "Job Sources" %}</h5>
+              <canvas id="jobSourcesChart" style="height: 250px;"></canvas>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-card h-100">
               <h5 class="fw-bold mb-3">{% translate "Jobs by Category" %}</h5>
               <canvas id="jobsChart" style="height: 250px;"></canvas>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="stat-card">
+          <div class="col-md-4">
+            <div class="stat-card h-100">
               <h5 class="fw-bold mb-3">{% translate "Jobs by Skills" %}</h5>
               <canvas id="skillsChart" style="height: 250px;"></canvas>
             </div>
@@ -206,12 +227,28 @@
             data: {
                 labels: {{ application_trends_labels|safe }},
                 datasets: [{
-                    label: 'Applications',
+                    label: '{% translate "Total" %}',
                     data: {{ application_trends_data|safe }},
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
                     tension: 0.4,
                     fill: true
+                }, {
+                    label: '{% translate "Manual" %}',
+                    data: {{ application_trends_manual_data|safe }},
+                    borderColor: '#48bb78',
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    tension: 0.4,
+                    fill: false,
+                    hidden: true
+                }, {
+                    label: '{% translate "Auto" %}',
+                    data: {{ application_trends_auto_data|safe }},
+                    borderColor: '#17a2b8',
+                    backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                    tension: 0.4,
+                    fill: false,
+                    hidden: true
                 }]
             },
             options: {
@@ -219,13 +256,20 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        position: 'top'
                     }
                 },
                 scales: {
                     x: {
                         ticks: {
                             maxTicksLimit: 10
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
                         }
                     }
                 }
@@ -274,6 +318,33 @@
                 plugins: {
                     legend: {
                         position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Job Sources Chart
+        const ctx4 = document.getElementById('jobSourcesChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'doughnut',
+            data: {
+                labels: {{ job_source_labels|safe }},
+                datasets: [{
+                    data: {{ job_source_data|safe }},
+                    backgroundColor: {{ job_source_colors|safe }},
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15
+                        }
                     }
                 }
             }

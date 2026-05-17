@@ -9,62 +9,89 @@
         href="{% static 'dashboard/css/company/styles.css' %}" />
 {% endblock head %}
 {% block content %}
-  <!-- Page Header -->
   <section class="bg-light py-4">
     <div class="container">
       <h1 class="fw-bold mb-0">{% translate "Applicants" %}</h1>
       <p class="text-muted">{% translate "Review and manage candidate applications" %}</p>
     </div>
   </section>
-  <!-- Main Content -->
   <section class="py-5">
     <div class="container">
-      <!-- Job Filter Dropdown -->
-      <div class="job-filter-tabs">
-        <form method="get" action="">
-          <div class="row align-items-center">
-            <div class="col-md-4">
-              <label class="fw-bold mb-2">{% translate "Select Job" %}:</label>
-              <select class="form-select" name="job_id" onchange="this.form.submit()">
-                <option value="">{% blocktranslate with total=stats.total %}All Jobs ({{ total }}){% endblocktranslate %}</option>
-                {% for j in jobs_list %}
-                  <option value="{{ j.id }}"
-                          {% if current_job == j.id|stringformat:"s" %}selected{% endif %}>
-                    {% blocktranslate count counter=j.applications_count with title=j.title %}{{ title }} ({{ counter }} applicant){% plural %}{{ title }} ({{ counter }} applicants){% endblocktranslate %}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-8">
-              <label class="fw-bold mb-2">{% translate "Filter by Status" %}:</label>
-              <div class="status-selector">
-                {% for value, label in status_choices %}
-                  {% if value == '' %}
-                    <a href="?{% if current_job %}job_id={{ current_job }}{% endif %}"
-                       class="status-option {% if not current_status %}active{% endif %}">
-                      {{ label }} ({{ stats.total }})
-                    </a>
-                  {% elif value == '0' %}
-                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
-                       class="status-option {% if current_status == value %}active{% endif %}">
-                      {{ label }} ({{ stats.new }})
-                    </a>
-                  {% elif value == '2' %}
-                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
-                       class="status-option {% if current_status == value %}active{% endif %}">
-                      {{ label }} ({{ stats.accepted }})
-                    </a>
-                  {% elif value == '3' %}
-                    <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}"
-                       class="status-option {% if current_status == value %}active{% endif %}">
-                      {{ label }} ({{ stats.rejected }})
-                    </a>
-                  {% endif %}
-                {% endfor %}
+      <!-- Filters Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+          <form method="get" action="">
+            <!-- Row 1: Job select + Apply Type -->
+            <div class="row g-3 align-items-end mb-3">
+              <div class="col-lg-4 col-md-6">
+                <label class="form-label fw-semibold">{% translate "Select Job" %}</label>
+                <select class="form-select" name="job_id" onchange="this.form.submit()">
+                  <option value="">{% blocktranslate with total=stats.total %}All Jobs ({{ total }}){% endblocktranslate %}</option>
+                  {% for j in jobs_list %}
+                    <option value="{{ j.id }}"
+                            {% if current_job == j.id|stringformat:"s" %}selected{% endif %}>
+                      {% blocktranslate count counter=j.applications_count with title=j.title %}{{ title }} ({{ counter }} applicant){% plural %}{{ title }} ({{ counter }} applicants){% endblocktranslate %}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-lg-4 col-md-6">
+                <label class="form-label fw-semibold">{% translate "Apply Type" %}</label>
+                <div class="btn-group w-100" role="group" aria-label="{% translate 'Apply type filter' %}">
+                  {% for value, label in apply_type_choices %}
+                    {% if value == '' %}
+                      <a href="?{% if current_job %}job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}"
+                         class="btn btn-outline-secondary {% if not current_apply_type %}active{% endif %}">
+                        {{ label }}
+                      </a>
+                    {% elif value == 'auto' %}
+                      <a href="?apply_type={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}"
+                         class="btn btn-outline-info {% if current_apply_type == value %}active{% endif %}">
+                        <i class="bi bi-robot"></i> {{ label }} ({{ stats.auto }})
+                      </a>
+                    {% elif value == 'manual' %}
+                      <a href="?apply_type={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}"
+                         class="btn btn-outline-success {% if current_apply_type == value %}active{% endif %}">
+                        <i class="bi bi-hand-index"></i> {{ label }} ({{ stats.manual }})
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+            <!-- Row 2: Status pills -->
+            <div class="row g-3 align-items-end">
+              <div class="col-12">
+                <label class="form-label fw-semibold">{% translate "Filter by Status" %}</label>
+                <div class="btn-group flex-wrap" role="group" aria-label="{% translate 'Status filter' %}">
+                  {% for value, label in status_choices %}
+                    {% if value == '' %}
+                      <a href="?{% if current_job %}job_id={{ current_job }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}"
+                         class="btn btn-outline-secondary {% if not current_status %}active{% endif %}">
+                        {{ label }} <span class="badge bg-secondary">{{ stats.total }}</span>
+                      </a>
+                    {% elif value == '0' %}
+                      <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}"
+                         class="btn btn-outline-warning {% if current_status == value %}active{% endif %}">
+                        {{ label }} <span class="badge bg-warning text-dark">{{ stats.new }}</span>
+                      </a>
+                    {% elif value == '2' %}
+                      <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}"
+                         class="btn btn-outline-success {% if current_status == value %}active{% endif %}">
+                        {{ label }} <span class="badge bg-success">{{ stats.accepted }}</span>
+                      </a>
+                    {% elif value == '3' %}
+                      <a href="?status={{ value }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}"
+                         class="btn btn-outline-danger {% if current_status == value %}active{% endif %}">
+                        {{ label }} <span class="badge bg-danger">{{ stats.rejected }}</span>
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <!-- Applicants List -->
       {% if page_obj|length == 0 %}
@@ -72,7 +99,7 @@
           <i class="bi bi-inbox fs-1 text-muted"></i>
           <h4 class="mt-3">{% translate "No applicants found" %}</h4>
           <p class="text-muted">
-            {% if current_job or current_status %}
+            {% if current_job or current_status or current_apply_type %}
               {% translate "Try adjusting your filters or" %}
               <a href="{% url 'dashboard:applicants-list' %}">{% translate "clear all filters" %}</a>.
             {% else %}
@@ -83,63 +110,77 @@
       {% else %}
         <div id="applicant_list">
           {% for app in page_obj %}
-            <div class="applicant-card {% if app.status == 0 %}status-pending-border{% elif app.status == 1 %}status-accepted-border{% elif app.status == 2 %}status-rejected-border{% endif %}"
-                 onclick="window.location.href='{% url 'dashboard:candidate-view' app.pk %}'">
-              <div class="row align-items-center">
-                <div class="col-md-1">
-                  <div class="applicant-avatar">
+            <div class="card shadow-sm border-0 mb-3 {% if app.status == 0 %}border-start border-warning border-start-4{% elif app.status == 1 %}border-start border-success border-start-4{% elif app.status == 2 %}border-start border-danger border-start-4{% endif %}"
+                 onclick="window.location.href='{% url 'dashboard:candidate-view' app.pk %}'"
+                 style="cursor:pointer">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <!-- Avatar -->
+                  <div class="me-3">
                     {% if app.jobseeker.avatar %}
                       <img src="{{ app.jobseeker.avatar.url }}"
                            alt="{{ app.jobseeker.user.get_full_name }}"
                            class="rounded-circle"
-                           style="width: 60px;
-                                  height: 60px;
-                                  object-fit: cover">
+                           style="width: 56px;
+                                  height: 56px;
+                                  object-fit: cover" />
                     {% else %}
-                      {% with name=app.jobseeker.user.get_full_name %}
-                        {% if name %}
-                          {{ name|make_list|slice:":2"|join:""|upper }}
-                        {% else %}
-                          ??
-                        {% endif %}
-                      {% endwith %}
+                      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
+                           style="width: 56px;
+                                  height: 56px;
+                                  font-size: 1.2rem">
+                        {% with name=app.jobseeker.user.get_full_name %}
+                          {% if name %}
+                            {{ name|make_list|slice:":2"|join:""|upper }}
+                          {% else %}
+                            ??
+                          {% endif %}
+                        {% endwith %}
+                      </div>
                     {% endif %}
                   </div>
+                  <!-- Name & email -->
+                  <div class="flex-grow-1">
+                    <small class="text-muted">
+                      <i class="bi bi-briefcase"></i> {{ app.job.title }}
+                    </small>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <h6 class="mb-0 fw-bold">{{ app.jobseeker.user.get_full_name }}</h6>
+                      {% if app.is_auto_applied %}
+                        <span class="badge bg-info"><i class="bi bi-robot"></i> {% translate "Auto" %}</span>
+                      {% endif %}
+                      {% if app.status == 0 %}
+                        <span class="badge text-bg-warning">{% translate "New" %}</span>
+                      {% elif app.status == 1 %}
+                        <span class="badge bg-success">{% translate "Accepted" %}</span>
+                      {% elif app.status == 2 %}
+                        <span class="badge bg-danger">{% translate "Rejected" %}</span>
+                      {% endif %}
+                    </div>
+                    <small class="text-muted">{{ app.jobseeker.user.email }}</small>
+                  </div>
+                  <!-- Match score -->
+                  <div class="text-center mx-3 d-none d-md-block">
+                    <div class="d-flex flex-column align-items-center">
+                      <strong class="fs-5 {% if app.match_score >= 70 %}text-success{% elif app.match_score >= 40 %}text-warning{% else %}text-danger{% endif %}">{{ app.match_score }}%</strong>
+                      <small class="text-muted">{% translate "Match" %}</small>
+                    </div>
+                  </div>
+                  <!-- Applied time -->
+                  <div class="text-center mx-3 d-none d-lg-block">
+                    <small class="text-muted">
+                      <i class="bi bi-clock"></i> {% blocktranslate with timesince=app.applied_at|timesince %}{{ timesince }} ago{% endblocktranslate %}
+                    </small>
+                  </div>
+                  <!-- Action -->
+                  <div class="ms-auto d-none d-sm-block">
+                    <a href="{% url 'dashboard:candidate-view' app.pk %}"
+                       class="btn btn-sm btn-outline-primary"
+                       onclick="event.stopPropagation()">{% translate "View Profile" %}</a>
+                  </div>
                 </div>
-                <div class="col-md-3">
-                  <h5 class="fw-bold mb-1">{{ app.jobseeker.user.get_full_name }}</h5>
-                  <p class="text-muted mb-0">{{ app.jobseeker.user.email }}</p>
-                  <small class="text-muted">{% blocktranslate with timesince=app.applied_at|timesince %}Applied {{ timesince }} ago{% endblocktranslate %}</small>
-                </div>
-                <div class="col-md-2">
-                  <span class="badge bg-primary">{{ app.job.title }}</span>
-                </div>
-                <div class="col-md-1">
-                  <div class="match-score">{{ app.match_score }}%</div>
-                  <small class="text-muted">{% translate "Match score" %}</small>
-                </div>
-                <div class="col-md-2">
-                  <span class="status-badge {% if app.status == 0 %}text-bg-warning{% elif app.status == 1 %}status-accepted{% elif app.status == 2 %}status-rejected{% endif %}">
-                    {% if app.status == 0 %}
-                      {% translate "New" %}
-                    {% elif app.status == 1 %}
-                      {% translate "Accepted" %}
-                    {% elif app.status == 2 %}
-                      {% translate "Rejected" %}
-                    {% endif %}
-                  </span>
-                  {% if app.is_auto_applied %}
-                    <span class="badge bg-info ms-1" title="{% translate 'Automatically applied' %}"><i class="bi bi-robot"></i> {% translate "Auto" %}</span>
-                  {% endif %}
-                </div>
-                <div class="col-md-2 text-end">
-                  <a href="{% url 'dashboard:candidate-view' app.pk %}"
-                     class="btn btn-sm btn-outline-primary"
-                     onclick="event.stopPropagation()">{% translate "View Profile" %}</a>
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col-12">
+                <!-- Skills & education row -->
+                <div class="mt-2 ps-5">
                   <small class="text-muted">
                     {% with edu=app.jobseeker.education.first %}
                       {% if edu %}
@@ -149,10 +190,9 @@
                     {% endwith %}
                     {% with skills=app.jobseeker.skills.all %}
                       {% if skills %}
-                        • <i class="bi bi-stars"></i> {% translate "Skills" %}:
+                        &middot; <i class="bi bi-stars"></i> {% translate "Skills" %}:
                         {% for skill in skills|slice:":5" %}
-                          {{ skill.name }}
-                          {% if not forloop.last %},{% endif %}
+                          <span class="badge bg-light text-dark border">{{ skill.name }}</span>
                         {% endfor %}
                         {% if skills.count > 5 %}
                           {% blocktranslate with extra=skills.count|add:"-5" %}+{{ extra }} more{% endblocktranslate %}
@@ -172,7 +212,7 @@
               {% if page_obj.has_previous %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?page={{ page_obj.previous_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">{% translate "Previous" %}</a>
+                     href="?page={{ page_obj.previous_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}">{% translate "Previous" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
@@ -187,14 +227,14 @@
                 {% else %}
                   <li class="page-item">
                     <a class="page-link"
-                       href="?page={{ num }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">{{ num }}</a>
+                       href="?page={{ num }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}">{{ num }}</a>
                   </li>
                 {% endif %}
               {% endfor %}
               {% if page_obj.has_next %}
                 <li class="page-item">
                   <a class="page-link"
-                     href="?page={{ page_obj.next_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">{% translate "Next" %}</a>
+                     href="?page={{ page_obj.next_page_number }}{% if current_job %}&job_id={{ current_job }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_apply_type %}&apply_type={{ current_apply_type }}{% endif %}">{% translate "Next" %}</a>
                 </li>
               {% else %}
                 <li class="page-item disabled">
