@@ -7,6 +7,7 @@ from typing import Any, override
 
 import httpx
 from bs4 import BeautifulSoup
+from httpx_curl_cffi import CurlTransport
 
 from server.apps.job_sync.models import SourceTypeEnum
 from server.apps.job_sync.parsers.base import BaseParser, ParsedJobData
@@ -388,15 +389,9 @@ class HabrCareerParser(BaseParser):
 
     def __init__(self) -> None:
         self._client = httpx.Client(
+            transport=CurlTransport(impersonate='chrome', default_headers=True),
             timeout=30,
             follow_redirects=True,
-            headers={
-                'User-Agent': (
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                    'AppleWebKit/537.36 (KHTML, like Gecko) '
-                    'Chrome/125.0.0.0 Safari/537.36'
-                ),
-            },
         )
 
     @override
