@@ -15,7 +15,9 @@ from server.common.types import AuthenticatedHttpRequest
 
 class JobAdviceCreateView(LoginRequiredMixin, View):
     def post(
-        self, request: AuthenticatedHttpRequest, job_pk: int,
+        self,
+        request: AuthenticatedHttpRequest,
+        job_pk: int,
     ) -> JsonResponse:
         if request.user.account_type != User.AccountTypeEnum.JOBSEEKER:
             return JsonResponse(

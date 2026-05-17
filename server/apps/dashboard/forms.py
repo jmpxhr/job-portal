@@ -249,12 +249,13 @@ class SkillAddForm(forms.Form):
 
 class ActiveSearchSettingsForm(forms.ModelForm[JobSeeker]):
     auto_apply_threshold = forms.ChoiceField(
-        choices=JobSeeker._meta.get_field('auto_apply_threshold').choices,
+        # pyrefly: ignore [missing-attribute]
+        choices=JobSeeker._meta.get_field('auto_apply_threshold').choices,  # type: ignore[arg-type] # noqa: SLF001
         widget=forms.Select(attrs={'class': 'form-select'}),
         label=_('Auto-apply threshold'),
     )
     lang = forms.ChoiceField(
-        choices=JobSeeker._meta.get_field('lang').choices,
+        choices=JobSeeker._meta.get_field('lang').choices,  # type: ignore[arg-type] # noqa: SLF001
         widget=forms.Select(attrs={'class': 'form-select'}),
         label=_('Advice language'),
     )
@@ -275,13 +276,17 @@ class ActiveSearchSettingsForm(forms.ModelForm[JobSeeker]):
                 attrs={
                     'class': 'form-control',
                     'rows': 4,
-                    'placeholder': _('Enter a default cover letter for auto-applications...'),
+                    'placeholder': _(
+                        'Enter a default cover letter for auto-applications...',
+                    ),
                 },
             ),
         }
         labels = {
             'is_active_search': _('Active search (auto-match and auto-apply)'),
-            'auto_apply_cover_letter': _('Default cover letter for auto-applications'),
+            'auto_apply_cover_letter': _(
+                'Default cover letter for auto-applications',
+            ),
         }
 
 
